@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2025 at 06:20 AM
+-- Generation Time: Dec 11, 2025 at 12:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -171,7 +171,8 @@ INSERT INTO `travel_bookings` (`id`, `booking_id`, `traveler_name`, `travel_type
 (32, 'TRV-20251210-581', 'James', 'Airplane', 'USA', 'New York', 'France', 'Toulouse', 'Completed', '2025-12-10 05:13:48'),
 (33, 'TRV-20251210-325', 'Pawix', 'Car', 'Australia', 'Perth', 'Australia', 'Perth', 'Cancelled', '2025-12-10 05:13:59'),
 (34, 'TRV-20251210-425', 'Gabriel', 'Airplane', 'UK', 'Manchester', 'USA', 'Chicago', 'Cancelled', '2025-12-10 05:14:08'),
-(35, 'TRV-20251210-050', 'Gabriel', 'Car', 'Japan', 'Osaka', 'Japan', 'Tokyo', 'Cancelled', '2025-12-10 05:17:32');
+(35, 'TRV-20251210-050', 'Gabriel', 'Car', 'Japan', 'Osaka', 'Japan', 'Tokyo', 'Cancelled', '2025-12-10 05:17:32'),
+(36, 'TRV-20251211-341', 'Gabriel', 'Bus', 'USA', 'Chicago', 'Japan', 'Osaka', 'Cancelled', '2025-12-11 10:34:19');
 
 --
 -- Indexes for dumped tables
@@ -219,7 +220,7 @@ ALTER TABLE `countries`
 -- AUTO_INCREMENT for table `travel_bookings`
 --
 ALTER TABLE `travel_bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Constraints for dumped tables
