@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2025 at 12:02 PM
+-- Generation Time: Dec 12, 2025 at 04:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -172,7 +172,14 @@ INSERT INTO `travel_bookings` (`id`, `booking_id`, `traveler_name`, `travel_type
 (33, 'TRV-20251210-325', 'Pawix', 'Car', 'Australia', 'Perth', 'Australia', 'Perth', 'Cancelled', '2025-12-10 05:13:59'),
 (34, 'TRV-20251210-425', 'Gabriel', 'Airplane', 'UK', 'Manchester', 'USA', 'Chicago', 'Cancelled', '2025-12-10 05:14:08'),
 (35, 'TRV-20251210-050', 'Gabriel', 'Car', 'Japan', 'Osaka', 'Japan', 'Tokyo', 'Cancelled', '2025-12-10 05:17:32'),
-(36, 'TRV-20251211-341', 'Gabriel', 'Bus', 'USA', 'Chicago', 'Japan', 'Osaka', 'Cancelled', '2025-12-11 10:34:19');
+(36, 'TRV-20251211-341', 'Gabriel', 'Bus', 'USA', 'Chicago', 'Japan', 'Osaka', 'Cancelled', '2025-12-11 10:34:19'),
+(37, 'TRV-20251212-722', 'Gabriel', 'Ship', 'France', 'Marseille', 'Germany', 'Frankfurt', 'Booked', '2025-12-12 03:46:51'),
+(38, 'TRV-20251212-777', 'KO', 'Airplane', 'Philippines', 'Cebu', 'Philippines', 'Manila', 'Completed', '2025-12-12 03:47:05'),
+(39, 'TRV-20251212-281', 'KO', 'Ship', 'Philippines', 'Cagayan de Oro', 'Philippines', 'Cebu', 'Completed', '2025-12-12 03:47:20'),
+(40, 'TRV-20251212-963', 'KO', 'Car', 'United States', 'Los Angeles', 'Germany', 'Berlin', 'Cancelled', '2025-12-12 03:47:30'),
+(41, 'TRV-20251212-093', 'Paolo', 'Car', 'Japan', 'Kyoto', 'Japan', 'Osaka', 'Cancelled', '2025-12-12 03:47:39'),
+(42, 'TRV-20251212-911', 'KO', 'Bus', 'United Arab Emirates', 'Ras Al Khaimah', 'United Arab Emirates', 'Dubai', 'Cancelled', '2025-12-12 03:47:49'),
+(43, 'TRV-20251212-543', 'Pawix', 'Car', 'Philippines', 'Cebu', 'Philippines', 'Davao', 'Booked', '2025-12-12 03:48:00');
 
 --
 -- Indexes for dumped tables
@@ -220,7 +227,7 @@ ALTER TABLE `countries`
 -- AUTO_INCREMENT for table `travel_bookings`
 --
 ALTER TABLE `travel_bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables
