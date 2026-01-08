@@ -1,16 +1,13 @@
 <?php
-// modules/travel_booking_form.php
+// modules/travel_booking_form.php - UPDATED VERSION
 
-// Database configuration
 $host = 'localhost';
 $user = 'root';
 $pass = '';
 $dbname = 'travel_db';
 
-// Create connection
 $conn = new mysqli($host, $user, $pass, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -29,6 +26,9 @@ while ($row = $cities_result->fetch_assoc()) {
     $cities_by_country[$row['country_code']][] = $row['city_name'];
 }
 
+// Fetch active travel agents
+$agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM travel_agents WHERE status = 'Active' ORDER BY agent_name");
+
 // Handle form submission
 $message = '';
 $message_type = '';
@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $to_country = $conn->real_escape_string($_POST['to_country']);
     $to_city = $conn->real_escape_string($_POST['to_city']);
     $status = $conn->real_escape_string($_POST['status']);
+    $agent_id = $conn->real_escape_string($_POST['agent_id']);
+    $booking_amount = (float)$_POST['booking_amount'];
     
     // Get country names from country codes
     $from_country_name = $conn->query("SELECT country_name FROM countries WHERE country_code = '$from_country'")->fetch_assoc()['country_name'];
@@ -49,11 +51,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Generate booking ID
     $booking_id = 'TRV-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
     
-    $sql = "INSERT INTO travel_bookings (booking_id, traveler_name, travel_type, from_country, from_city, to_country, to_city, status) 
-            VALUES ('$booking_id', '$traveler_name', '$travel_type', '$from_country_name', '$from_city', '$to_country_name', '$to_city', '$status')";
+    $sql = "INSERT INTO travel_bookings (booking_id, traveler_name, travel_type, from_country, from_city, to_country, to_city, status, agent_id, booking_amount) 
+            VALUES ('$booking_id', '$traveler_name', '$travel_type', '$from_country_name', '$from_city', '$to_country_name', '$to_city', '$status', '$agent_id', $booking_amount)";
     
     if ($conn->query($sql)) {
-        $message = "✅ Travel booking created successfully! Booking ID: <strong>$booking_id</strong>";
+        // Update agent's total bookings and calculate commission if agent was selected
+        if (!empty($agent_id) && $booking_amount > 0) {
+            // Get agent commission rate
+            $agent_data = $conn->query("SELECT commission_rate FROM travel_agents WHERE agent_id = '$agent_id'")->fetch_assoc();
+            $commission_rate = $agent_data['commission_rate'];
+            $commission_amount = ($booking_amount * $commission_rate) / 100;
+            
+            // Generate commission ID
+            $commission_id = 'COM-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+            
+            // Record commission
+            $conn->query("INSERT INTO agent_commissions (commission_id, agent_id, booking_id, booking_type, booking_amount, commission_rate, commission_amount, status) 
+                          VALUES ('$commission_id', '$agent_id', '$booking_id', 'Travel', $booking_amount, $commission_rate, $commission_amount, 'Pending')");
+            
+            // Update agent's total bookings
+            $conn->query("UPDATE travel_agents SET total_bookings = total_bookings + 1 WHERE agent_id = '$agent_id'");
+            
+            $message = "✅ Travel booking created successfully! Booking ID: <strong>$booking_id</strong><br>";
+            $message .= "📊 Agent Commission: <strong>₱" . number_format($commission_amount, 2) . "</strong> (" . $commission_rate . "% of ₱" . number_format($booking_amount, 2) . ")";
+        } else {
+            $message = "✅ Travel booking created successfully! Booking ID: <strong>$booking_id</strong>";
+        }
+        
         $message_type = "success";
         
         // Clear form fields after successful submission
@@ -106,7 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="from_country" class="form-label">From Country *</label>
                     <select class="form-select" id="from_country" name="from_country" required onchange="updateCities('from')">
                         <option value="">Select a country...</option>
-                        <?php while($country = $countries_result->fetch_assoc()): ?>
+                        <?php 
+                        $countries_result->data_seek(0);
+                        while($country = $countries_result->fetch_assoc()): ?>
                         <option value="<?php echo $country['country_code']; ?>">
                             <?php echo htmlspecialchars($country['country_name']); ?>
                         </option>
@@ -127,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-select" id="to_country" name="to_country" required onchange="updateCities('to')">
                         <option value="">Select a country...</option>
                         <?php 
-                        // Reset pointer for countries result
                         $countries_result->data_seek(0);
                         while($country = $countries_result->fetch_assoc()): 
                         ?>
@@ -143,6 +168,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-select" id="to_city" name="to_city" required disabled>
                         <option value="">First select a country</option>
                     </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="booking_amount" class="form-label">Booking Amount (₱) *</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₱</span>
+                        <input type="number" class="form-control" id="booking_amount" name="booking_amount" step="0.01" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="agent_id" class="form-label">Travel Agent (Optional)</label>
+                    <select class="form-select" id="agent_id" name="agent_id" onchange="showCommissionInfo()">
+                        <option value="">No agent / Self-booking</option>
+                        <?php 
+                        $agents_result->data_seek(0);
+                        while($agent = $agents_result->fetch_assoc()): ?>
+                        <option value="<?php echo $agent['agent_id']; ?>" data-rate="<?php echo $agent['commission_rate']; ?>">
+                            <?php echo htmlspecialchars($agent['agent_name']); ?> (<?php echo $agent['commission_rate']; ?>% commission)
+                        </option>
+                        <?php endwhile; ?>
+                    </select>
+                    <div id="commissionInfo" class="form-text" style="display: none;">
+                        Commission: <span id="commissionAmount">₱0.00</span>
+                    </div>
                 </div>
                 
                 <div class="col-md-12">
@@ -193,12 +243,35 @@ function updateCities(direction) {
     }
 }
 
+// Function to show commission info
+function showCommissionInfo() {
+    const agentSelect = document.getElementById('agent_id');
+    const bookingAmount = document.getElementById('booking_amount').value;
+    const commissionInfo = document.getElementById('commissionInfo');
+    const commissionAmount = document.getElementById('commissionAmount');
+    
+    const selectedOption = agentSelect.options[agentSelect.selectedIndex];
+    const commissionRate = selectedOption.getAttribute('data-rate');
+    
+    if (commissionRate && bookingAmount > 0) {
+        const commission = (bookingAmount * commissionRate) / 100;
+        commissionAmount.textContent = '₱' + commission.toFixed(2) + ' (' + commissionRate + '%)';
+        commissionInfo.style.display = 'block';
+    } else {
+        commissionInfo.style.display = 'none';
+    }
+}
+
+// Calculate commission when booking amount changes
+document.getElementById('booking_amount').addEventListener('input', showCommissionInfo);
+
 // Reset form function
 function resetForm() {
     document.getElementById('from_city').innerHTML = '<option value="">First select a country</option>';
     document.getElementById('to_city').innerHTML = '<option value="">First select a country</option>';
     document.getElementById('from_city').disabled = true;
     document.getElementById('to_city').disabled = true;
+    document.getElementById('commissionInfo').style.display = 'none';
 }
 
 // Initialize on page load

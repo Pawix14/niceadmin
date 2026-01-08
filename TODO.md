@@ -1,0 +1,7 @@
+- [x] Change .header background to white
+- [x] Change .logo span color to var(--deep-navy)
+- [x] Change .sidebar background to white and remove background-image
+- [x] Change .sidebar-nav .nav-link color to var(--deep-navy)
+- [x] Adjust hover background for nav links to rgba(0,0,0,0.05)
+- [x] Change active nav link background to var(--ocean-blue) with white text
+- [x] Remove inline background styles from index.php to allow external CSS to take effect

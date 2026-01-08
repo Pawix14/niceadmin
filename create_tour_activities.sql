@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS `tour_activities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tour_id` varchar(20) NOT NULL,
+  `tour_name` varchar(150) NOT NULL,
+  `country` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `tour_type` enum('Sightseeing','Adventure','Cultural','Food','Nature','Historical','Private','Group') NOT NULL,
+  `duration_days` int(11) DEFAULT 1,
+  `duration_nights` int(11) DEFAULT 0,
+  `duration_hours` int(11) DEFAULT 4,
+  `max_participants` int(11) DEFAULT 10,
+  `available_slots` int(11) DEFAULT 10,
+  `price_per_person` decimal(10,2) NOT NULL,
+  `tour_date` date NOT NULL,
+  `status` enum('Available','Active','Fully Booked','Cancelled','Completed') DEFAULT 'Available',
+  `description` text,
+  `highlights` text,
+  `included` text,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tour_id` (`tour_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

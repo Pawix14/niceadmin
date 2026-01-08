@@ -5,534 +5,651 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Tables / Data - NiceAdmin Bootstrap Template</title>
+  <title>🌴 Paradise Travel Management</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/icon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      padding-top: 70px;
+      color: #333;
+    }
+    #header {
+      height: 70px;
+      border-bottom: 1px solid #e0e0e0;
+      z-index: 999;
+    }
 
+    .header .logo span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333; /* Changed to dark gray instead of blue */
+    }
+
+    /* Simple Toggle Button */
+    .toggle-sidebar-btn {
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+      margin-left: 20px;
+    }
+
+    .toggle-sidebar-btn:hover {
+      color: #333;
+    }
+
+    /* PURE WHITE SIDEBAR - No Colors */
+    #sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 70px);
+      border-right: 1px solid #e0e0e0;
+      z-index: 998;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+
+    /* Main Content Area */
+    #main {
+      margin-left: 260px;
+      padding: 30px;
+      min-height: calc(100vh - 70px);
+      background: #f8f9fa;
+      transition: all 0.3s ease;
+    }
+
+    /* Sidebar Navigation - Pure White */
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      margin-bottom: 2px;
+    }
+
+    /* Navigation Links - Clean Gray */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 25px;
+      color: #666;
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 4px solid transparent;
+    }
+
+    .nav-link:hover {
+      background-color: #f8f9fa;
+      color: #333;
+      border-left-color: #cccccc;
+    }
+
+    .nav-link.active {
+      background-color: #f8f9fa;
+      color: #333;
+      font-weight: 500;
+      border-left-color: #666; /* Changed to dark gray instead of blue */
+    }
+
+    .nav-link i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+      color: #666;
+    }
+
+    .nav-link.active i {
+      color: #333;
+    }
+
+    /* Section Headers */
+    .nav-heading {
+      padding: 20px 25px 8px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #888;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #e0e0e0;
+      margin: 0 15px 10px;
+    }
+
+    /* User Profile - Clean */
+    .nav-profile {
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .nav-profile:hover {
+      background: #f8f9fa;
+    }
+
+    .avatar-placeholder {
+      width: 36px;
+      height: 36px;
+      background: #666; /* Changed to gray instead of blue */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    .nav-profile span {
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* Clean Dropdown */
+    .dropdown-menu {
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 10px 0;
+      background: #ffffff;
+    }
+
+    .dropdown-header {
+      padding: 10px 15px;
+      color: #666;
+    }
+
+    .dropdown-header h6 {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      #sidebar {
+        left: -260px;
+        box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+      }
+
+      #main {
+        margin-left: 0;
+      }
+
+      body.sidebar-mobile-show #sidebar {
+        left: 0;
+      }
+
+      body.sidebar-mobile-show::after {
+        content: '';
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 997;
+      }
+    }
+
+    /* Footer */
+    #footer {
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      padding: 20px 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .copyright {
+      text-align: center;
+    }
+
+    .copyright strong {
+      color: #333;
+      font-weight: 600;
+    }
+
+    /* Back to Top Button - Neutral Gray */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: #666;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+      z-index: 999;
+    }
+
+    .back-to-top:hover {
+      background: #333;
+      transform: translateY(-3px);
+      color: white;
+    }
+
+    /* Travel Background Elements (Kept but subtle) */
+    .travel-wave-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 145px;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.05;
+    }
+
+    .wave-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 145px;
+    }
+
+    .wave-1 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23999999"/></svg>'); /* Gray instead of blue */
+      background-size: 1200px 100%;
+      animation: waveMove 25s linear infinite;
+      bottom: 48px;
+    }
+
+    .wave-2 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23CCCCCC"/></svg>'); /* Light gray */
+      background-size: 1200px 100%;
+      animation: waveMove 20s linear infinite reverse;
+      bottom: 40px;
+    }
+
+    .wave-3 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23999999"/></svg>'); /* Gray */
+      background-size: 1200px 100%;
+      animation: waveMove 30s linear infinite;
+      bottom: 56px;
+    }
+
+    @keyframes waveMove {
+      0% { background-position-x: 0; }
+      100% { background-position-x: 1200px; }
+    }
+
+    /* Travel Cloud - Very Subtle */
+    .travel-cloud {
+      position: fixed;
+      top: 100px;
+      right: 50px;
+      width: 120px;
+      height: 60px;
+      background: rgba(39, 89, 182, 0.3);
+      border-radius: 50px;
+      filter: blur(15px);
+      z-index: -1;
+      animation: cloudMove 80s linear infinite;
+      opacity: 0.3;
+    }
+    
+    .travel-cloud::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 25px;
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+    
+    .travel-cloud::after {
+      content: '';
+      position: absolute;
+      top: -15px;
+      right: 25px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+    
+    @keyframes cloudMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100vw); }
+    }
+
+    /* Card Styling for Dashboard */
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Scrollbar Styling */
+    #sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #sidebar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+    }
+
+    /* Override any existing blue styles */
+    a {
+      color: #333;
+    }
+
+    a:hover {
+      color: #000;
+    }
+
+    /* Remove any remaining blue highlights */
+    .nav-link.active:hover {
+      border-left-color: #666;
+    }
+
+    /* Ensure all icons are gray */
+    .bi {
+      color: #666;
+    }
+
+    .nav-link.active .bi {
+      color: #333;
+    }
+
+    /* Clean up dropdown */
+    .dropdown-item {
+      color: #333;
+    }
+
+    .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    /* Breadcrumb styling */
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+      color: #333;
+    }
+
+    /* Alert styling */
+    .alert {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Very Subtle Background Elements -->
+  <div class="travel-wave-container">  
+    <div class="wave-layer wave-1"></div>
+    <div class="wave-layer wave-2"></div>
+    <div class="wave-layer wave-3"></div>
+  </div>
+  <div class="travel-cloud"></div>
 
-  <!-- ======= Header ======= -->
+  <!-- PURE WHITE HEADER -->
   <header id="header" class="header fixed-top d-flex align-items-center">
-
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">NiceAdmin</span>
+      <a href="index.php" class="logo d-flex align-items-center">
+        <span class="d-none d-lg-block">🌴 Paradise Travel</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
-
-    <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="#">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-      </form>
-    </div><!-- End Search Bar -->
+    </div>
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
-
-        <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
-            <i class="bi bi-search"></i>
-          </a>
-        </li><!-- End Search Icon-->
-
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
-          </a><!-- End Notification Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-
-          </ul><!-- End Notification Dropdown Items -->
-
-        </li><!-- End Notification Nav -->
-
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
-          </a><!-- End Messages Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
-
-        </li><!-- End Messages Nav -->
-
         <li class="nav-item dropdown pe-3">
-
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">Madridano</span>
-          </a><!-- End Profile Iamge Icon -->
-
+            <div class="avatar-placeholder">
+              <span>✈️</span>
+            </div>
+            <span class="d-none d-md-block dropdown-toggle ps-2">Travel Admin</span>
+          </a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Gabriel Paolo Madridano</h6>
-              <span>Web Designer</span>
+              <h6>🛂 Travel Administrator</h6>
+              <span>Paradise Travel System</span>
             </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-person"></i>
-                <span>My Profile</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
+            <li><hr class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="#">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
             </li>
-
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
-
+          </ul>
+        </li>
       </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
+  </header>
 
-  </header><!-- End Header -->
-
-  <!-- ======= Sidebar ======= -->
+  <!-- PURE WHITE SIDEBAR -->
   <aside id="sidebar" class="sidebar">
-
     <ul class="sidebar-nav" id="sidebar-nav">
-
       <li class="nav-item">
-        <a class="nav-link collapsed" href="index.html">
-          <i class="bi bi-grid"></i>
+        <a class="nav-link <?php echo (!isset($_GET['page']) || $_GET['page'] == 'dashboard') ? 'active' : ''; ?>" href="index.php?page=dashboard">
+          <i class="bi bi-compass"></i>
           <span>Dashboard</span>
         </a>
-      </li><!-- End Dashboard Nav -->
+      </li>
+
+      <li class="nav-heading">✈️ Booking Management</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'new_booking') ? 'active' : ''; ?>" href="index.php?page=new_booking">
+          <i class="bi bi-plus-circle"></i>
+          <span>New Booking</span>
         </a>
-        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="components-alerts.html">
-              <i class="bi bi-circle"></i><span>Alerts</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-accordion.html">
-              <i class="bi bi-circle"></i><span>Accordion</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-badges.html">
-              <i class="bi bi-circle"></i><span>Badges</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-breadcrumbs.html">
-              <i class="bi bi-circle"></i><span>Breadcrumbs</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-buttons.html">
-              <i class="bi bi-circle"></i><span>Buttons</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-cards.html">
-              <i class="bi bi-circle"></i><span>Cards</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-carousel.html">
-              <i class="bi bi-circle"></i><span>Carousel</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-list-group.html">
-              <i class="bi bi-circle"></i><span>List group</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-modal.html">
-              <i class="bi bi-circle"></i><span>Modal</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-tabs.html">
-              <i class="bi bi-circle"></i><span>Tabs</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-pagination.html">
-              <i class="bi bi-circle"></i><span>Pagination</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-progress.html">
-              <i class="bi bi-circle"></i><span>Progress</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-spinners.html">
-              <i class="bi bi-circle"></i><span>Spinners</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-tooltips.html">
-              <i class="bi bi-circle"></i><span>Tooltips</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Components Nav -->
+      </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'all_bookings') ? 'active' : ''; ?>" href="index.php?page=all_bookings">
+          <i class="bi bi-journal-text"></i>
+          <span>All Bookings</span>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li>
-                <a href="index.php?page=travel_booking">
-                    <i class="bi bi-circle"></i><span>Travel Booking</span>
-                </a>
-            </li>
-        </ul>
-    </li>
-      <!-- Add this to your sidebar navigation -->
-<li class="nav-item">
-    <a class="nav-link collapsed" href="index.php?page=travel_bookings">
-        <i class="bi bi-journal-text"></i>
-        <span>Data Tables</span>
-    </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'tours') ? 'active' : ''; ?>" href="index.php?page=tours">
+          <i class="bi bi-binoculars"></i>
+          <span>Tour Activity</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_rental') ? 'active' : ''; ?>" href="index.php?page=car_rental">
+    <i class="bi bi-car-front"></i>
+    <span>Car Rental</span>
+  </a>
 </li>
-      <!-- End Forms Nav -->
+
+<li class="nav-item">
+  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'cruises') ? 'active' : ''; ?>" href="index.php?page=cruises">
+<i class="bi bi-arrows-fullscreen"></i>
+    <span>Cruises</span>
+  </a>
+</li>
+
+      <li class="nav-heading">🏝️ Management</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'agents') ? 'active' : ''; ?>" href="index.php?page=agents">
+          <i class="bi bi-person-badge"></i>
+          <span>Travel Agents</span>
         </a>
-        <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="charts-chartjs.html">
-              <i class="bi bi-circle"></i><span>Chart.js</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-apexcharts.html">
-              <i class="bi bi-circle"></i><span>ApexCharts</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-echarts.html">
-              <i class="bi bi-circle"></i><span>ECharts</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Charts Nav -->
+      </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-gem"></i><span>Icons</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'commissions') ? 'active' : ''; ?>" href="index.php?page=commissions">
+          <i class="bi bi-cash-coin"></i>
+          <span>Commissions</span>
         </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="icons-bootstrap.html">
-              <i class="bi bi-circle"></i><span>Bootstrap Icons</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-remix.html">
-              <i class="bi bi-circle"></i><span>Remix Icons</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-boxicons.html">
-              <i class="bi bi-circle"></i><span>Boxicons</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Icons Nav -->
-
-      <li class="nav-heading">Pages</li>
-
-
-     
+      </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="index.php?page=london">
-          <i class="bi bi-envelope"></i>
-          <span>LONDON</span>
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'reports') ? 'active' : ''; ?>" href="#">
+          <i class="bi bi-bar-chart"></i>
+          <span>Reports</span>
         </a>
-      </li><!-- End Contact Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="index.php?page=paris">
-          <i class="bi bi-card-list"></i>
-          <span>PARIS</span>
-        </a>
-      </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="index.php?page=tokyo">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>TOKYO</span>
-        </a>
-      </li><!-- End Login Page Nav -->
-
-
+      </li>
     </ul>
+  </aside>
 
-  </aside><!-- End Sidebar-->
-
+  <!-- Main Content Area -->
   <main id="main" class="main">
-
-    <div class="pagetitle">
-      <h1>Data Tables</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item">Tables</li>
-          <li class="breadcrumb-item active">Data</li>
-        </ol>
-      </nav>
-    </div><!-- End Page Title -->
-
-    <section class="section">
-      <div class="row">
-        <div class="col-lg-12">
-
-          <div class="card">
-            <div class="card-body">
-
-              <!-- content area -->
-                  <?php
-    if (isset($_GET['page'])) {
-      $page = $_GET['page'];
-      switch ($page) {
-        case 'london':
-          include 'modules/london.php';
-          break;
-        case 'paris':
-          include 'modules/paris.php';
-          break;
-        case 'tokyo':
-          include 'modules/tokyo.php';
-          break;
-        case 'travel_bookings':
-            include 'modules/travel_bookings.php';
-            break;
-         case 'travel_booking':
-            include 'modules/travel_booking_form.php';
-            break;
-
-      }
+    <?php
+    if (!isset($_GET['page']) || $_GET['page'] == 'dashboard') {
+        include 'modules/dashboard.php';
+    } else {
+        $page = $_GET['page'];
+        $module_file = 'modules/' . $page . '.php';
+        
+        if (file_exists($module_file)) {
+            include $module_file;
+        } else {
+            echo '<div class="pagetitle">
+                    <h1>Page Not Found</h1>
+                  </div>
+                  <section class="section">
+                    <div class="alert alert-warning">Module not found. <a href="index.php">Return to Dashboard</a></div>
+                  </section>';
+        }
     }
     ?>
+  </main>
 
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-  </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
+  <!-- Clean Footer -->
   <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+      &copy; Copyright <strong><span>🌴 Paradise Travel Management System</span></strong>
     </div>
-    <div class="credits">
-      <!-- All the links in the footer should remain intact. -->
-      <!-- You can delete the links only if you purchased the pro version. -->
-      <!-- Licensing information: https://bootstrapmade.com/license/ -->
-      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </footer><!-- End Footer -->
+  </footer>
 
+  <!-- Back to Top Button -->
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.min.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+  
+  <!-- Simple JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sidebar Toggle
+      const toggleBtn = document.querySelector('.toggle-sidebar-btn');
+      const body = document.body;
+      
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (window.innerWidth >= 992) {
+          // Desktop: toggle collapse
+          body.classList.toggle('sidebar-collapsed');
+          const sidebar = document.getElementById('sidebar');
+          const main = document.getElementById('main');
+          
+          if (body.classList.contains('sidebar-collapsed')) {
+            sidebar.style.left = '-260px';
+            main.style.marginLeft = '0';
+          } else {
+            sidebar.style.left = '0';
+            main.style.marginLeft = '260px';
+          }
+        } else {
+          // Mobile: show/hide sidebar
+          body.classList.toggle('sidebar-mobile-show');
+        }
+      });
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth < 992 && 
+            body.classList.contains('sidebar-mobile-show') &&
+            !event.target.closest('#sidebar') &&
+            !event.target.closest('.toggle-sidebar-btn')) {
+          body.classList.remove('sidebar-mobile-show');
+        }
+      });
+      
+      // Close sidebar when clicking a link on mobile
+      document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 992) {
+            body.classList.remove('sidebar-mobile-show');
+          }
+        });
+      });
+      
+      // Back to Top Button
+      const backToTop = document.querySelector('.back-to-top');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          backToTop.style.display = 'flex';
+        } else {
+          backToTop.style.display = 'none';
+        }
+      });
+      
+      backToTop.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    });
 
-  <!-- Template Main JS File -->
+    function switchToCarRentalTab() {
+    const carRentalTab = document.querySelector('[data-bs-target="#car-rental-tab"]');
+    if (carRentalTab) {
+        const tab = new bootstrap.Tab(carRentalTab);
+        tab.show();
+    }
+}
+  </script>
+
+  <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
 </body>
-
 </html>
