@@ -112,22 +112,34 @@ function getHotelImage($city, $country) {
     $city_lower = strtolower($city);
     
     $hotel_images = [
-        'tokyo' => 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop',
-        'singapore' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop',
-        'london' => 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop',
-        'paris' => 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400&h=300&fit=crop',
-        'dubai' => 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop',
-        'hong kong' => 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=400&h=300&fit=crop',
-        'bali' => 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop',
-        'new york' => 'https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=400&h=300&fit=crop',
-        'bangkok' => 'https://images.unsplash.com/photo-1563492065-1a5a6e0d8a8b?w=400&h=300&fit=crop',
-        'sydney' => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-        'venice' => 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&h=300&fit=crop',
-        'mumbai' => 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=400&h=300&fit=crop',
-        'male' => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
+        'tokyo' => 'assets/img/hotels/tokyo.jpg',
+        'singapore' => 'assets/img/hotels/singapore.jpg',
+        'london' => 'assets/img/hotels/london.jpg',
+        'paris' => 'assets/img/hotels/paris.jpg',
+        'dubai' => 'assets/img/hotels/dubai.jpg',
+        'hong kong' => 'assets/img/hotels/hong-kong.jpg',
+        'bali' => 'assets/img/hotels/bali.jpg',
+        'new york' => 'assets/img/hotels/new-york.jpg',
+        'bangkok' => 'assets/img/hotels/bangkok.jpg',
+        'sydney' => 'assets/img/hotels/sydney.jpg',
+        'venice' => 'assets/img/hotels/venice.jpg',
+        'mumbai' => 'assets/img/hotels/mumbai.jpg',
+        'male' => 'assets/img/hotels/male.jpg'
     ];
     
-    return isset($hotel_images[$city_lower]) ? $hotel_images[$city_lower] : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop';
+    return isset($hotel_images[$city_lower]) ? $hotel_images[$city_lower] : 'assets/img/hotels/default-hotel.jpg';
+}
+
+function getRoomTypeImage($room_type) {
+    $room_images = [
+        'Single' => 'assets/img/hotels/single.jpg',
+        'Double' => 'assets/img/hotels/double.jpg',
+        'Suite' => 'assets/img/hotels/suite.jpg',
+        'Deluxe' => 'assets/img/hotels/deluxe.jpg',
+        'Family' => 'assets/img/hotels/family.jpg'
+    ];
+    
+    return isset($room_images[$room_type]) ? $room_images[$room_type] : 'assets/img/hotels/default-hotel.jpg';
 }
 ?>
 
@@ -390,6 +402,16 @@ function getHotelImage($city, $country) {
                                 <div class="small"><?php echo htmlspecialchars($hotel['amenities']); ?></div>
                             </div>
                             
+                            <!-- Room Type Preview -->
+                            <div class="mb-3">
+                                <small class="text-muted">Room Types Available:</small>
+                                <div class="d-flex gap-2 mt-2">
+                                    <img src="<?php echo getRoomTypeImage('Double'); ?>" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" title="Double Room">
+                                    <img src="<?php echo getRoomTypeImage('Suite'); ?>" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" title="Suite">
+                                    <img src="<?php echo getRoomTypeImage('Deluxe'); ?>" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" title="Deluxe Room">
+                                </div>
+                            </div>
+                            
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="available-badge">
                                     <?php echo $hotel['available_rooms']; ?> rooms available
@@ -416,7 +438,7 @@ function getHotelImage($city, $country) {
 
 <!-- Booking Modal -->
 <div class="modal fade" id="bookingModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Book Hotel</h5>
@@ -427,47 +449,78 @@ function getHotelImage($city, $country) {
                     <input type="hidden" name="book_hotel" value="1">
                     <input type="hidden" name="hotel_id" id="hotel_id">
                     
-                    <div class="mb-3">
-                        <h6 id="hotel_name_display"></h6>
-                        <p class="text-muted" id="hotel_location"></p>
-                        <p class="text-primary fw-bold" id="hotel_price"></p>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Guest Name *</label>
-                        <input type="text" name="guest_name" class="form-control" required>
-                    </div>
-                    
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Check-in Date *</label>
-                            <input type="date" name="check_in" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                        <!-- Hotel Info Column -->
+                        <div class="col-md-5">
+                            <div class="mb-3">
+                                <h6 id="hotel_name_display"></h6>
+                                <p class="text-muted" id="hotel_location"></p>
+                                <p class="text-primary fw-bold" id="hotel_price"></p>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Check-out Date *</label>
-                            <input type="date" name="check_out" class="form-control" required>
+                        
+                        <!-- Guest Details Column -->
+                        <div class="col-md-7">
+                            <div class="mb-3">
+                                <label class="form-label">Guest Name *</label>
+                                <input type="text" name="guest_name" class="form-control" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Check-in Date *</label>
+                                    <input type="date" name="check_in" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Check-out Date *</label>
+                                    <input type="date" name="check_out" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Number of Guests *</label>
+                                    <select name="guests" class="form-select" required>
+                                        <option value="1">1 Guest</option>
+                                        <option value="2" selected>2 Guests</option>
+                                        <option value="3">3 Guests</option>
+                                        <option value="4">4 Guests</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Room Type *</label>
+                                    <select name="room_type" class="form-select" required id="room_type_select" onchange="showRoomDetails()">
+                                        <option value="Single">Single Room</option>
+                                        <option value="Double" selected>Double Room</option>
+                                        <option value="Suite">Suite</option>
+                                        <option value="Deluxe">Deluxe Room</option>
+                                        <option value="Family">Family Room</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Number of Guests *</label>
-                            <select name="guests" class="form-select" required>
-                                <option value="1">1 Guest</option>
-                                <option value="2" selected>2 Guests</option>
-                                <option value="3">3 Guests</option>
-                                <option value="4">4 Guests</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Room Type *</label>
-                            <select name="room_type" class="form-select" required>
-                                <option value="Single">Single Room</option>
-                                <option value="Double" selected>Double Room</option>
-                                <option value="Suite">Suite</option>
-                                <option value="Deluxe">Deluxe Room</option>
-                                <option value="Family">Family Room</option>
-                            </select>
+                    <!-- Room Type Details -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card border">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Room Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img id="room_image" src="" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h6 id="room_name">Double Room</h6>
+                                            <p id="room_description" class="text-muted small"></p>
+                                            <div id="room_features"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -487,8 +540,61 @@ function bookHotel(hotelId, hotelName, city, pricePerNight) {
     document.getElementById('hotel_location').textContent = city;
     document.getElementById('hotel_price').textContent = '₱' + pricePerNight.toLocaleString() + ' per night';
     
+    // Show room details for default selection
+    showRoomDetails();
+    
     const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
     modal.show();
+}
+
+function showRoomDetails() {
+    const roomType = document.getElementById('room_type_select').value;
+    const roomImage = document.getElementById('room_image');
+    const roomName = document.getElementById('room_name');
+    const roomDescription = document.getElementById('room_description');
+    const roomFeatures = document.getElementById('room_features');
+    
+    const roomData = {
+        'Single': {
+            image: '<?php echo getRoomTypeImage('Single'); ?>',
+            name: 'Single Room',
+            description: 'Comfortable single occupancy room perfect for solo travelers. Features a single bed with modern amenities.',
+            features: ['Single bed', 'Private bathroom', 'Free WiFi', 'Air conditioning', 'Work desk']
+        },
+        'Double': {
+            image: '<?php echo getRoomTypeImage('Double'); ?>',
+            name: 'Double Room', 
+            description: 'Spacious room with double bed, ideal for couples or business travelers seeking comfort and style.',
+            features: ['Queen/King bed', 'Private bathroom', 'Free WiFi', 'Air conditioning', 'Sitting area']
+        },
+        'Suite': {
+            image: '<?php echo getRoomTypeImage('Suite'); ?>',
+            name: 'Suite',
+            description: 'Luxurious suite with separate living area, perfect for extended stays or special occasions.',
+            features: ['Separate living room', 'King bed', 'Premium bathroom', 'Mini bar', 'City views']
+        },
+        'Deluxe': {
+            image: '<?php echo getRoomTypeImage('Deluxe'); ?>',
+            name: 'Deluxe Room',
+            description: 'Premium room with enhanced amenities and elegant furnishings for a superior hotel experience.',
+            features: ['King bed', 'Premium amenities', 'Balcony', 'Luxury bathroom', 'Room service']
+        },
+        'Family': {
+            image: '<?php echo getRoomTypeImage('Family'); ?>',
+            name: 'Family Room',
+            description: 'Spacious family-friendly room with multiple beds, perfect for families traveling together.',
+            features: ['Multiple beds', 'Extra space', 'Family amenities', 'Connecting rooms available', 'Child-friendly']
+        }
+    };
+    
+    const room = roomData[roomType];
+    roomImage.src = room.image;
+    roomName.textContent = room.name;
+    roomDescription.textContent = room.description;
+    
+    roomFeatures.innerHTML = room.features.map(feature => 
+        `<span class="badge bg-light text-dark me-1 mb-1">${feature}</span>`
+    ).join('');
 }
 
 // Auto-calculate check-out date
