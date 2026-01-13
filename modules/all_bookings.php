@@ -32,7 +32,12 @@ if (isset($_GET['action'])) {
                 $conn->query("DELETE FROM flight_bookings WHERE booking_id = '$id'");
                 break;
             case 'car':
-                $conn->query("DELETE FROM car_rental_bookings WHERE booking_id = '$id'");
+                $conn->query("DELETE FROM car_rentals WHERE booking_id = '$id'");
+                break;
+            case 'cruise':
+                if ($conn->query("SHOW TABLES LIKE 'cruises'")->num_rows > 0) {
+                    $conn->query("DELETE FROM cruises WHERE booking_id = '$id'");
+                }
                 break;
         }
         
@@ -57,7 +62,12 @@ if (isset($_GET['action'])) {
                 $conn->query("UPDATE flight_bookings SET status = '$status' WHERE booking_id = '$id'");
                 break;
             case 'car':
-                $conn->query("UPDATE car_rental_bookings SET status = '$status' WHERE booking_id = '$id'");
+                $conn->query("UPDATE car_rentals SET status = '$status' WHERE booking_id = '$id'");
+                break;
+            case 'cruise':
+                if ($conn->query("SHOW TABLES LIKE 'cruises'")->num_rows > 0) {
+                    $conn->query("UPDATE cruises SET status = '$status' WHERE booking_id = '$id'");
+                }
                 break;
         }
         
@@ -138,17 +148,41 @@ while($row = $result->fetch_assoc()) {
 }
 
 // Car Rental Bookings (get all for main table, and recent for sidebar)
-$result = $conn->query("
-    SELECT 'car' as type, booking_id as id, customer_name, 'Car Rental' as booking_type, 
-           CONCAT('Car: ', car_model, ' (', car_type, ')') as details, 
-           COALESCE(total_amount, 0) as amount, 
-           COALESCE(agent_commission, 0) as commission,
-           status, booking_date, car_model, car_type
-    FROM car_rental_bookings 
-    ORDER BY booking_date DESC
-");
-while($row = $result->fetch_assoc()) {
-    $all_bookings[] = $row;
+$car_table_exists = $conn->query("SHOW TABLES LIKE 'car_rentals'");
+if ($car_table_exists && $car_table_exists->num_rows > 0) {
+    $result = $conn->query("
+        SELECT 'car' as type, booking_id as id, customer_name, 'Car Rental' as booking_type, 
+               CONCAT('Car: ', car_model, ' (', car_type, ')') as details, 
+               COALESCE(total_amount, 0) as amount, 
+               COALESCE(agent_commission, 0) as commission,
+               status, created_at as booking_date, car_model, car_type
+        FROM car_rentals 
+        ORDER BY created_at DESC
+    ");
+    if ($result) {
+        while($row = $result->fetch_assoc()) {
+            $all_bookings[] = $row;
+        }
+    }
+}
+
+// Cruise Bookings (from cruises table)
+$cruise_table_exists = $conn->query("SHOW TABLES LIKE 'cruises'");
+if ($cruise_table_exists && $cruise_table_exists->num_rows > 0) {
+    $result = $conn->query("
+        SELECT 'cruise' as type, booking_id as id, guest_name as customer_name, 'Cruise' as booking_type, 
+               CONCAT('Cruise: ', ship_name, ' (', cabin_type, ')') as details, 
+               COALESCE(total_amount, 0) as amount, 
+               COALESCE(agent_commission, 0) as commission,
+               status, created_at as booking_date
+        FROM cruises 
+        ORDER BY created_at DESC
+    ");
+    if ($result) {
+        while($row = $result->fetch_assoc()) {
+            $all_bookings[] = $row;
+        }
+    }
 }
 
 usort($all_bookings, function($a, $b) {
@@ -165,9 +199,9 @@ $recent_tours = $conn->query("
 
 // Get RECENT Car Rentals (last 5)
 $recent_cars = $conn->query("
-    SELECT booking_id, customer_name, car_model, car_type, pickup_date, return_date, status 
-    FROM car_rental_bookings 
-    ORDER BY booking_date DESC 
+    SELECT booking_id, customer_name, car_model, car_type, pickup_date, dropoff_date as return_date, status 
+    FROM car_rentals 
+    ORDER BY created_at DESC 
     LIMIT 5
 ");
 
@@ -298,38 +332,29 @@ $conn->close();
   
     <div class="col-lg-8">
       <div class="row mb-4">
-        <div class="col-md-3">
-          <div class="card stat-card bg-primary text-white">
+        <div class="col-md-4">
+          <div class="card stat-card">
             <div class="card-body text-center py-4">
-              <h2 class="display-6 fw-bold"><?php echo $total_bookings; ?></h2>
-              <p class="mb-0">Total Bookings</p>
+              <h2 class="display-6 fw-bold text-muted"><?php echo $total_bookings; ?></h2>
+              <p class="mb-0 text-muted">Total Bookings</p>
             </div>
           </div>
         </div>
         
-        <div class="col-md-3">
-          <div class="card stat-card bg-success text-white">
+        <div class="col-md-4">
+          <div class="card stat-card">
             <div class="card-body text-center py-4">
-              <h2 class="display-6 fw-bold">₱<?php echo number_format($total_revenue, 2); ?></h2>
-              <p class="mb-0">Total Revenue</p>
+              <h2 class="display-6 fw-bold text-muted">₱<?php echo number_format($total_commission, 2); ?></h2>
+              <p class="mb-0 text-muted">Total Commission</p>
             </div>
           </div>
         </div>
         
-        <div class="col-md-3">
-          <div class="card stat-card bg-warning text-dark">
+        <div class="col-md-4">
+          <div class="card stat-card">
             <div class="card-body text-center py-4">
-              <h2 class="display-6 fw-bold">₱<?php echo number_format($total_commission, 2); ?></h2>
-              <p class="mb-0">Total Commission</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-3">
-          <div class="card stat-card bg-info text-white">
-            <div class="card-body text-center py-4">
-              <h2 class="display-6 fw-bold"><?php echo $active_bookings; ?></h2>
-              <p class="mb-0">Active</p>
+              <h2 class="display-6 fw-bold text-muted"><?php echo $active_bookings; ?></h2>
+              <p class="mb-0 text-muted">Active Bookings</p>
             </div>
           </div>
         </div>
@@ -445,6 +470,10 @@ $conn->close();
                     case 'Car Rental': 
                       $type_badge = 'dark'; 
                       $type_icon = 'bi-car-front';
+                      break;
+                    case 'Cruise': 
+                      $type_badge = 'secondary'; 
+                      $type_icon = 'bi-water';
                       break;
                   }
                   
@@ -636,6 +665,9 @@ function showStatusModal(type, id, bookingType, customerName) {
         case 'Car Rental':
             statusList = ['Pending', 'Confirmed', 'Active', 'Returned', 'Cancelled'];
             break;
+        case 'Cruise':
+            statusList = ['Pending', 'Confirmed', 'Boarded', 'Sailing', 'Completed', 'Cancelled'];
+            break;
     }
     
     // Add status options to modal
@@ -725,11 +757,12 @@ function viewBooking(type, id) {
 
 <style>
 .stat-card {
-  border: none;
+  border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   margin-bottom: 20px;
   transition: transform 0.3s;
+  background: white;
 }
 
 .stat-card:hover {
@@ -739,11 +772,6 @@ function viewBooking(type, id) {
 .stat-card .card-body {
   padding: 20px;
 }
-
-.stat-card.bg-primary { background: linear-gradient(135deg, #007bff, #0056b3); }
-.stat-card.bg-success { background: linear-gradient(135deg, #28a745, #1e7e34); }
-.stat-card.bg-warning { background: linear-gradient(135deg, #ffc107, #e0a800); }
-.stat-card.bg-info { background: linear-gradient(135deg, #17a2b8, #138496); }
 
 .card h5.card-title {
   font-size: 1.1rem;

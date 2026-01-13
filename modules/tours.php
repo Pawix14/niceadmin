@@ -1,5 +1,5 @@
 <?php
-// modules/tours.php
+// modules/tours.php - Improved version
 
 $host = 'localhost';
 $user = 'root';
@@ -12,962 +12,371 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to get tour image
-function getTourImage($city, $country, $tour_type = '') {
-    $city_lower = strtolower($city);
-    $country_lower = strtolower($country);
-    
-    // Map specific cities to images
-    $city_images = [
-        'tokyo' => 'tokyo-japan-tour.jpg',
-        'london' => 'london-uk-tour.jpg',
-        'manila' => 'manila-tour.jpg',
-        'bangkok' => 'bangkok-tour.jpg',
-        'singapore' => 'singapore-tour.jpg',
-        'bali' => 'bali-tour.jpg',
-        'paris' => 'paris-tour.jpg',
-        'new york' => 'newyork-tour.jpg',
-        'rome' => 'rome-tour.jpg',
-        'sydney' => 'sydney-tour.jpg',
-        'dubai' => 'dubai-tour.jpg',
-        'hong kong' => 'hongkong-tour.jpg',
-    ];
-    
-    // Map countries to images
-    $country_images = [
-        'japan' => 'japan-tour.jpg',
-        'united kingdom' => 'uk-tour.jpg',
-        'philippines' => 'philippines-tour.jpg',
-        'thailand' => 'thailand-tour.jpg',
-        'malaysia' => 'malaysia-tour.jpg',
-        'vietnam' => 'vietnam-tour.jpg',
-        'indonesia' => 'indonesia-tour.jpg',
-    ];
-    
-    // Check by city first
-    foreach ($city_images as $city_key => $image) {
-        if (strpos($city_lower, $city_key) !== false) {
-            $image_name = $image;
-            break;
-        }
-    }
-    
-    // If no city match, check by country
-    if (!isset($image_name)) {
-        foreach ($country_images as $country_key => $image) {
-            if (strpos($country_lower, $country_key) !== false) {
-                $image_name = $image;
-                break;
-            }
-        }
-    }
-    
-    // If still no match, use tour type based images
-    if (!isset($image_name)) {
-        $tour_type_images = [
-            'adventure' => 'adventure-tour.jpg',
-            'cultural' => 'cultural-tour.jpg',
-            'beach' => 'beach-tour.jpg',
-            'mountain' => 'mountain-tour.jpg',
-            'food' => 'food-tour.jpg',
-            'historical' => 'historical-tour.jpg',
-        ];
-        
-        $tour_type_lower = strtolower($tour_type);
-        foreach ($tour_type_images as $type_key => $image) {
-            if (strpos($tour_type_lower, $type_key) !== false) {
-                $image_name = $image;
-                break;
-            }
-        }
-    }
-    
-    // Final fallback
-    if (!isset($image_name)) {
-        $default_images = ['tour-1.jpg', 'tour-2.jpg', 'tour-3.jpg', 'tour-4.jpg', 'tour-5.jpg'];
-        $image_name = $default_images[array_rand($default_images)];
-    }
-    
-    $image_path = 'assets/img/tours/' . $image_name;
-    $full_path = $_SERVER['DOCUMENT_ROOT'] . '/niceadmin/' . $image_path;
-    
-    return file_exists($full_path) ? $image_path : false;
-}
-
-// Function to get country image
-function getCountryImage($country_name) {
-    $country_lower = strtolower($country_name);
-    
-    $country_images = [
-        'philippines' => 'philippines.jpg',
-        'japan' => 'japan.jpg',
-        'thailand' => 'thailand.jpg',
-        'singapore' => 'singapore.jpg',
-        'malaysia' => 'malaysia.jpg',
-        'vietnam' => 'vietnam.jpg',
-        'indonesia' => 'indonesia.jpg',
-        'united kingdom' => 'uk.jpg',
-        'united states' => 'usa.jpg',
-        'australia' => 'australia.jpg',
-        'france' => 'france.jpg',
-        'italy' => 'italy.jpg',
-    ];
-    
-    foreach ($country_images as $country_key => $image) {
-        if (strpos($country_lower, $country_key) !== false) {
-            $image_name = $image;
-            break;
-        }
-    }
-    
-    if (!isset($image_name)) {
-        $image_name = 'default-country.jpg';
-    }
-    
-    $image_path = 'assets/img/countries/' . $image_name;
-    $full_path = $_SERVER['DOCUMENT_ROOT'] . '/niceadmin/' . $image_path;
-    
-    return file_exists($full_path) ? $image_path : false;
-}
-
-// Handle form submission - Create new tour in tour_activities table
 $message = '';
 $message_type = '';
-$selected_tour_id = isset($_GET['select_tour']) ? $_GET['select_tour'] : null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['create_tour'])) {
-        $tour_name = $conn->real_escape_string($_POST['tour_name']);
-        $country = $conn->real_escape_string($_POST['country']);
-        $city = $conn->real_escape_string($_POST['city']);
-        $tour_type = $conn->real_escape_string($_POST['tour_type']);
-        $duration_days = (int)$_POST['duration_days'];
-        $duration_nights = (int)$_POST['duration_nights'];
-        $duration_hours = (int)$_POST['duration_hours'];
-        $max_participants = (int)$_POST['max_participants'];
-        $available_slots = (int)$_POST['available_slots'];
-        $price_per_person = (float)$_POST['price_per_person'];
-        $tour_date = $conn->real_escape_string($_POST['tour_date']);
-        $status = $conn->real_escape_string($_POST['status']);
-        $description = $conn->real_escape_string($_POST['description']);
-        $highlights = $conn->real_escape_string($_POST['highlights']);
-        $included = $conn->real_escape_string($_POST['included']);
-        
-        // Generate tour ID
-        $tour_id = 'TOUR-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
-        
-        $sql = "INSERT INTO tour_activities (tour_id, tour_name, country, city, tour_type, duration_days, duration_nights, duration_hours, max_participants, available_slots, price_per_person, tour_date, status, description, highlights, included) 
-                VALUES ('$tour_id', '$tour_name', '$country', '$city', '$tour_type', $duration_days, $duration_nights, $duration_hours, $max_participants, $available_slots, $price_per_person, '$tour_date', '$status', '$description', '$highlights', '$included')";
-        
-        if ($conn->query($sql)) {
-            $message = "✅ Tour created successfully! Tour ID: <strong>$tour_id</strong>";
-            $message_type = "success";
-        } else {
-            $message = "❌ Error creating tour: " . $conn->error;
-            $message_type = "error";
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_tour'])) {
+    $tour_name = $conn->real_escape_string($_POST['tour_name']);
+    $country = $conn->real_escape_string($_POST['country']);
+    $city = $conn->real_escape_string($_POST['city']);
+    $tour_type = $conn->real_escape_string($_POST['tour_type']);
+    $duration_days = (int)$_POST['duration_days'];
+    $duration_nights = (int)$_POST['duration_nights'];
+    $max_participants = (int)$_POST['max_participants'];
+    $available_slots = (int)$_POST['available_slots'];
+    $price_per_person = (float)$_POST['price_per_person'];
+    $tour_date = $conn->real_escape_string($_POST['tour_date']);
+    $highlights = $conn->real_escape_string($_POST['highlights']);
+    $included = $conn->real_escape_string($_POST['included']);
+    
+    $tour_id = 'TOUR-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+    
+    $sql = "INSERT INTO tour_activities (tour_id, tour_name, country, city, tour_type, duration_days, duration_nights, max_participants, available_slots, price_per_person, tour_date, status, highlights, included) 
+            VALUES ('$tour_id', '$tour_name', '$country', '$city', '$tour_type', $duration_days, $duration_nights, $max_participants, $available_slots, $price_per_person, '$tour_date', 'Available', '$highlights', '$included')";
+    
+    if ($conn->query($sql)) {
+        $message = "✅ Tour created successfully!";
+        $message_type = "success";
+    } else {
+        $message = "❌ Error creating tour: " . $conn->error;
+        $message_type = "error";
+    }
+}
+
+// Get filters
+$price_filter = isset($_GET['price']) ? $_GET['price'] : '';
+$type_filter = isset($_GET['type']) ? $_GET['type'] : '';
+$duration_filter = isset($_GET['duration']) ? $_GET['duration'] : '';
+$country_filter = isset($_GET['country']) ? $_GET['country'] : '';
+
+// Build query with filters
+$where_conditions = ["(status = 'Available' OR status = 'Active')", "available_slots > 0"];
+
+if ($price_filter) {
+    switch($price_filter) {
+        case 'budget': $where_conditions[] = "price_per_person <= 2000"; break;
+        case 'mid': $where_conditions[] = "price_per_person BETWEEN 2001 AND 5000"; break;
+        case 'luxury': $where_conditions[] = "price_per_person > 5000"; break;
+    }
+}
+
+if ($type_filter) {
+    $where_conditions[] = "tour_type = '$type_filter'";
+}
+
+if ($duration_filter) {
+    switch($duration_filter) {
+        case 'day': $where_conditions[] = "duration_days = 1"; break;
+        case 'weekend': $where_conditions[] = "duration_days BETWEEN 2 AND 3"; break;
+        case 'week': $where_conditions[] = "duration_days >= 4"; break;
+    }
+}
+
+if ($country_filter) {
+    $where_conditions[] = "country LIKE '%$country_filter%'";
+}
+
+$where_clause = implode(' AND ', $where_conditions);
+$tours_result = $conn->query("SELECT * FROM tour_activities WHERE $where_clause ORDER BY tour_date ASC");
+
+// Get countries from database
+$countries_result = $conn->query("SELECT DISTINCT country FROM tour_activities ORDER BY country");
+
+// Add sample tours if none exist
+$check_tours = $conn->query("SELECT COUNT(*) as count FROM tour_activities");
+if ($check_tours && $check_tours->fetch_assoc()['count'] < 30) {
+    // Clear existing tours first
+    $conn->query("DELETE FROM tour_activities");
+    
+    // Insert comprehensive tour list
+    $conn->query("INSERT INTO tour_activities (tour_id, tour_name, country, city, tour_type, duration_days, duration_nights, max_participants, available_slots, price_per_person, tour_date, status, highlights, included) VALUES 
+    -- Adventure Tours
+    ('TOUR-ADV-001', 'Tokyo Adventure Quest', 'Japan', 'Tokyo', 'Adventure', 3, 2, 8, 8, 6500.00, '2024-12-18', 'Available', 'Shibuya crossing, robot restaurant, Mount Fuji day trip', 'Accommodation, breakfast, guide'),
+    ('TOUR-ADV-002', 'Nepal Himalaya Trek', 'Nepal', 'Kathmandu', 'Adventure', 7, 6, 6, 6, 12000.00, '2024-12-25', 'Available', 'Everest base camp, mountain climbing, sherpa guides', 'Equipment, meals, guide'),
+    ('TOUR-ADV-003', 'New Zealand Bungee Jump', 'New Zealand', 'Queenstown', 'Adventure', 4, 3, 10, 10, 8500.00, '2025-01-05', 'Available', 'Bungee jumping, skydiving, white water rafting', 'Accommodation, activities, safety gear'),
+    ('TOUR-ADV-004', 'Amazon Jungle Expedition', 'Brazil', 'Manaus', 'Adventure', 5, 4, 8, 8, 9500.00, '2025-01-12', 'Available', 'Jungle trekking, wildlife spotting, river adventures', 'Accommodation, meals, guide'),
+    -- Cultural Tours
+    ('TOUR-CUL-001', 'Cultural Heritage India', 'India', 'Delhi', 'Cultural', 7, 6, 10, 10, 9500.00, '2025-01-10', 'Available', 'Taj Mahal, Red Fort, traditional dance shows', 'Accommodation, meals, guide'),
+    ('TOUR-CUL-002', 'Ancient Egypt Discovery', 'Egypt', 'Cairo', 'Cultural', 6, 5, 12, 12, 11000.00, '2024-12-20', 'Available', 'Pyramids, Sphinx, Nile cruise, museums', 'Accommodation, meals, entry tickets'),
+    ('TOUR-CUL-003', 'Moroccan Heritage Tour', 'Morocco', 'Marrakech', 'Cultural', 5, 4, 8, 8, 7500.00, '2024-12-28', 'Available', 'Medina tours, traditional crafts, desert camp', 'Accommodation, meals, activities'),
+    ('TOUR-CUL-004', 'Chinese Culture Immersion', 'China', 'Beijing', 'Cultural', 8, 7, 15, 15, 8500.00, '2025-01-15', 'Available', 'Great Wall, Forbidden City, tea ceremony', 'Accommodation, meals, guide'),
+    -- Food Tours
+    ('TOUR-FOO-001', 'Food Tour Bangkok', 'Thailand', 'Bangkok', 'Food', 2, 1, 10, 10, 4500.00, '2025-01-20', 'Available', 'Street food markets, cooking classes, temple visits', 'Accommodation, meals, guide'),
+    ('TOUR-FOO-002', 'Italian Culinary Journey', 'Italy', 'Rome', 'Food', 4, 3, 8, 8, 9500.00, '2024-12-22', 'Available', 'Pasta making, wine tasting, local markets', 'Accommodation, meals, cooking classes'),
+    ('TOUR-FOO-003', 'French Gastronomy Tour', 'France', 'Lyon', 'Food', 3, 2, 6, 6, 12000.00, '2025-01-08', 'Available', 'Michelin restaurants, cheese tasting, bakery visits', 'Accommodation, meals, tastings'),
+    ('TOUR-FOO-004', 'Japanese Sushi Experience', 'Japan', 'Osaka', 'Food', 2, 1, 8, 8, 7500.00, '2024-12-30', 'Available', 'Sushi making, sake tasting, fish market tour', 'Accommodation, meals, classes'),
+    -- Nature Tours
+    ('TOUR-NAT-001', 'Amazon Rainforest', 'Peru', 'Iquitos', 'Nature', 6, 5, 8, 8, 10500.00, '2025-01-18', 'Available', 'Wildlife observation, canopy walks, river cruises', 'Accommodation, meals, guide'),
+    ('TOUR-NAT-002', 'African Safari', 'Tanzania', 'Serengeti', 'Nature', 7, 6, 6, 6, 15000.00, '2024-12-26', 'Available', 'Big Five game drives, Maasai village visit', 'Accommodation, meals, safari vehicle'),
+    ('TOUR-NAT-003', 'Costa Rica Eco Adventure', 'Costa Rica', 'San Jose', 'Nature', 5, 4, 10, 10, 8500.00, '2025-01-12', 'Available', 'Rainforest hikes, volcano tours, wildlife spotting', 'Accommodation, meals, activities'),
+    ('TOUR-NAT-004', 'Norwegian Fjords', 'Norway', 'Bergen', 'Nature', 4, 3, 12, 12, 11500.00, '2025-01-25', 'Available', 'Fjord cruises, northern lights, glacier walks', 'Accommodation, meals, cruise'),
+    -- Historical Tours
+    ('TOUR-HIS-001', 'London Historical Walk', 'United Kingdom', 'London', 'Historical', 1, 0, 15, 15, 3500.00, '2024-12-22', 'Available', 'Tower of London, Westminster Abbey, British Museum', 'Entry tickets, guide, lunch'),
+    ('TOUR-HIS-002', 'Ancient Rome Discovery', 'Italy', 'Rome', 'Historical', 3, 2, 12, 12, 6500.00, '2024-12-28', 'Available', 'Colosseum, Roman Forum, Vatican City', 'Accommodation, entry tickets, guide'),
+    ('TOUR-HIS-003', 'Greek Mythology Tour', 'Greece', 'Athens', 'Historical', 4, 3, 10, 10, 7500.00, '2025-01-05', 'Available', 'Acropolis, Parthenon, ancient Agora', 'Accommodation, meals, guide'),
+    ('TOUR-HIS-004', 'Medieval Castles Tour', 'Germany', 'Munich', 'Historical', 5, 4, 8, 8, 8500.00, '2025-01-15', 'Available', 'Neuschwanstein Castle, medieval towns', 'Accommodation, meals, transportation'),
+    -- Beach Tours
+    ('TOUR-BEA-001', 'Bali Beach Paradise', 'Indonesia', 'Bali', 'Beach', 4, 3, 6, 6, 7500.00, '2024-12-25', 'Available', 'Surfing lessons, beach hopping, temple visits', 'Accommodation, meals, activities'),
+    ('TOUR-BEA-002', 'Maldives Island Hopping', 'Maldives', 'Male', 'Beach', 5, 4, 4, 4, 18000.00, '2025-01-10', 'Available', 'Private beaches, snorkeling, water sports', 'Accommodation, meals, activities'),
+    ('TOUR-BEA-003', 'Caribbean Paradise', 'Barbados', 'Bridgetown', 'Beach', 6, 5, 8, 8, 12000.00, '2024-12-30', 'Available', 'Beach relaxation, diving, island tours', 'Accommodation, meals, activities'),
+    ('TOUR-BEA-004', 'Hawaiian Island Adventure', 'USA', 'Honolulu', 'Beach', 7, 6, 10, 10, 14000.00, '2025-01-20', 'Available', 'Volcano tours, beach activities, luau dinner', 'Accommodation, meals, activities'),
+    -- City Tours
+    ('TOUR-CIT-001', 'New York City Explorer', 'USA', 'New York', 'City', 3, 2, 15, 15, 8500.00, '2024-12-20', 'Available', 'Times Square, Central Park, Broadway shows', 'Accommodation, tickets, guide'),
+    ('TOUR-CIT-002', 'Paris City of Lights', 'France', 'Paris', 'City', 4, 3, 12, 12, 9500.00, '2024-12-28', 'Available', 'Eiffel Tower, Louvre, Seine cruise', 'Accommodation, meals, guide'),
+    ('TOUR-CIT-003', 'Dubai Modern Marvels', 'UAE', 'Dubai', 'City', 3, 2, 10, 10, 11000.00, '2025-01-08', 'Available', 'Burj Khalifa, desert safari, shopping malls', 'Accommodation, meals, activities'),
+    ('TOUR-CIT-004', 'Singapore Urban Discovery', 'Singapore', 'Singapore', 'City', 2, 1, 12, 12, 6500.00, '2025-01-15', 'Available', 'Marina Bay, Gardens by the Bay, Chinatown', 'Accommodation, meals, guide'),
+    -- Wildlife Tours
+    ('TOUR-WIL-001', 'Wildlife Safari Kenya', 'Kenya', 'Nairobi', 'Wildlife', 6, 5, 8, 8, 18000.00, '2025-01-15', 'Available', 'Masai Mara game drives, Big Five spotting', 'Accommodation, meals, safari vehicle'),
+    ('TOUR-WIL-002', 'Galapagos Wildlife Tour', 'Ecuador', 'Quito', 'Wildlife', 8, 7, 6, 6, 22000.00, '2025-01-22', 'Available', 'Unique species, snorkeling, nature walks', 'Accommodation, meals, guide'),
+    ('TOUR-WIL-003', 'Borneo Orangutan Safari', 'Malaysia', 'Kota Kinabalu', 'Wildlife', 5, 4, 8, 8, 12000.00, '2024-12-28', 'Available', 'Orangutan sanctuary, jungle trekking', 'Accommodation, meals, guide'),
+    ('TOUR-WIL-004', 'Antarctic Wildlife Expedition', 'Antarctica', 'Ushuaia', 'Wildlife', 10, 9, 12, 12, 35000.00, '2025-02-01', 'Available', 'Penguins, whales, ice formations', 'Accommodation, meals, expedition'),
+    -- Sightseeing Tours
+    ('TOUR-SIG-001', 'Grand Canyon Spectacular', 'USA', 'Las Vegas', 'Sightseeing', 2, 1, 20, 20, 5500.00, '2024-12-25', 'Available', 'Helicopter tours, sunset viewing, hiking trails', 'Accommodation, transportation, guide'),
+    ('TOUR-SIG-002', 'Swiss Alps Panorama', 'Switzerland', 'Zurich', 'Sightseeing', 4, 3, 15, 15, 12000.00, '2025-01-10', 'Available', 'Mountain railways, scenic views, cable cars', 'Accommodation, transportation, guide'),
+    ('TOUR-SIG-003', 'Niagara Falls Wonder', 'Canada', 'Toronto', 'Sightseeing', 2, 1, 25, 25, 4500.00, '2024-12-30', 'Available', 'Waterfall views, boat rides, observation decks', 'Accommodation, activities, guide'),
+    ('TOUR-SIG-004', 'Northern Lights Iceland', 'Iceland', 'Reykjavik', 'Sightseeing', 3, 2, 12, 12, 9500.00, '2025-01-18', 'Available', 'Aurora viewing, hot springs, glacier tours', 'Accommodation, transportation, guide'),
+    -- Romantic Tours
+    ('TOUR-ROM-001', 'Romantic Paris Evening', 'France', 'Paris', 'Romantic', 1, 0, 2, 2, 8500.00, '2024-12-15', 'Available', 'Candlelit dinner cruise on Seine River, Eiffel Tower visit', 'Dinner, transportation, guide'),
+    ('TOUR-ROM-002', 'Romantic Santorini Sunset', 'Greece', 'Santorini', 'Romantic', 2, 1, 2, 2, 12000.00, '2024-12-20', 'Available', 'Private sunset viewing, wine tasting, couples spa', 'Accommodation, meals, spa'),
+    ('TOUR-ROM-003', 'Venice Gondola Romance', 'Italy', 'Venice', 'Romantic', 2, 1, 2, 2, 9500.00, '2024-12-28', 'Available', 'Gondola rides, romantic dinners, St. Marks Square', 'Accommodation, meals, activities'),
+    ('TOUR-ROM-004', 'Bali Romantic Retreat', 'Indonesia', 'Ubud', 'Romantic', 3, 2, 2, 2, 11000.00, '2025-01-05', 'Available', 'Couples massage, private villa, sunset dinner', 'Accommodation, meals, spa'),
+    -- Family Tours
+    ('TOUR-FAM-001', 'Family Fun Singapore', 'Singapore', 'Singapore', 'Family', 3, 2, 12, 12, 5500.00, '2024-12-28', 'Available', 'Universal Studios, Night Safari, Gardens by the Bay', 'Accommodation, tickets, meals'),
+    ('TOUR-FAM-002', 'Disney World Orlando', 'USA', 'Orlando', 'Family', 5, 4, 15, 15, 12000.00, '2025-01-08', 'Available', 'Theme parks, character meets, water parks', 'Accommodation, tickets, meals'),
+    ('TOUR-FAM-003', 'London Family Adventure', 'United Kingdom', 'London', 'Family', 4, 3, 10, 10, 8500.00, '2024-12-22', 'Available', 'Harry Potter studios, London Eye, museums', 'Accommodation, tickets, guide'),
+    ('TOUR-FAM-004', 'Tokyo Family Discovery', 'Japan', 'Tokyo', 'Family', 4, 3, 8, 8, 9500.00, '2025-01-12', 'Available', 'Disneyland, robot shows, anime districts', 'Accommodation, tickets, guide'),
+    -- Photography Tours
+    ('TOUR-PHO-001', 'Photography Tour Iceland', 'Iceland', 'Reykjavik', 'Photography', 5, 4, 8, 8, 15000.00, '2025-01-05', 'Available', 'Northern Lights, waterfalls, glaciers, volcanic landscapes', 'Accommodation, equipment, guide'),
+    ('TOUR-PHO-002', 'African Photo Safari', 'South Africa', 'Cape Town', 'Photography', 7, 6, 6, 6, 18000.00, '2025-01-20', 'Available', 'Wildlife photography, landscape shots, sunset captures', 'Accommodation, equipment, guide'),
+    ('TOUR-PHO-003', 'Cherry Blossom Japan', 'Japan', 'Kyoto', 'Photography', 4, 3, 10, 10, 11000.00, '2025-03-15', 'Available', 'Sakura photography, temple shots, traditional gardens', 'Accommodation, equipment, guide'),
+    ('TOUR-PHO-004', 'Patagonia Landscape Photo', 'Argentina', 'Buenos Aires', 'Photography', 8, 7, 8, 8, 16000.00, '2025-02-10', 'Available', 'Mountain photography, glacier shots, wildlife captures', 'Accommodation, equipment, guide')");
+}
+
+// Function to get tour image from local assets
+function getTourImage($city, $country, $tour_type, $tour_id) {
+    $city_lower = strtolower($city);
+    $country_lower = strtolower($country);
+    $type_lower = strtolower($tour_type);
+    
+    // Check for specific city images first
+    $possible_images = [
+        $city_lower . '.jpg',
+        $country_lower . '.jpg',
+        $type_lower . '.jpg'
+    ];
+    
+    foreach ($possible_images as $image) {
+        $image_path = 'assets/img/tours/' . $image;
+        if (file_exists($image_path)) {
+            return $image_path;
         }
     }
-}
-
-// Handle tour selection
-if ($selected_tour_id) {
-    $selected_tour_sql = "SELECT * FROM tour_activities WHERE tour_id = '$selected_tour_id'";
-    $selected_tour_result = $conn->query($selected_tour_sql);
-    if ($selected_tour_result && $selected_tour_result->num_rows > 0) {
-        $selected_tour = $selected_tour_result->fetch_assoc();
+    
+    // Fallback to any available image
+    $tour_images = glob('assets/img/tours/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+    if (!empty($tour_images)) {
+        return $tour_images[0];
     }
+    
+    return 'assets/img/tours/default-tour.jpg';
 }
-
-// Fetch countries for dropdown
-$countries_result = $conn->query("SELECT country_name FROM countries ORDER BY country_name");
-
-// Fetch available tours for display
-$tours_result = $conn->query("SELECT * FROM tour_activities WHERE (status = 'Available' OR status = 'Active') AND available_slots > 0 ORDER BY tour_date ASC");
-
-// Fetch all tours for management
-$all_tours_result = $conn->query("SELECT * FROM tour_activities ORDER BY tour_date DESC");
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tours Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .tour-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            height: 100%;
-            cursor: pointer;
-        }
+<style>
+    .tour-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s;
+        height: 100%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .tour-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .tour-image {
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    .price-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: bold;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .filter-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+</style>
 
-        .tour-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .tour-card.selected {
-            border: 3px solid #ff6b35;
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
-        }
-
-        .tour-image {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .tour-card:hover .tour-image {
-            transform: scale(1.05);
-        }
-
-        .tour-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 2;
-        }
-
-        .tour-price {
-            color: #ff6b35;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .tour-duration {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .tour-location {
-            color: #333;
-            font-weight: 500;
-        }
-
-        .country-card {
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-            height: 180px;
-        }
-
-        .country-card:hover {
-            transform: scale(1.03);
-        }
-
-        .country-image {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .country-card:hover .country-image {
-            transform: scale(1.1);
-        }
-
-        .country-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: white;
-            padding: 20px 15px 10px;
-            font-weight: bold;
-            z-index: 1;
-        }
-
-        .tour-tabs {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tour-tab {
-            background: none;
-            border: none;
-            padding: 10px 20px;
-            font-weight: 500;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-        }
-
-        .tour-tab.active {
-            color: #ff6b35;
-            border-bottom: 3px solid #ff6b35;
-        }
-
-        .tour-tab:hover {
-            color: #ff6b35;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .selected-tour-sidebar {
-            position: sticky;
-            top: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid #ff6b35;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .selection-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff6b35;
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            z-index: 2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .image-placeholder {
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 14px;
-        }
-
-        .tour-image-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .price-badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(255, 107, 53, 0.9);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 12px;
-            z-index: 2;
-        }
-    </style>
-</head>
-<body>
 <div class="container-fluid py-4">
-    <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="display-5 fw-bold">🌏 Tour Activities</h1>
-            <p class="text-muted">Discover amazing tours and create unforgettable experiences</p>
+            <h1 class="display-5 fw-bold">🌍 Discover Amazing Tours</h1>
+            <p class="text-muted">Find your perfect adventure from our curated collection</p>
         </div>
     </div>
 
     <?php if ($message): ?>
-    <div class="alert alert-<?php echo $message_type === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert">
+    <div class="alert alert-<?php echo $message_type === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show">
         <?php echo $message; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <?php endif; ?>
 
-    <!-- Selected Tour Sidebar (if any) -->
-    <?php if (isset($selected_tour)): ?>
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="selected-tour-sidebar">
-                <div class="row">
-                    <div class="col-md-2">
-                        <?php $selected_tour_image = getTourImage($selected_tour['city'], $selected_tour['country'], $selected_tour['tour_type']); ?>
-                        <?php if ($selected_tour_image): ?>
-                            <img src="<?php echo $selected_tour_image; ?>" class="img-fluid rounded" style="height: 120px; width: 100%; object-fit: cover;" alt="<?php echo htmlspecialchars($selected_tour['tour_name']); ?>">
-                        <?php else: ?>
-                            <div class="image-placeholder rounded" style="height: 120px; width: 100%;">
-                                <?php echo substr($selected_tour['city'], 0, 10); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5><i class="bi bi-check-circle-fill text-success"></i> Selected Tour</h5>
-                                <h4 class="fw-bold"><?php echo htmlspecialchars($selected_tour['tour_name']); ?></h4>
-                                <p class="text-muted mb-2">
-                                    <i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($selected_tour['city']); ?>, <?php echo htmlspecialchars($selected_tour['country']); ?>
-                                </p>
-                                <p class="mb-0">
-                                    <span class="badge bg-info"><?php echo htmlspecialchars($selected_tour['tour_type']); ?></span>
-                                    <span class="badge bg-primary"><?php echo date('M d, Y', strtotime($selected_tour['tour_date'])); ?></span>
-                                    <span class="badge bg-success">₱<?php echo number_format($selected_tour['price_per_person'], 2); ?> per person</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2 text-end">
-                        <a href="?page=tours" class="btn btn-outline-secondary btn-sm mb-2">Change Selection</a>
-                        <button class="btn btn-primary btn-lg" onclick="proceedToBooking('<?php echo $selected_tour['tour_id']; ?>')">
-                            <i class="bi bi-calendar-check"></i> Book Now
-                        </button>
-                    </div>
+    <!-- Advanced Filters -->
+    <div class="filter-card">
+        <h5 class="mb-3">🔍 Find Your Perfect Tour</h5>
+        <form method="GET" action="">
+            <input type="hidden" name="page" value="tours">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Price Range</label>
+                    <select name="price" class="form-select">
+                        <option value="">Any Price</option>
+                        <option value="budget" <?php echo $price_filter == 'budget' ? 'selected' : ''; ?>>Budget (≤₱2,000)</option>
+                        <option value="mid" <?php echo $price_filter == 'mid' ? 'selected' : ''; ?>>Mid-range (₱2,001-5,000)</option>
+                        <option value="luxury" <?php echo $price_filter == 'luxury' ? 'selected' : ''; ?>>Luxury (>₱5,000)</option>
+                    </select>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong><i class="bi bi-clock"></i> Duration:</strong> <?php echo $selected_tour['duration_days']; ?> days, <?php echo $selected_tour['duration_nights']; ?> nights</p>
-                        <p><strong><i class="bi bi-people"></i> Available Slots:</strong> <?php echo $selected_tour['available_slots']; ?> / <?php echo $selected_tour['max_participants']; ?></p>
-                    </div>
-                    <div class="col-md-6">
-                        <?php if ($selected_tour['highlights']): ?>
-                            <p><strong><i class="bi bi-stars"></i> Highlights:</strong> <?php echo htmlspecialchars(substr($selected_tour['highlights'], 0, 100)); ?>...</p>
-                        <?php endif; ?>
-                    </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tour Type</label>
+                    <select name="type" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="Adventure" <?php echo $type_filter == 'Adventure' ? 'selected' : ''; ?>>🏔️ Adventure</option>
+                        <option value="Cultural" <?php echo $type_filter == 'Cultural' ? 'selected' : ''; ?>>🏛️ Cultural</option>
+                        <option value="Food" <?php echo $type_filter == 'Food' ? 'selected' : ''; ?>>🍜 Food Tour</option>
+                        <option value="Nature" <?php echo $type_filter == 'Nature' ? 'selected' : ''; ?>>🌿 Nature</option>
+                        <option value="Historical" <?php echo $type_filter == 'Historical' ? 'selected' : ''; ?>>📜 Historical</option>
+                        <option value="Beach" <?php echo $type_filter == 'Beach' ? 'selected' : ''; ?>>🏖️ Beach</option>
+                        <option value="City" <?php echo $type_filter == 'City' ? 'selected' : ''; ?>>🏙️ City Tour</option>
+                        <option value="Wildlife" <?php echo $type_filter == 'Wildlife' ? 'selected' : ''; ?>>🦁 Wildlife</option>
+                        <option value="Sightseeing" <?php echo $type_filter == 'Sightseeing' ? 'selected' : ''; ?>>👁️ Sightseeing</option>
+                        <option value="Romantic" <?php echo $type_filter == 'Romantic' ? 'selected' : ''; ?>>💕 Romantic</option>
+                        <option value="Family" <?php echo $type_filter == 'Family' ? 'selected' : ''; ?>>👨‍👩‍👧‍👦 Family</option>
+                        <option value="Photography" <?php echo $type_filter == 'Photography' ? 'selected' : ''; ?>>📸 Photography</option>
+                    </select>
                 </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Navigation Tabs -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="tour-tabs">
-                <button class="tour-tab active" onclick="showTab('browse')">Browse Tours</button>
-                <button class="tour-tab" onclick="showTab('create')">Create Tour</button>
-                <button class="tour-tab" onclick="showTab('manage')">Manage Tours</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab 1: Browse Tours -->
-    <div class="tab-content active" id="browseTab">
-        <!-- Search Bar -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control form-control-lg" id="searchTours" placeholder="Where do you want to visit? Enter destination, theme, or keyword">
-                    <button class="btn btn-primary btn-lg" onclick="searchTours()">Search</button>
+                <div class="col-md-3">
+                    <label class="form-label">Duration</label>
+                    <select name="duration" class="form-select">
+                        <option value="">Any Duration</option>
+                        <option value="day" <?php echo $duration_filter == 'day' ? 'selected' : ''; ?>>Day Trip</option>
+                        <option value="weekend" <?php echo $duration_filter == 'weekend' ? 'selected' : ''; ?>>Weekend (2-3 days)</option>
+                        <option value="week" <?php echo $duration_filter == 'week' ? 'selected' : ''; ?>>Extended (4+ days)</option>
+                    </select>
                 </div>
-            </div>
-        </div>
-
-        <!-- Customize Your Trip -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h4 class="mb-3">✨ Customize your perfect trip</h4>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h5>Travel easy & Customize freely</h5>
-                                <p class="text-muted">Design your own itinerary with our local experts</p>
-                            </div>
-                            <div class="col-md-4 text-end">
-                                <button class="btn btn-primary btn-lg">Customize my trip</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recommended Countries -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h4 class="mb-4">📍 Recommended Destinations</h4>
-                <div class="row g-4">
-                    <?php
-                    $countries = [
-                        ['name' => 'Philippines', 'code' => 'philippines'],
-                        ['name' => 'Japan', 'code' => 'japan'],
-                        ['name' => 'Thailand', 'code' => 'thailand'],
-                        ['name' => 'Singapore', 'code' => 'singapore'],
-                        ['name' => 'Malaysia', 'code' => 'malaysia'],
-                        ['name' => 'Vietnam', 'code' => 'vietnam'],
-                    ];
-                    foreach ($countries as $country): 
-                        $country_image = getCountryImage($country['name']);
-                    ?>
-                    <div class="col-md-4 col-lg-2">
-                        <div class="country-card" onclick="filterByCountry('<?php echo $country['name']; ?>')">
-                            <?php if ($country_image): ?>
-                                <img src="<?php echo $country_image; ?>" class="country-image" alt="<?php echo $country['name']; ?>">
-                            <?php else: ?>
-                                <div class="country-image image-placeholder">
-                                    <?php echo $country['name']; ?>
-                                </div>
-                            <?php endif; ?>
-                            <div class="country-name"><?php echo $country['name']; ?></div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Available Tours -->
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4>🎯 Popular Tours</h4>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-secondary btn-sm" onclick="filterTours('all')">All</button>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="filterTours('available')">Available</button>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="filterTours('adventure')">Adventure</button>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="filterTours('cultural')">Cultural</button>
-                    </div>
-                </div>
-                
-                <?php if ($tours_result && $tours_result->num_rows > 0): ?>
-                <div class="row g-4" id="tourGrid">
-                    <?php while($tour = $tours_result->fetch_assoc()): 
-                        $status_badge = '';
-                        $badge_class = '';
-                        $is_selected = isset($selected_tour) && $selected_tour['tour_id'] == $tour['tour_id'];
-                        $tour_image = getTourImage($tour['city'], $tour['country'], $tour['tour_type']);
-                        
-                        switch($tour['status']) {
-                            case 'Available': 
-                            case 'Active':
-                                $status_badge = 'Available'; 
-                                $badge_class = 'bg-success';
-                                break;
-                            case 'Fully Booked': 
-                                $status_badge = 'Fully Booked'; 
-                                $badge_class = 'bg-danger';
-                                break;
-                            case 'Cancelled': 
-                                $status_badge = 'Cancelled'; 
-                                $badge_class = 'bg-secondary';
-                                break;
-                            case 'Completed': 
-                                $status_badge = 'Completed'; 
-                                $badge_class = 'bg-info';
-                                break;
-                            default:
-                                $status_badge = $tour['status'];
-                                $badge_class = 'bg-primary';
-                        }
-                    ?>
-                    <div class="col-md-6 col-lg-4 col-xl-3 tour-item" data-type="<?php echo strtolower($tour['tour_type']); ?>" data-status="<?php echo strtolower($tour['status']); ?>">
-                        <div class="tour-card <?php echo $is_selected ? 'selected' : ''; ?>" onclick="selectTour('<?php echo $tour['tour_id']; ?>')">
-                            <?php if ($is_selected): ?>
-                                <div class="selection-indicator">
-                                    <i class="bi bi-check"></i>
-                                </div>
-                            <?php endif; ?>
-                            <div class="tour-image-container">
-                                <?php if ($tour_image): ?>
-                                    <img src="<?php echo $tour_image; ?>" class="tour-image" alt="<?php echo htmlspecialchars($tour['tour_name']); ?>">
-                                <?php else: ?>
-                                    <div class="tour-image image-placeholder">
-                                        <?php echo htmlspecialchars(substr($tour['city'], 0, 15)); ?>
-                                    </div>
-                                <?php endif; ?>
-                                <span class="tour-badge <?php echo $badge_class; ?>"><?php echo $status_badge; ?></span>
-                                <span class="price-badge">₱<?php echo number_format($tour['price_per_person'], 0); ?></span>
-                            </div>
-                            <div class="p-3">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h6 class="tour-location mb-1">
-                                            <i class="bi bi-geo-alt"></i> 
-                                            <?php echo htmlspecialchars($tour['city']); ?>, <?php echo htmlspecialchars($tour['country']); ?>
-                                        </h6>
-                                        <h5 class="mb-1" style="font-size: 1rem; min-height: 40px;"><?php echo htmlspecialchars($tour['tour_name']); ?></h5>
-                                    </div>
-                                </div>
-                                
-                                <div class="tour-duration mb-2">
-                                    <i class="bi bi-clock"></i> 
-                                    <?php echo isset($tour['duration_days']) ? $tour['duration_days'] : '1'; ?> day<?php echo (isset($tour['duration_days']) && $tour['duration_days'] > 1) ? 's' : ''; ?> 
-                                    <?php echo isset($tour['duration_nights']) ? $tour['duration_nights'] : '0'; ?> night<?php echo (isset($tour['duration_nights']) && $tour['duration_nights'] > 1) ? 's' : ''; ?>
-                                    • <?php echo isset($tour['tour_type']) ? $tour['tour_type'] : 'Private'; ?> tour
-                                </div>
-                                
-                                <div class="tour-duration mb-3">
-                                    <i class="bi bi-calendar"></i> 
-                                    <?php echo date('M d, Y', strtotime($tour['tour_date'])); ?>
-                                    <br>
-                                    <i class="bi bi-people"></i> 
-                                    <?php echo isset($tour['available_slots']) ? $tour['available_slots'] : (isset($tour['max_participants']) ? $tour['max_participants'] : '0'); ?> slots available
-                                </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="tour-price">
-                                        ₱<?php echo number_format($tour['price_per_person'], 2); ?>
-                                        <small class="text-muted d-block">per person</small>
-                                    </div>
-                                    <button class="btn <?php echo $is_selected ? 'btn-success' : 'btn-primary'; ?> btn-sm" onclick="event.stopPropagation(); selectTour('<?php echo $tour['tour_id']; ?>')">
-                                        <?php if ($is_selected): ?>
-                                            <i class="bi bi-check-circle"></i> Selected
-                                        <?php else: ?>
-                                            <i class="bi bi-plus-circle"></i> Select
-                                        <?php endif; ?>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endwhile; ?>
-                </div>
-                <?php else: ?>
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> No tours available at the moment. Please check back later or create a new tour.
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab 2: Create Tour Form -->
-    <div class="tab-content" id="createTab">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">✏️ Create New Tour Activity</h5>
-                
-                <form class="row g-3" method="POST" action="">
-                    <input type="hidden" name="create_tour" value="1">
-                    
-                    <div class="col-md-12">
-                        <label for="tour_name" class="form-label">Tour Name *</label>
-                        <input type="text" class="form-control" id="tour_name" name="tour_name" required placeholder="Ex. Private Tour - Manila City Highlights">
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="country" class="form-label">Country *</label>
-                        <select class="form-select" id="country" name="country" required>
-                            <option value="">Select country...</option>
-                            <?php 
-                            if ($countries_result) {
-                                $countries_result->data_seek(0); // Reset pointer
-                                while($country = $countries_result->fetch_assoc()): ?>
-                                <option value="<?php echo $country['country_name']; ?>">
-                                    <?php echo htmlspecialchars($country['country_name']); ?>
+                <div class="col-md-3">
+                    <label class="form-label">Country</label>
+                    <select name="country" class="form-select">
+                        <option value="">All Countries</option>
+                        <?php if ($countries_result): ?>
+                            <?php while($country = $countries_result->fetch_assoc()): ?>
+                                <option value="<?php echo $country['country']; ?>" <?php echo $country_filter == $country['country'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($country['country']); ?>
                                 </option>
-                                <?php endwhile; 
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="city" class="form-label">City *</label>
-                        <input type="text" class="form-control" id="city" name="city" required placeholder="Ex. Manila">
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="tour_type" class="form-label">Tour Type *</label>
-                        <select class="form-select" id="tour_type" name="tour_type" required>
-                            <option value="Sightseeing">🏛️ Sightseeing</option>
-                            <option value="Adventure">🧗 Adventure</option>
-                            <option value="Cultural">🎎 Cultural</option>
-                            <option value="Food">🍜 Food Tour</option>
-                            <option value="Nature">🌳 Nature</option>
-                            <option value="Historical">📜 Historical</option>
-                            <option value="Private">👤 Private Tour</option>
-                            <option value="Group">👥 Group Tour</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="duration_days" class="form-label">Duration (Days) *</label>
-                        <input type="number" class="form-control" id="duration_days" name="duration_days" min="1" max="30" value="1" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="duration_nights" class="form-label">Duration (Nights)</label>
-                        <input type="number" class="form-control" id="duration_nights" name="duration_nights" min="0" max="29" value="0">
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="duration_hours" class="form-label">Duration (Hours) *</label>
-                        <input type="number" class="form-control" id="duration_hours" name="duration_hours" min="1" max="24" value="4" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="max_participants" class="form-label">Max Participants *</label>
-                        <input type="number" class="form-control" id="max_participants" name="max_participants" min="1" max="100" value="10" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="available_slots" class="form-label">Available Slots *</label>
-                        <input type="number" class="form-control" id="available_slots" name="available_slots" min="0" value="10" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="price_per_person" class="form-label">Price per Person (₱) *</label>
-                        <div class="input-group">
-                            <span class="input-group-text">₱</span>
-                            <input type="number" class="form-control" id="price_per_person" name="price_per_person" step="0.01" min="0" required>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="tour_date" class="form-label">Tour Date *</label>
-                        <input type="date" class="form-control" id="tour_date" name="tour_date" required min="<?php echo date('Y-m-d'); ?>">
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="status" class="form-label">Status *</label>
-                        <select class="form-select" id="status" name="status" required>
-                            <option value="Available">✅ Available</option>
-                            <option value="Active">🟢 Active</option>
-                            <option value="Fully Booked">🚫 Fully Booked</option>
-                            <option value="Cancelled">❌ Cancelled</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12">
-                        <label for="highlights" class="form-label">Tour Highlights</label>
-                        <textarea class="form-control" id="highlights" name="highlights" rows="3" placeholder="Key attractions and experiences..."></textarea>
-                    </div>
-                    
-                    <div class="col-12">
-                        <label for="included" class="form-label">What's Included</label>
-                        <textarea class="form-control" id="included" name="included" rows="2" placeholder="Transportation, meals, tickets, etc..."></textarea>
-                    </div>
-                    
-                    <div class="col-12">
-                        <label for="description" class="form-label">Tour Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Detailed description of the tour..."></textarea>
-                    </div>
-                    
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg px-5">Create Tour</button>
-                        <button type="reset" class="btn btn-secondary btn-lg px-5">Clear Form</button>
-                    </div>
-                </form>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
             </div>
-        </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">🔍 Search Tours</button>
+                    <a href="?page=tours" class="btn btn-outline-secondary">Clear Filters</a>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <!-- Tab 3: Manage Tours -->
-    <div class="tab-content" id="manageTab">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">📊 Tour Management Dashboard</h5>
-                
-                <?php if ($all_tours_result && $all_tours_result->num_rows > 0): ?>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tour ID</th>
-                                <th>Tour Name</th>
-                                <th>Location</th>
-                                <th>Type</th>
-                                <th>Date</th>
-                                <th>Duration</th>
-                                <th>Price</th>
-                                <th>Slots</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($tour = $all_tours_result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo isset($tour['tour_id']) ? $tour['tour_id'] : $tour['id']; ?></td>
-                                <td><?php echo htmlspecialchars($tour['tour_name']); ?></td>
-                                <td><?php echo htmlspecialchars($tour['city']) . ', ' . htmlspecialchars($tour['country']); ?></td>
-                                <td>
-                                    <span class="badge bg-info">
-                                    <?php echo isset($tour['tour_type']) ? $tour['tour_type'] : 'Private'; ?>
-                                    </span>
-                                </td>
-                                <td><?php echo date('M d, Y', strtotime($tour['tour_date'])); ?></td>
-                                <td>
-                                    <?php echo isset($tour['duration_days']) ? $tour['duration_days'] : '1'; ?>D
-                                    <?php echo isset($tour['duration_nights']) ? $tour['duration_nights'] : '0'; ?>N
-                                </td>
-                                <td>₱<?php echo number_format($tour['price_per_person'], 2); ?></td>
-                                <td>
-                                    <?php echo isset($tour['available_slots']) ? $tour['available_slots'] : '0'; ?> / <?php echo $tour['max_participants']; ?>
-                                    <?php if (isset($tour['available_slots']) && $tour['available_slots'] < 5 && $tour['available_slots'] > 0): ?>
-                                    <span class="badge bg-warning text-dark">Few left!</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <span class="badge bg-<?php 
-                                    switch($tour['status']) {
-                                        case 'Available': 
-                                        case 'Active': 
-                                            echo 'success'; break;
-                                        case 'Fully Booked': echo 'danger'; break;
-                                        case 'Cancelled': echo 'secondary'; break;
-                                        case 'Completed': echo 'info'; break;
-                                        default: echo 'primary';
-                                    }
-                                    ?>"><?php echo $tour['status']; ?></span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editTour('<?php echo isset($tour['tour_id']) ? $tour['tour_id'] : $tour['id']; ?>')">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTour('<?php echo isset($tour['tour_id']) ? $tour['tour_id'] : $tour['id']; ?>')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php else: ?>
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> No tours found. Please create a tour first.
-                </div>
-                <?php endif; ?>
+    <!-- Tours Grid -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Available Tours (<?php echo $tours_result ? $tours_result->num_rows : 0; ?> found)</h4>
             </div>
+            
+            <?php if ($tours_result && $tours_result->num_rows > 0): ?>
+            <div class="row g-4">
+                <?php while($tour = $tours_result->fetch_assoc()): ?>
+                <div class="col-md-6 col-lg-4">
+                    <div class="tour-card">
+                        <?php 
+                        $image_url = getTourImage($tour['city'], $tour['country'], $tour['tour_type'], $tour['tour_id']);
+                        ?>
+                        <div class="tour-image position-relative" style="background-image: url('<?php echo $image_url; ?>')">
+                            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">
+                                <?php echo htmlspecialchars($tour['city']); ?>, <?php echo htmlspecialchars($tour['country']); ?>
+                            </div>
+                            <div class="price-badge">₱<?php echo number_format($tour['price_per_person'], 0); ?></div>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-info"><?php echo $tour['tour_type']; ?></span>
+                                <small class="text-muted"><?php echo $tour['available_slots']; ?> slots left</small>
+                            </div>
+                            
+                            <h5 class="mb-2"><?php echo htmlspecialchars($tour['tour_name']); ?></h5>
+                            
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> <?php echo date('M d, Y', strtotime($tour['tour_date'])); ?>
+                                    <br>
+                                    <i class="bi bi-clock"></i> <?php echo $tour['duration_days']; ?> day(s), <?php echo $tour['duration_nights']; ?> night(s)
+                                </small>
+                            </div>
+                            
+                            <?php if ($tour['highlights']): ?>
+                            <p class="text-muted small mb-3"><?php echo htmlspecialchars(substr($tour['highlights'], 0, 100)); ?>...</p>
+                            <?php endif; ?>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="text-primary">₱<?php echo number_format($tour['price_per_person'], 2); ?></strong>
+                                    <small class="text-muted d-block">per person</small>
+                                </div>
+                                <button class="btn btn-primary" onclick="bookTour('<?php echo $tour['tour_id']; ?>')">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endwhile; ?>
+            </div>
+            <?php else: ?>
+            <div class="text-center py-5">
+                <i class="bi bi-search display-1 text-muted"></i>
+                <h4 class="mt-3">No tours found</h4>
+                <p class="text-muted">Try adjusting your filters or create a new tour</p>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
 <script>
-function showTab(tabName) {
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.tour-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    
-    // Show selected tab
-    document.getElementById(tabName + 'Tab').classList.add('active');
-    
-    // Add active class to clicked tab button
-    event.target.classList.add('active');
+function bookTour(tourId) {
+    window.location.href = '?page=tour_booking&tour_id=' + tourId;
 }
-
-function selectTour(tourId) {
-    // Scroll to top before redirecting
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Redirect with tour selection parameter
-    window.location.href = '?page=tours&select_tour=' + tourId;
-}
-
-function filterByCountry(country) {
-    const searchInput = document.getElementById('searchTours');
-    searchInput.value = country;
-    searchTours();
-}
-
-function searchTours() {
-    const searchTerm = document.getElementById('searchTours').value.toLowerCase();
-    const tourItems = document.querySelectorAll('.tour-item');
-    
-    tourItems.forEach(item => {
-        const tourName = item.querySelector('h5').textContent.toLowerCase();
-        const location = item.querySelector('.tour-location').textContent.toLowerCase();
-        
-        if (tourName.includes(searchTerm) || location.includes(searchTerm)) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-}
-
-function filterTours(filterType) {
-    const tourItems = document.querySelectorAll('.tour-item');
-    
-    tourItems.forEach(item => {
-        const type = item.getAttribute('data-type');
-        const status = item.getAttribute('data-status');
-        
-        if (filterType === 'all') {
-            item.style.display = 'block';
-        } else if (filterType === 'available' && status === 'available') {
-            item.style.display = 'block';
-        } else if (filterType === 'adventure' && type.includes('adventure')) {
-            item.style.display = 'block';
-        } else if (filterType === 'cultural' && type.includes('cultural')) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-}
-
-function proceedToBooking(tourId) {
-    alert('Proceeding to booking for tour: ' + tourId);
-    // You can redirect to booking page
-    // window.location.href = '?page=booking&tour_id=' + tourId;
-}
-
-function editTour(tourId) {
-    alert('Edit tour: ' + tourId);
-}
-
-function deleteTour(tourId) {
-    if (confirm('Are you sure you want to delete this tour?')) {
-        window.location.href = 'index.php?page=delete_tour&id=' + tourId;
-    }
-}
-
-// Initialize first tab as active on page load
-document.addEventListener('DOMContentLoaded', function() {
-    showTab('browse');
-    
-    // Add search functionality
-    const searchInput = document.getElementById('searchTours');
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchTours();
-        }
-    });
-    
-    // Scroll to selected tour if exists
-    <?php if (isset($selected_tour)): ?>
-    const selectedCard = document.querySelector('.tour-card.selected');
-    if (selectedCard) {
-        selectedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    <?php endif; ?>
-});
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
-
-<?php 
-if ($conn) {
-    $conn->close();
-}
-?>
+<?php $conn->close(); ?>

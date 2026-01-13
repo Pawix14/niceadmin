@@ -1,3 +1,12 @@
+<?php
+// Start output buffering to prevent header errors
+ob_start();
+
+// Start session at the very beginning
+if (!headers_sent() && session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -475,14 +484,7 @@
         </a>
       </li>
 
-      <li class="nav-heading">✈️ Booking Management</li>
-
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'new_booking') ? 'active' : ''; ?>" href="index.php?page=new_booking">
-          <i class="bi bi-plus-circle"></i>
-          <span>New Booking</span>
-        </a>
-      </li>
+      <li class="nav-heading">✈️ Bookings</li>
 
       <li class="nav-item">
         <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'all_bookings') ? 'active' : ''; ?>" href="index.php?page=all_bookings">
@@ -502,6 +504,20 @@
   <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_rental') ? 'active' : ''; ?>" href="index.php?page=car_rental">
     <i class="bi bi-car-front"></i>
     <span>Car Rental</span>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'flights') ? 'active' : ''; ?>" href="index.php?page=flights">
+    <i class="bi bi-airplane"></i>
+    <span>Flights</span>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'hotels') ? 'active' : ''; ?>" href="index.php?page=hotels">
+    <i class="bi bi-building"></i>
+    <span>Hotel Bookings</span>
   </a>
 </li>
 
@@ -528,13 +544,6 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'reports') ? 'active' : ''; ?>" href="#">
-          <i class="bi bi-bar-chart"></i>
-          <span>Reports</span>
-        </a>
-      </li>
-    </ul>
   </aside>
 
   <!-- Main Content Area -->
@@ -653,3 +662,7 @@
 
 </body>
 </html>
+<?php
+// Flush output buffer
+ob_end_flush();
+?>

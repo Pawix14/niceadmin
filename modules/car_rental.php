@@ -522,10 +522,7 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                 </div>
               </div>
             </div>
-            
-            <!-- Right Column: Booking Summary & Customer Info -->
             <div class="col-lg-4">
-              <!-- Selected Car Summary -->
               <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
                   <h6 class="mb-0"><i class="bi bi-car-front me-2"></i>Selected Car</h6>
@@ -548,8 +545,6 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                   </div>
                 </div>
               </div>
-              
-              <!-- Price Breakdown -->
               <div class="card mb-4">
                 <div class="card-header bg-light">
                   <h6 class="mb-0"><i class="bi bi-receipt me-2"></i>Price Breakdown</h6>

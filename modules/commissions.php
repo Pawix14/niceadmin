@@ -63,13 +63,13 @@ while($row = $result->fetch_assoc()) {
     $all_commissions[] = $row;
 }
 
-// Get CAR RENTAL commissions (NEW)
+// Get CAR RENTAL commissions (FIXED)
 $result = $conn->query("
     SELECT 'car' as type, b.booking_id as id, b.customer_name,
            'Car Rental' as booking_type, b.total_amount as amount,
            b.agent_commission as commission, b.agent_id, a.agent_name,
-           a.commission_rate, b.status, b.booking_date
-    FROM car_rental_bookings b
+           a.commission_rate, b.status, b.created_at as booking_date
+    FROM car_rentals b
     LEFT JOIN travel_agents a ON b.agent_id = a.agent_id
     WHERE b.agent_id IS NOT NULL AND b.agent_commission > 0
 ");

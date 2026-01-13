@@ -137,6 +137,48 @@ $cruise_lines = [
                 'decks' => 15
             ]
         ]
+    ],
+    'celebrity' => [
+        'name' => 'Celebrity Cruises',
+        'ships' => [
+            [
+                'id' => 'celebrity-edge',
+                'name' => 'Celebrity Edge',
+                'image' => 'assets/img/cruises/celebrity-cruise.jpg',
+                'tonnage' => '129,500 GT',
+                'guest_capacity' => '2,918',
+                'year_built' => '2018',
+                'decks' => 16
+            ]
+        ]
+    ],
+    'princess' => [
+        'name' => 'Princess Cruises',
+        'ships' => [
+            [
+                'id' => 'sky-princess',
+                'name' => 'Sky Princess',
+                'image' => 'assets/img/cruises/princess-cruise.jpg',
+                'tonnage' => '143,700 GT',
+                'guest_capacity' => '3,660',
+                'year_built' => '2019',
+                'decks' => 19
+            ]
+        ]
+    ],
+    'holland' => [
+        'name' => 'Holland America Line',
+        'ships' => [
+            [
+                'id' => 'rotterdam',
+                'name' => 'Rotterdam',
+                'image' => 'assets/img/cruises/holland-cruise.jpg',
+                'tonnage' => '99,500 GT',
+                'guest_capacity' => '2,668',
+                'year_built' => '2021',
+                'decks' => 15
+            ]
+        ]
     ]
 ];
 $itineraries = [
@@ -189,6 +231,36 @@ $itineraries = [
         'ports_of_call' => ['Seattle', 'Juneau', 'Skagway', 'Glacier Bay', 'Ketchikan', 'Victoria, BC'],
         'duration_nights' => 7,
         'description' => 'Witness the majestic glaciers of Alaska'
+    ],
+    [
+        'id' => 'transatlantic-14',
+        'name' => '14-Night Transatlantic Crossing',
+        'cruise_line' => 'celebrity',
+        'ship' => 'celebrity-edge',
+        'departure_port' => 'Southampton, UK',
+        'ports_of_call' => ['Southampton', 'At Sea', 'At Sea', 'At Sea', 'At Sea', 'At Sea', 'New York'],
+        'duration_nights' => 14,
+        'description' => 'Classic ocean crossing with luxury amenities'
+    ],
+    [
+        'id' => 'scandinavia-12',
+        'name' => '12-Night Scandinavia & Baltic',
+        'cruise_line' => 'princess',
+        'ship' => 'sky-princess',
+        'departure_port' => 'Copenhagen, Denmark',
+        'ports_of_call' => ['Copenhagen', 'Stockholm', 'Helsinki', 'St. Petersburg', 'Tallinn', 'Oslo'],
+        'duration_nights' => 12,
+        'description' => 'Explore the stunning Nordic capitals and culture'
+    ],
+    [
+        'id' => 'panama-canal-15',
+        'name' => '15-Night Panama Canal Transit',
+        'cruise_line' => 'holland',
+        'ship' => 'rotterdam',
+        'departure_port' => 'Fort Lauderdale, Florida',
+        'ports_of_call' => ['Fort Lauderdale', 'Cartagena', 'Panama Canal', 'Costa Rica', 'Guatemala', 'Los Angeles'],
+        'duration_nights' => 15,
+        'description' => 'Engineering marvel journey through the Panama Canal'
     ]
 ];
 
@@ -428,7 +500,7 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                 <div class="col-12">
                   <h4 class="mb-4">⭐ Featured Cruises</h4>
                   <div class="row g-4">
-                    <?php foreach(array_slice($itineraries, 0, 3) as $itinerary): 
+                    <?php foreach(array_slice($itineraries, 0, 5) as $itinerary): 
                       $cruise_line = $cruise_lines[$itinerary['cruise_line']];
                       $ship = null;
                       foreach($cruise_line['ships'] as $s) {
@@ -501,6 +573,112 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                       </div>
                     </div>
                     <?php endforeach; ?>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Popular Destinations -->
+              <div class="row mt-5">
+                <div class="col-12">
+                  <h4 class="mb-4">🌍 Popular Cruise Destinations</h4>
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i class="bi bi-sun display-4 text-warning mb-2"></i>
+                          <h6>Caribbean</h6>
+                          <p class="small text-muted mb-2">Tropical paradise with crystal clear waters</p>
+                          <span class="badge bg-light text-dark">7-14 nights</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i class="bi bi-snow display-4 text-info mb-2"></i>
+                          <h6>Alaska</h6>
+                          <p class="small text-muted mb-2">Glaciers, wildlife, and scenic beauty</p>
+                          <span class="badge bg-light text-dark">7-10 nights</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i class="bi bi-building display-4 text-primary mb-2"></i>
+                          <h6>Mediterranean</h6>
+                          <p class="small text-muted mb-2">Historic cities and cultural treasures</p>
+                          <span class="badge bg-light text-dark">10-14 nights</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card border">
+                        <div class="card-body text-center">
+                          <i class="bi bi-tree display-4 text-success mb-2"></i>
+                          <h6>Southeast Asia</h6>
+                          <p class="small text-muted mb-2">Exotic cultures and stunning beaches</p>
+                          <span class="badge bg-light text-dark">3-7 nights</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Cruise Tips -->
+              <div class="row mt-5">
+                <div class="col-12">
+                  <h4 class="mb-4">💡 Cruise Planning Tips</h4>
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <div class="card border">
+                        <div class="card-body">
+                          <h6><i class="bi bi-calendar-check text-primary me-2"></i>Best Time to Book</h6>
+                          <ul class="small mb-0">
+                            <li>Book 6-12 months in advance for best prices</li>
+                            <li>Wave season (Jan-Mar) offers great deals</li>
+                            <li>Last-minute deals available 60-90 days before</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card border">
+                        <div class="card-body">
+                          <h6><i class="bi bi-luggage text-success me-2"></i>Packing Essentials</h6>
+                          <ul class="small mb-0">
+                            <li>Formal attire for elegant dining nights</li>
+                            <li>Comfortable walking shoes for excursions</li>
+                            <li>Sunscreen and swimwear for deck activities</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card border">
+                        <div class="card-body">
+                          <h6><i class="bi bi-passport text-warning me-2"></i>Documentation</h6>
+                          <ul class="small mb-0">
+                            <li>Passport valid 6+ months beyond cruise date</li>
+                            <li>Visa requirements vary by destination</li>
+                            <li>Travel insurance highly recommended</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card border">
+                        <div class="card-body">
+                          <h6><i class="bi bi-cash-coin text-info me-2"></i>Onboard Expenses</h6>
+                          <ul class="small mb-0">
+                            <li>Gratuities: ₱800-1,200 per person/day</li>
+                            <li>Specialty dining: ₱1,500-4,000 per meal</li>
+                            <li>Shore excursions: ₱2,000-8,000 per port</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
