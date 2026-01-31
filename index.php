@@ -493,12 +493,7 @@ if (!headers_sent() && session_status() == PHP_SESSION_NONE) {
         </a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'tours') ? 'active' : ''; ?>" href="index.php?page=tours">
-          <i class="bi bi-binoculars"></i>
-          <span>Tour Activity</span>
-        </a>
-      </li>
+
 
       <li class="nav-item">
   <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_rental') ? 'active' : ''; ?>" href="index.php?page=car_rental">
@@ -514,19 +509,9 @@ if (!headers_sent() && session_status() == PHP_SESSION_NONE) {
   </a>
 </li>
 
-<li class="nav-item">
-  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'hotels') ? 'active' : ''; ?>" href="index.php?page=hotels">
-    <i class="bi bi-building"></i>
-    <span>Hotel Bookings</span>
-  </a>
-</li>
 
-<li class="nav-item">
-  <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'cruises') ? 'active' : ''; ?>" href="index.php?page=cruises">
-<i class="bi bi-arrows-fullscreen"></i>
-    <span>Cruises</span>
-  </a>
-</li>
+
+
 
       <li class="nav-heading">🏝️ Management</li>
 
