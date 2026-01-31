@@ -47,27 +47,24 @@ foreach($agents as $agent) {
     $result = $conn->query("SELECT COUNT(*) as bookings FROM travel_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $travel_bookings = $result->fetch_assoc()['bookings'];
     
-    $result = $conn->query("SELECT COUNT(*) as bookings FROM hotel_bookings WHERE agent_id = '{$agent['agent_id']}'");
-    $hotel_bookings = $result->fetch_assoc()['bookings'];
-    
-    $result = $conn->query("SELECT COUNT(*) as bookings FROM tour_bookings WHERE agent_id = '{$agent['agent_id']}'");
-    $tour_bookings = $result->fetch_assoc()['bookings'];
-    
     $result = $conn->query("SELECT COUNT(*) as bookings FROM flight_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $flight_bookings = $result->fetch_assoc()['bookings'];
     
-    $total_bookings = $travel_bookings + $hotel_bookings + $tour_bookings + $flight_bookings;
+    $result = $conn->query("SELECT COUNT(*) as bookings FROM car_rentals WHERE agent_id = '{$agent['agent_id']}'");
+    $car_bookings = $result->fetch_assoc()['bookings'];
+    
+    $total_bookings = $travel_bookings + $flight_bookings + $car_bookings;
     
     $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM travel_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $travel_commission = $result->fetch_assoc()['commission'];
     
-    $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM hotel_bookings WHERE agent_id = '{$agent['agent_id']}'");
-    $hotel_commission = $result->fetch_assoc()['commission'];
-    
     $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM flight_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $flight_commission = $result->fetch_assoc()['commission'];
     
-    $total_commission = $travel_commission + $hotel_commission + $flight_commission;
+    $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM car_rentals WHERE agent_id = '{$agent['agent_id']}'");
+    $car_commission = $result->fetch_assoc()['commission'];
+    
+    $total_commission = $travel_commission + $flight_commission + $car_commission;
     
     $agent_stats[$agent['agent_id']] = [
         'total_bookings' => $total_bookings,
@@ -130,9 +127,8 @@ $conn->close();
               <select class="form-select" id="specialization" name="specialization">
                 <option value="All">All Services</option>
                 <option value="Flights">Flights</option>
-                <option value="Hotels">Hotels</option>
-                <option value="Tours">Tours</option>
                 <option value="Travel">Travel</option>
+                <option value="Car Rental">Car Rental</option>
               </select>
             </div>
             
@@ -189,9 +185,8 @@ $conn->close();
                     $specialization_badge = '';
                     switch($agent['specialization']) {
                       case 'Flights': $specialization_badge = 'info'; break;
-                      case 'Hotels': $specialization_badge = 'success'; break;
-                      case 'Tours': $specialization_badge = 'warning'; break;
                       case 'Travel': $specialization_badge = 'danger'; break;
+                      case 'Car Rental': $specialization_badge = 'warning'; break;
                       default: $specialization_badge = 'primary';
                     }
                     ?>

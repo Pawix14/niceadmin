@@ -13,56 +13,47 @@ $stats = [];
 $result = $conn->query("SELECT COUNT(*) as total FROM travel_bookings");
 $stats['travel_bookings'] = $result->fetch_assoc()['total'];
 
-$result = $conn->query("SELECT COUNT(*) as total FROM hotel_bookings");
-$stats['hotel_bookings'] = $result->fetch_assoc()['total'];
-
-$result = $conn->query("SELECT COUNT(*) as total FROM tour_bookings");
-$stats['tour_bookings'] = $result->fetch_assoc()['total'];
 $result = $conn->query("SELECT COUNT(*) as total FROM flight_bookings");
 $stats['flight_bookings'] = $result->fetch_assoc()['total'];
-$stats['total_bookings'] = $stats['travel_bookings'] + $stats['hotel_bookings'] + $stats['tour_bookings'] + $stats['flight_bookings'];
+
+$result = $conn->query("SELECT COUNT(*) as total FROM car_rentals");
+$stats['car_bookings'] = $result->fetch_assoc()['total'];
+
+$stats['total_bookings'] = $stats['travel_bookings'] + $stats['flight_bookings'] + $stats['car_bookings'];
 $result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM travel_bookings");
 $stats['travel_revenue'] = $result->fetch_assoc()['total'];
-$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM hotel_bookings");
-$stats['hotel_revenue'] = $result->fetch_assoc()['total'];
-
-$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM tour_bookings");
-$stats['tour_revenue'] = $result->fetch_assoc()['total'];
 
 $result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM flight_bookings");
 $stats['flight_revenue'] = $result->fetch_assoc()['total'];
 
-$stats['total_revenue'] = $stats['travel_revenue'] + $stats['hotel_revenue'] + $stats['tour_revenue'] + $stats['flight_revenue'];
+$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM car_rentals");
+$stats['car_revenue'] = $result->fetch_assoc()['total'];
+
+$stats['total_revenue'] = $stats['travel_revenue'] + $stats['flight_revenue'] + $stats['car_revenue'];
 $today = date('Y-m-d');
 $result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM travel_bookings WHERE DATE(booking_date) = '$today'");
 $stats['today_travel'] = $result->fetch_assoc()['total'];
 
-$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM hotel_bookings WHERE DATE(booking_date) = '$today'");
-$stats['today_hotel'] = $result->fetch_assoc()['total'];
-
-$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM tour_bookings WHERE DATE(booking_date) = '$today'");
-$stats['today_tour'] = $result->fetch_assoc()['total'];
-
 $result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM flight_bookings WHERE DATE(booking_date) = '$today'");
 $stats['today_flight'] = $result->fetch_assoc()['total'];
 
-$stats['today_revenue'] = $stats['today_travel'] + $stats['today_hotel'] + $stats['today_tour'] + $stats['today_flight'];
+$result = $conn->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM car_rentals WHERE DATE(created_at) = '$today'");
+$stats['today_car'] = $result->fetch_assoc()['total'];
+
+$stats['today_revenue'] = $stats['today_travel'] + $stats['today_flight'] + $stats['today_car'];
 
 // Recent bookings
 $recent_bookings = [];
 
 $query = "
     (SELECT booking_id, traveler_name as customer_name, 'Travel' as type, total_amount, status, booking_date
-     FROM travel_bookings ORDER BY booking_date DESC LIMIT 2)
-    UNION ALL
-    (SELECT booking_id, guest_name as customer_name, 'Hotel' as type, total_amount, status, booking_date
-     FROM hotel_bookings ORDER BY booking_date DESC LIMIT 2)
-    UNION ALL
-    (SELECT booking_id, participant_name as customer_name, 'Tour' as type, total_amount, status, booking_date
-     FROM tour_bookings ORDER BY booking_date DESC LIMIT 2)
+     FROM travel_bookings ORDER BY booking_date DESC LIMIT 3)
     UNION ALL
     (SELECT booking_id, passenger_name as customer_name, 'Flight' as type, total_amount, status, booking_date
-     FROM flight_bookings ORDER BY booking_date DESC LIMIT 2)
+     FROM flight_bookings ORDER BY booking_date DESC LIMIT 3)
+    UNION ALL
+    (SELECT booking_id, customer_name, 'Car Rental' as type, total_amount, status, created_at as booking_date
+     FROM car_rentals ORDER BY created_at DESC LIMIT 2)
     ORDER BY booking_date DESC LIMIT 8
 ";
 
@@ -75,16 +66,13 @@ while($row = $result->fetch_assoc()) {
 $result = $conn->query("SELECT COUNT(*) as total FROM travel_bookings WHERE status = 'Pending'");
 $pending_travel = $result->fetch_assoc()['total'];
 
-$result = $conn->query("SELECT COUNT(*) as total FROM hotel_bookings WHERE status = 'Pending'");
-$pending_hotel = $result->fetch_assoc()['total'];
-
-$result = $conn->query("SELECT COUNT(*) as total FROM tour_bookings WHERE status = 'Pending'");
-$pending_tour = $result->fetch_assoc()['total'];
-
 $result = $conn->query("SELECT COUNT(*) as total FROM flight_bookings WHERE status = 'Pending'");
 $pending_flight = $result->fetch_assoc()['total'];
 
-$stats['pending_bookings'] = $pending_travel + $pending_hotel + $pending_tour + $pending_flight;
+$result = $conn->query("SELECT COUNT(*) as total FROM car_rentals WHERE status = 'Pending'");
+$pending_car = $result->fetch_assoc()['total'];
+
+$stats['pending_bookings'] = $pending_travel + $pending_flight + $pending_car;
 
 // Top destinations
 $top_destinations = [];
@@ -121,23 +109,7 @@ $conn->close();
                 <div class="card-body">
                     <h2 class="card-title mb-4">🌴 Paradise Travel Services</h2>
                     <div class="row g-4">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="module-card hotel-module">
-                                <div class="module-icon">
-                                    <i class="bi bi-building"></i>
-                                </div>
-                                <h3>Hotels</h3>
-                                <p class="module-description">Find perfect stays</p>
-                                <div class="module-stats">
-                                    <span class="badge"><?php echo $stats['hotel_bookings']; ?> Bookings</span>
-                                </div>
-                                <a href="index.php?page=new_booking&type=hotel" class="module-action">
-                                    Book Now <i class="bi bi-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-4 col-sm-6">
                             <div class="module-card flight-module">
                                 <div class="module-icon">
                                     <i class="bi bi-airplane"></i>
@@ -147,13 +119,13 @@ $conn->close();
                                 <div class="module-stats">
                                     <span class="badge"><?php echo $stats['flight_bookings']; ?> Bookings</span>
                                 </div>
-                                <a href="index.php?page=new_booking&type=flight" class="module-action">
+                                <a href="index.php?page=flights" class="module-action">
                                     Book Now <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
                         
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-4 col-sm-6">
                             <div class="module-card travel-module">
                                 <div class="module-icon">
                                     <i class="bi bi-compass"></i>
@@ -163,23 +135,23 @@ $conn->close();
                                 <div class="module-stats">
                                     <span class="badge"><?php echo $stats['travel_bookings']; ?> Bookings</span>
                                 </div>
-                                <a href="index.php?page=new_booking&type=travel" class="module-action">
+                                <a href="index.php?page=new_booking" class="module-action">
                                     Book Now <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
                         
-                        <div class="col-md-3 col-sm-6">
-                            <div class="module-card tour-module">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="module-card car-module">
                                 <div class="module-icon">
-                                    <i class="bi bi-bus-front"></i>
+                                    <i class="bi bi-car-front"></i>
                                 </div>
-                                <h3>Tours</h3>
-                                <p class="module-description">Discover experiences</p>
+                                <h3>Car Rental</h3>
+                                <p class="module-description">Rent vehicles easily</p>
                                 <div class="module-stats">
-                                    <span class="badge"><?php echo $stats['tour_bookings']; ?> Bookings</span>
+                                    <span class="badge"><?php echo $stats['car_bookings']; ?> Bookings</span>
                                 </div>
-                                <a href="index.php?page=new_booking&type=tour" class="module-action">
+                                <a href="index.php?page=car_rental" class="module-action">
                                     Book Now <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
@@ -345,21 +317,17 @@ $conn->close();
                 </div>
                 <div class="card-body">
                     <div class="quick-actions">
-                        <a href="index.php?page=new_booking&type=travel" class="quick-action-item">
+                        <a href="index.php?page=new_booking" class="quick-action-item">
                             <i class="bi bi-plus-circle"></i>
                             <span>New Travel Booking</span>
                         </a>
-                        <a href="index.php?page=new_booking&type=hotel" class="quick-action-item">
-                            <i class="bi bi-building-add"></i>
-                            <span>New Hotel Booking</span>
-                        </a>
-                        <a href="index.php?page=new_booking&type=flight" class="quick-action-item">
+                        <a href="index.php?page=flights" class="quick-action-item">
                             <i class="bi bi-airplane-engines"></i>
                             <span>New Flight Booking</span>
                         </a>
-                        <a href="index.php?page=new_booking&type=tour" class="quick-action-item">
-                            <i class="bi bi-bus-front"></i>
-                            <span>New Tour Booking</span>
+                        <a href="index.php?page=car_rental" class="quick-action-item">
+                            <i class="bi bi-car-front"></i>
+                            <span>New Car Rental</span>
                         </a>
                         <a href="index.php?page=agents" class="quick-action-item">
                             <i class="bi bi-people"></i>
@@ -389,30 +357,21 @@ $conn->close();
                         </div>
                     </div>
                     <div class="summary-item">
-                        <div class="summary-icon hotel-icon">
-                            <i class="bi bi-building"></i>
-                        </div>
-                        <div class="summary-content">
-                            <h4><?php echo $stats['hotel_bookings']; ?></h4>
-                            <p>Hotel Bookings</p>
-                        </div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-icon tour-icon">
-                            <i class="bi bi-bus-front"></i>
-                        </div>
-                        <div class="summary-content">
-                            <h4><?php echo $stats['tour_bookings']; ?></h4>
-                            <p>Tour Bookings</p>
-                        </div>
-                    </div>
-                    <div class="summary-item">
                         <div class="summary-icon flight-icon">
                             <i class="bi bi-airplane-engines"></i>
                         </div>
                         <div class="summary-content">
                             <h4><?php echo $stats['flight_bookings']; ?></h4>
                             <p>Flight Bookings</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon car-icon">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h4><?php echo $stats['car_bookings']; ?></h4>
+                            <p>Car Rentals</p>
                         </div>
                     </div>
                 </div>
@@ -468,10 +427,6 @@ $conn->close();
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-.module-card.hotel-module:hover {
-    border-color: var(--palm-green);
-}
-
 .module-card.flight-module:hover {
     border-color: var(--ocean-blue);
 }
@@ -480,7 +435,7 @@ $conn->close();
     border-color: var(--sunset-orange);
 }
 
-.module-card.tour-module:hover {
+.module-card.car-module:hover {
     border-color: var(--lagoon-teal);
 }
 
@@ -496,10 +451,6 @@ $conn->close();
     color: white;
 }
 
-.hotel-module .module-icon {
-    background: linear-gradient(135deg, var(--palm-green) 0%, #8BC34A 100%);
-}
-
 .flight-module .module-icon {
     background: linear-gradient(135deg, var(--ocean-blue) 0%, #56CCF2 100%);
 }
@@ -508,7 +459,7 @@ $conn->close();
     background: linear-gradient(135deg, var(--sunset-orange) 0%, #F2994A 100%);
 }
 
-.tour-module .module-icon {
+.car-module .module-icon {
     background: linear-gradient(135deg, var(--lagoon-teal) 0%, #2D9CDB 100%);
 }
 
@@ -548,10 +499,6 @@ $conn->close();
     border: none;
 }
 
-.hotel-module .module-action {
-    background: var(--palm-green);
-}
-
 .flight-module .module-action {
     background: var(--ocean-blue);
 }
@@ -560,7 +507,7 @@ $conn->close();
     background: var(--sunset-orange);
 }
 
-.tour-module .module-action {
+.car-module .module-action {
     background: var(--lagoon-teal);
 }
 
@@ -712,22 +659,16 @@ $conn->close();
     border: 1px solid #FFCC80;
 }
 
-.type-badge.hotel {
-    background: #E8F5E9;
-    color: #2E7D32;
-    border: 1px solid #A5D6A7;
-}
-
-.type-badge.tour {
-    background: #E0F7FA;
-    color: #00838F;
-    border: 1px solid #80DEEA;
-}
-
 .type-badge.flight {
     background: #E3F2FD;
     color: #1565C0;
     border: 1px solid #90CAF9;
+}
+
+.type-badge.car {
+    background: #E0F7FA;
+    color: #00838F;
+    border: 1px solid #80DEEA;
 }
 
 /* Status Badges */
@@ -850,20 +791,12 @@ status-completed {
     color: white;
 }
 
-.travel-icon {
-    background: linear-gradient(135deg, var(--sunset-orange) 0%, #F2994A 100%);
-}
-
-.hotel-icon {
-    background: linear-gradient(135deg, var(--palm-green) 0%, #8BC34A 100%);
-}
-
-.tour-icon {
-    background: linear-gradient(135deg, var(--lagoon-teal) 0%, #2D9CDB 100%);
-}
-
 .flight-icon {
     background: linear-gradient(135deg, var(--ocean-blue) 0%, #56CCF2 100%);
+}
+
+.car-icon {
+    background: linear-gradient(135deg, var(--lagoon-teal) 0%, #2D9CDB 100%);
 }
 
 .summary-content h4 {

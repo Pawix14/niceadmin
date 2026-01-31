@@ -22,22 +22,11 @@ if (isset($_GET['action'])) {
             case 'travel':
                 $conn->query("DELETE FROM travel_bookings WHERE booking_id = '$id'");
                 break;
-            case 'hotel':
-                $conn->query("DELETE FROM hotel_bookings WHERE booking_id = '$id'");
-                break;
-            case 'tour':
-                $conn->query("DELETE FROM tour_bookings WHERE booking_id = '$id'");
-                break;
             case 'flight':
                 $conn->query("DELETE FROM flight_bookings WHERE booking_id = '$id'");
                 break;
             case 'car':
                 $conn->query("DELETE FROM car_rentals WHERE booking_id = '$id'");
-                break;
-            case 'cruise':
-                if ($conn->query("SHOW TABLES LIKE 'cruises'")->num_rows > 0) {
-                    $conn->query("DELETE FROM cruises WHERE booking_id = '$id'");
-                }
                 break;
         }
         
@@ -52,36 +41,15 @@ if (isset($_GET['action'])) {
             case 'travel':
                 $conn->query("UPDATE travel_bookings SET status = '$status' WHERE booking_id = '$id'");
                 break;
-            case 'hotel':
-                $conn->query("UPDATE hotel_bookings SET status = '$status' WHERE booking_id = '$id'");
-                break;
-            case 'tour':
-                $conn->query("UPDATE tour_bookings SET status = '$status' WHERE booking_id = '$id'");
-                break;
             case 'flight':
                 $conn->query("UPDATE flight_bookings SET status = '$status' WHERE booking_id = '$id'");
                 break;
             case 'car':
                 $conn->query("UPDATE car_rentals SET status = '$status' WHERE booking_id = '$id'");
                 break;
-            case 'cruise':
-                if ($conn->query("SHOW TABLES LIKE 'cruises'")->num_rows > 0) {
-                    $conn->query("UPDATE cruises SET status = '$status' WHERE booking_id = '$id'");
-                }
-                break;
         }
         
-        // Update tour activity slots if tour is confirmed
-        if ($type == 'tour' && $status == 'Confirmed') {
-            $booking_result = $conn->query("SELECT tour_id, participants FROM tour_bookings WHERE booking_id = '$id'");
-            if ($booking_result && $booking_row = $booking_result->fetch_assoc()) {
-                $tour_id = $booking_row['tour_id'];
-                $participants = $booking_row['participants'];
-                $conn->query("UPDATE tour_activities SET 
-                    available_slots = available_slots - $participants 
-                    WHERE tour_id = '$tour_id'");
-            }
-        }
+        // No additional processing needed for remaining booking types
         
         $message = "✅ Booking status updated";
         $message_type = "success";
@@ -99,34 +67,6 @@ $result = $conn->query("
            COALESCE(agent_commission, 0) as commission,
            status, booking_date
     FROM travel_bookings 
-    ORDER BY booking_date DESC
-");
-while($row = $result->fetch_assoc()) {
-    $all_bookings[] = $row;
-}
-
-// Hotel Bookings
-$result = $conn->query("
-    SELECT 'hotel' as type, booking_id as id, guest_name as customer_name, 'Hotel' as booking_type, 
-           CONCAT(hotel_name, ' (', room_type, ')') as details, 
-           COALESCE(total_amount, 0) as amount, 
-           COALESCE(agent_commission, 0) as commission,
-           status, booking_date
-    FROM hotel_bookings 
-    ORDER BY booking_date DESC
-");
-while($row = $result->fetch_assoc()) {
-    $all_bookings[] = $row;
-}
-
-// Tour Bookings (get all for main table, and recent for sidebar)
-$result = $conn->query("
-    SELECT 'tour' as type, booking_id as id, participant_name as customer_name, 'Tour' as booking_type, 
-           CONCAT('Tour: ', tour_name) as details, 
-           COALESCE(total_amount, 0) as amount, 
-           COALESCE(agent_commission, 0) as commission,
-           status, booking_date, tour_name, city, country
-    FROM tour_bookings 
     ORDER BY booking_date DESC
 ");
 while($row = $result->fetch_assoc()) {
@@ -166,36 +106,9 @@ if ($car_table_exists && $car_table_exists->num_rows > 0) {
     }
 }
 
-// Cruise Bookings (from cruises table)
-$cruise_table_exists = $conn->query("SHOW TABLES LIKE 'cruises'");
-if ($cruise_table_exists && $cruise_table_exists->num_rows > 0) {
-    $result = $conn->query("
-        SELECT 'cruise' as type, booking_id as id, guest_name as customer_name, 'Cruise' as booking_type, 
-               CONCAT('Cruise: ', ship_name, ' (', cabin_type, ')') as details, 
-               COALESCE(total_amount, 0) as amount, 
-               COALESCE(agent_commission, 0) as commission,
-               status, created_at as booking_date
-        FROM cruises 
-        ORDER BY created_at DESC
-    ");
-    if ($result) {
-        while($row = $result->fetch_assoc()) {
-            $all_bookings[] = $row;
-        }
-    }
-}
-
 usort($all_bookings, function($a, $b) {
     return strtotime($b['booking_date']) - strtotime($a['booking_date']);
 });
-
-// Get RECENT Tour Bookings (last 5)
-$recent_tours = $conn->query("
-    SELECT booking_id, participant_name, tour_name, city, country, booking_date, status 
-    FROM tour_bookings 
-    ORDER BY booking_date DESC 
-    LIMIT 5
-");
 
 // Get RECENT Car Rentals (last 5)
 $recent_cars = $conn->query("
@@ -379,9 +292,6 @@ $conn->close();
                   <a href="index.php?page=new_booking" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> New Booking
                   </a>
-                  <a href="index.php?page=tours" class="btn btn-success">
-                    <i class="bi bi-compass"></i> Book a Tour
-                  </a>
                   <a href="index.php?page=car_rental" class="btn btn-info">
                     <i class="bi bi-car-front"></i> Rent a Car
                   </a>
@@ -398,8 +308,6 @@ $conn->close();
                 <select class="form-select" id="filterType">
                   <option value="">All Types</option>
                   <option value="Travel">Travel</option>
-                  <option value="Hotel">Hotel</option>
-                  <option value="Tour">Tour</option>
                   <option value="Flight">Flight</option>
                   <option value="Car Rental">Car Rental</option>
                 </select>

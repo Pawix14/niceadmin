@@ -21,6 +21,8 @@ if ($check_table->num_rows == 0) {
         customer_email VARCHAR(100) NOT NULL,
         customer_phone VARCHAR(20) NOT NULL,
         customer_age INT NOT NULL,
+        license_number VARCHAR(50) NOT NULL,
+        license_expiry DATE NOT NULL,
         pickup_date DATE NOT NULL,
         dropoff_date DATE NOT NULL,
         pickup_time TIME NOT NULL,
@@ -50,6 +52,18 @@ if ($check_table->num_rows == 0) {
     
     if ($conn->query($create_table_sql) === FALSE) {
         echo "Error creating table: " . $conn->error;
+    } else {
+        // Add license columns to existing table if they don't exist
+        $conn->query("ALTER TABLE car_rentals ADD COLUMN license_number VARCHAR(50) NOT NULL DEFAULT ''");
+        $conn->query("ALTER TABLE car_rentals ADD COLUMN license_expiry DATE NULL");
+    }
+} else {
+    // Check if license columns exist, if not add them
+    $check_license = $conn->query("SHOW COLUMNS FROM car_rentals LIKE 'license_number'");
+    if ($check_license->num_rows == 0) {
+        $conn->query("ALTER TABLE car_rentals ADD COLUMN license_number VARCHAR(50) DEFAULT ''");
+        $conn->query("ALTER TABLE car_rentals ADD COLUMN license_expiry DATE NULL");
+        $conn->query("UPDATE car_rentals SET license_number = 'N00-00-000000', license_expiry = '2025-12-31' WHERE license_number = '' OR license_number IS NULL");
     }
 }
 
@@ -194,6 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
     // Validate all required fields are present
     $required_fields = [
         'customer_name', 'customer_email', 'customer_phone', 'customer_age',
+        'license_number', 'license_expiry',
         'pickup_date', 'dropoff_date', 'pickup_time', 'dropoff_time',
         'pickup_location', 'dropoff_location', 'car_model', 'car_type',
         'daily_rate', 'rental_days', 'subtotal', 'total_amount',
@@ -217,7 +232,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         $customer_phone = $conn->real_escape_string($_POST['customer_phone']);
         $customer_age = (int)$_POST['customer_age'];
         
-        $pickup_date = $conn->real_escape_string($_POST['pickup_date']);
+        // License validation
+        $license_number = $conn->real_escape_string($_POST['license_number']);
+        $license_expiry = $conn->real_escape_string($_POST['license_expiry']);
+        
+        // Validate license number format (Philippine format: A00-00-000000)
+        if (!preg_match('/^[A-Z]\d{2}-\d{2}-\d{6}$/', $license_number)) {
+            $message = "❌ Invalid license number format. Please use format: A00-00-000000 (e.g., N01-23-456789)";
+            $message_type = "error";
+        } else if (strtotime($license_expiry) <= time()) {
+            $message = "❌ Driver's license has expired. Please provide a valid license.";
+            $message_type = "error";
+        } else if ($customer_age < 21) {
+            $message = "❌ Minimum age requirement is 21 years old for car rental.";
+            $message_type = "error";
+        } else {
+            $pickup_date = $conn->real_escape_string($_POST['pickup_date']);
         $dropoff_date = $conn->real_escape_string($_POST['dropoff_date']);
         $pickup_time = $conn->real_escape_string($_POST['pickup_time']);
         $dropoff_time = $conn->real_escape_string($_POST['dropoff_time']);
@@ -275,6 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         // Insert into database - handle NULL agent_id properly
         $sql = "INSERT INTO car_rentals (
             booking_id, customer_name, customer_email, customer_phone, customer_age,
+            license_number, license_expiry,
             pickup_date, dropoff_date, pickup_time, dropoff_time,
             pickup_location, dropoff_location, car_type, car_model, car_image,
             rental_days, daily_rate, subtotal, insurance_fee, additional_fees,
@@ -282,6 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             status, payment_method
         ) VALUES (
             '$booking_id', '$customer_name', '$customer_email', '$customer_phone', $customer_age,
+            '$license_number', '$license_expiry',
             '$pickup_date', '$dropoff_date', '$pickup_time', '$dropoff_time',
             '$pickup_location', '$dropoff_location', '$car_type', '$car_model', '$car_image',
             $rental_days, $daily_rate, $subtotal, $insurance_fee, $additional_fees,
@@ -310,6 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         } else {
             $message = "❌ Error creating booking: " . $conn->error;
             $message_type = "error";
+        }
         }
     }
 }
@@ -649,7 +682,31 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                     </div>
                     <div class="mb-3">
                       <label class="form-label">Age *</label>
-                      <input type="number" class="form-control" name="customer_age" min="18" max="99" required value="<?php echo isset($_POST['customer_age']) ? htmlspecialchars($_POST['customer_age']) : ''; ?>">
+                      <input type="number" class="form-control" name="customer_age" min="21" max="99" required value="<?php echo isset($_POST['customer_age']) ? htmlspecialchars($_POST['customer_age']) : ''; ?>">
+                      <div class="form-text">Minimum age: 21 years old</div>
+                    </div>
+                    
+                    <!-- License Information -->
+                    <div class="alert alert-info small mb-3">
+                      <i class="bi bi-info-circle"></i> <strong>Driver's License Required:</strong> A valid driver's license is mandatory for car rental.
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Driver's License Number *</label>
+                      <input type="text" class="form-control" name="license_number" required 
+                             pattern="[A-Z]\d{2}-\d{2}-\d{6}" 
+                             placeholder="e.g., N01-23-456789"
+                             title="Format: A00-00-000000 (Letter followed by 2 digits, dash, 2 digits, dash, 6 digits)"
+                             value="<?php echo isset($_POST['license_number']) ? htmlspecialchars($_POST['license_number']) : ''; ?>">
+                      <div class="form-text">Format: A00-00-000000 (e.g., N01-23-456789)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">License Expiry Date *</label>
+                      <input type="date" class="form-control" name="license_expiry" required 
+                             min="<?php echo date('Y-m-d'); ?>"
+                             value="<?php echo isset($_POST['license_expiry']) ? htmlspecialchars($_POST['license_expiry']) : ''; ?>">
+                      <div class="form-text">License must be valid for the entire rental period</div>
                     </div>
                     
                     <!-- Travel Agent -->
@@ -688,6 +745,18 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                       <label class="form-check-label" for="terms">
                         I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and <a href="#" class="text-primary">Rental Agreement</a> *
                       </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="license_valid" required>
+                      <label class="form-check-label" for="license_valid">
+                        I confirm that my driver's license is valid and I am authorized to drive in the Philippines *
+                      </label>
+                    </div>
+                    
+                    <div class="alert alert-warning small mb-3">
+                      <i class="bi bi-exclamation-triangle"></i> 
+                      <strong>Important:</strong> You must present your physical driver's license at pickup. International visitors need an International Driving Permit (IDP) along with their home country license.
                     </div>
                     
                     <button type="submit" class="btn btn-primary w-100" id="bookNowBtn" disabled>
@@ -874,8 +943,9 @@ function updateBookNowButton() {
     const hasPickup = document.getElementById('pickup_location').value !== '';
     const hasDropoff = document.getElementById('dropoff_location').value !== '';
     const termsChecked = document.getElementById('terms').checked;
+    const licenseConfirmed = document.getElementById('license_valid').checked;
     
-    document.getElementById('bookNowBtn').disabled = !(hasCar && hasDates && hasPickup && hasDropoff && termsChecked);
+    document.getElementById('bookNowBtn').disabled = !(hasCar && hasDates && hasPickup && hasDropoff && termsChecked && licenseConfirmed);
 }
 
 // Event listeners for price updates
@@ -967,6 +1037,40 @@ document.getElementById('customerForm').addEventListener('submit', function(e) {
         alert('Please complete all rental details.');
         return;
     }
+    
+    // Validate license number format
+    const licenseNumber = document.querySelector('input[name="license_number"]').value;
+    const licensePattern = /^[A-Z]\d{2}-\d{2}-\d{6}$/;
+    if (!licensePattern.test(licenseNumber)) {
+        e.preventDefault();
+        alert('Please enter a valid license number format: A00-00-000000 (e.g., N01-23-456789)');
+        return;
+    }
+    
+    // Validate license expiry
+    const licenseExpiry = new Date(document.querySelector('input[name="license_expiry"]').value);
+    const today = new Date();
+    const dropoffDate = new Date(document.getElementById('dropoff_date').value);
+    
+    if (licenseExpiry <= today) {
+        e.preventDefault();
+        alert('Your driver\'s license has expired. Please provide a valid license.');
+        return;
+    }
+    
+    if (licenseExpiry < dropoffDate) {
+        e.preventDefault();
+        alert('Your driver\'s license will expire before the rental period ends. Please ensure your license is valid for the entire rental period.');
+        return;
+    }
+    
+    // Validate age requirement
+    const age = parseInt(document.querySelector('input[name="customer_age"]').value);
+    if (age < 21) {
+        e.preventDefault();
+        alert('Minimum age requirement is 21 years old for car rental.');
+        return;
+    }
 });
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
@@ -983,7 +1087,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const minDropoff = new Date(pickupDate);
     minDropoff.setDate(minDropoff.getDate() + 1);
     document.getElementById('dropoff_date').min = minDropoff.toISOString().split('T')[0];
+    
+    // Add event listeners for form validation
     document.getElementById('terms').addEventListener('change', updateBookNowButton);
+    document.getElementById('license_valid').addEventListener('change', updateBookNowButton);
+    
+    // License number formatting
+    const licenseInput = document.querySelector('input[name="license_number"]');
+    if (licenseInput) {
+        licenseInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            
+            // Format as A00-00-000000
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = value;
+                } else if (value.length <= 5) {
+                    value = value.slice(0, 3) + '-' + value.slice(3);
+                } else {
+                    value = value.slice(0, 3) + '-' + value.slice(3, 5) + '-' + value.slice(5, 11);
+                }
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Validate license format on blur
+        licenseInput.addEventListener('blur', function(e) {
+            const pattern = /^[A-Z]\d{2}-\d{2}-\d{6}$/;
+            if (e.target.value && !pattern.test(e.target.value)) {
+                e.target.setCustomValidity('Please enter a valid license number format: A00-00-000000');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+    }
+    
+    // License expiry validation
+    const licenseExpiryInput = document.querySelector('input[name="license_expiry"]');
+    if (licenseExpiryInput) {
+        licenseExpiryInput.addEventListener('change', function(e) {
+            const expiryDate = new Date(e.target.value);
+            const today = new Date();
+            const dropoffDate = new Date(document.getElementById('dropoff_date').value);
+            
+            if (expiryDate <= today) {
+                e.target.setCustomValidity('License must not be expired');
+            } else if (dropoffDate && expiryDate < dropoffDate) {
+                e.target.setCustomValidity('License must be valid for the entire rental period');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+    }
     if (document.getElementById('form_car_model').value) {
         selectedCar = {
             id: document.getElementById('form_car_model').value.toLowerCase().replace(/ /g, '-'),
