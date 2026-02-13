@@ -66,6 +66,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
 // Fetch travel agents
 $agents_result = $conn->query("SELECT agent_id, agent_name FROM travel_agents WHERE status = 'Active' ORDER BY agent_name");
 
+// Check car availability and send reminders
+$conn->query("ALTER TABLE car_rental_bookings ADD COLUMN IF NOT EXISTS reminder_sent TINYINT(1) DEFAULT 0");
+
+$tomorrow = date('Y-m-d', strtotime('+1 day'));
+$reminder_result = $conn->query("SELECT * FROM car_rental_bookings 
+    WHERE return_date = '$tomorrow' 
+    AND status = 'Confirmed' 
+    AND reminder_sent = 0");
+
+while($booking = $reminder_result->fetch_assoc()) {
+    $conn->query("INSERT INTO notifications (user_email, message, type, created_at) 
+        VALUES ('{$booking['customer_email']}', 
+        'Reminder: Your rental for {$booking['car_model']} ends tomorrow ({$booking['return_date']}). Please return the car on time.', 
+        'rental_reminder', NOW())");
+    
+    $conn->query("UPDATE car_rental_bookings SET reminder_sent = 1 WHERE id = {$booking['id']}");
+}
+
 $conn->close();
 ?>
 

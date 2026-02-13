@@ -47,24 +47,18 @@ foreach($agents as $agent) {
     $result = $conn->query("SELECT COUNT(*) as bookings FROM travel_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $travel_bookings = $result->fetch_assoc()['bookings'];
     
-    $result = $conn->query("SELECT COUNT(*) as bookings FROM flight_bookings WHERE agent_id = '{$agent['agent_id']}'");
-    $flight_bookings = $result->fetch_assoc()['bookings'];
-    
     $result = $conn->query("SELECT COUNT(*) as bookings FROM car_rentals WHERE agent_id = '{$agent['agent_id']}'");
     $car_bookings = $result->fetch_assoc()['bookings'];
     
-    $total_bookings = $travel_bookings + $flight_bookings + $car_bookings;
+    $total_bookings = $travel_bookings + $car_bookings;
     
     $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM travel_bookings WHERE agent_id = '{$agent['agent_id']}'");
     $travel_commission = $result->fetch_assoc()['commission'];
     
-    $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM flight_bookings WHERE agent_id = '{$agent['agent_id']}'");
-    $flight_commission = $result->fetch_assoc()['commission'];
-    
     $result = $conn->query("SELECT COALESCE(SUM(agent_commission), 0) as commission FROM car_rentals WHERE agent_id = '{$agent['agent_id']}'");
     $car_commission = $result->fetch_assoc()['commission'];
     
-    $total_commission = $travel_commission + $flight_commission + $car_commission;
+    $total_commission = $travel_commission + $car_commission;
     
     $agent_stats[$agent['agent_id']] = [
         'total_bookings' => $total_bookings,

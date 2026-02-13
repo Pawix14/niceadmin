@@ -22,48 +22,8 @@ $result = $conn->query("
 while($row = $result->fetch_assoc()) {
     $all_commissions[] = $row;
 }
-$result = $conn->query("
-    SELECT 'hotel' as type, b.booking_id as id, b.guest_name as customer_name,
-           'Hotel' as booking_type, b.total_amount as amount,
-           b.agent_commission as commission, b.agent_id, a.agent_name,
-           a.commission_rate, b.status, b.booking_date
-    FROM hotel_bookings b
-    LEFT JOIN travel_agents a ON b.agent_id = a.agent_id
-    WHERE b.agent_id IS NOT NULL AND b.agent_commission > 0
-");
-while($row = $result->fetch_assoc()) {
-    $all_commissions[] = $row;
-}
 
-// Get flight commissions
-$result = $conn->query("
-    SELECT 'flight' as type, b.booking_id as id, b.passenger_name as customer_name,
-           'Flight' as booking_type, b.total_amount as amount,
-           b.agent_commission as commission, b.agent_id, a.agent_name,
-           a.commission_rate, b.status, b.booking_date
-    FROM flight_bookings b
-    LEFT JOIN travel_agents a ON b.agent_id = a.agent_id
-    WHERE b.agent_id IS NOT NULL AND b.agent_commission > 0
-");
-while($row = $result->fetch_assoc()) {
-    $all_commissions[] = $row;
-}
-
-// Get TOUR commissions
-$result = $conn->query("
-    SELECT 'tour' as type, b.booking_id as id, b.participant_name as customer_name,
-           'Tour' as booking_type, b.total_amount as amount,
-           b.agent_commission as commission, b.agent_id, a.agent_name,
-           a.commission_rate, b.status, b.booking_date
-    FROM tour_bookings b
-    LEFT JOIN travel_agents a ON b.agent_id = a.agent_id
-    WHERE b.agent_id IS NOT NULL AND b.agent_commission > 0
-");
-while($row = $result->fetch_assoc()) {
-    $all_commissions[] = $row;
-}
-
-// Get CAR RENTAL commissions (FIXED)
+// Get CAR RENTAL commissions
 $result = $conn->query("
     SELECT 'car' as type, b.booking_id as id, b.customer_name,
            'Car Rental' as booking_type, b.total_amount as amount,
@@ -90,9 +50,6 @@ $paid_commission = 0;
 // Group by type for statistics
 $type_totals = [
     'Travel' => 0,
-    'Hotel' => 0,
-    'Flight' => 0,
-    'Tour' => 0,
     'Car Rental' => 0
 ];
 
@@ -160,40 +117,16 @@ $conn->close();
         <div class="card-body">
           <h5 class="card-title">Commission Breakdown by Type</h5>
           <div class="row text-center">
-            <div class="col-md-2">
+            <div class="col-md-6">
               <div class="p-3 border rounded bg-light">
                 <h6 class="text-primary">Travel</h6>
                 <h5>₱<?php echo number_format($type_totals['Travel'], 2); ?></h5>
               </div>
             </div>
-            <div class="col-md-2">
-              <div class="p-3 border rounded bg-light">
-                <h6 class="text-success">Hotel</h6>
-                <h5>₱<?php echo number_format($type_totals['Hotel'], 2); ?></h5>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="p-3 border rounded bg-light">
-                <h6 class="text-info">Flight</h6>
-                <h5>₱<?php echo number_format($type_totals['Flight'], 2); ?></h5>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="p-3 border rounded bg-light">
-                <h6 class="text-warning">Tour</h6>
-                <h5>₱<?php echo number_format($type_totals['Tour'], 2); ?></h5>
-              </div>
-            </div>
-            <div class="col-md-2">
+            <div class="col-md-6">
               <div class="p-3 border rounded bg-light">
                 <h6 class="text-dark">Car Rental</h6>
                 <h5>₱<?php echo number_format($type_totals['Car Rental'], 2); ?></h5>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="p-3 border rounded bg-light">
-                <h6 class="text-secondary">Total</h6>
-                <h5>₱<?php echo number_format($total_commission, 2); ?></h5>
               </div>
             </div>
           </div>
@@ -215,9 +148,6 @@ $conn->close();
             <div class="btn-group">
               <button class="btn btn-sm btn-outline-primary" onclick="filterCommissions('all')">All</button>
               <button class="btn btn-sm btn-outline-success" onclick="filterCommissions('Travel')">Travel</button>
-              <button class="btn btn-sm btn-outline-success" onclick="filterCommissions('Hotel')">Hotel</button>
-              <button class="btn btn-sm btn-outline-info" onclick="filterCommissions('Flight')">Flight</button>
-              <button class="btn btn-sm btn-outline-warning" onclick="filterCommissions('Tour')">Tour</button>
               <button class="btn btn-sm btn-outline-dark" onclick="filterCommissions('Car Rental')">Car</button>
             </div>
           </div>
@@ -335,21 +265,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Get commission data from PHP
     const commissionData = {
-        labels: ['Travel', 'Hotel', 'Flight', 'Tour', 'Car Rental'],
+        labels: ['Travel', 'Car Rental'],
         datasets: [{
             label: 'Commission Amount (₱)',
             data: [
                 <?php echo $type_totals['Travel']; ?>,
-                <?php echo $type_totals['Hotel']; ?>,
-                <?php echo $type_totals['Flight']; ?>,
-                <?php echo $type_totals['Tour']; ?>,
                 <?php echo $type_totals['Car Rental']; ?>
             ],
             backgroundColor: [
                 '#007bff', // Travel - blue
-                '#28a745', // Hotel - green
-                '#17a2b8', // Flight - cyan
-                '#ffc107', // Tour - yellow
                 '#343a40'  // Car - dark
             ],
             borderWidth: 1

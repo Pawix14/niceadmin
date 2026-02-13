@@ -365,7 +365,7 @@ body {
   left: 0;
   right: 0;
   height: 5px;
-  background: var(--sunset-gradient);
+  background: linear-gradient(135deg, #666 0%, #2c3e50 100%);
 }
 
 .pagetitle h1 {
@@ -459,6 +459,112 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: 8px 8px 0 0;
+}
+
+.car-image-container img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+/* Fix Blurry Images - High Quality Rendering */
+img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Profile Pictures Sharp */
+.avatar-placeholder img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Car Images Sharp and Clear */
+.car-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: auto;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.sale-card-compact img,
+.featured-car-card-compact img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: auto;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Special Car Sales and Featured Cars - Auto Fit Width */
+.sale-card-compact,
+.featured-car-card-compact {
+    min-width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+}
+
+/* Card Body Auto Fit for Horizontal Scrollable Sections */
+.card-body .d-flex.gap-2.overflow-auto {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.5rem;
+    width: fit-content;
+    max-width: 100%;
+}
+
+/* Ensure cards don't stretch */
+.card-body .d-flex.gap-2.overflow-auto > * {
+    flex: 0 0 auto;
+}
+
+/* Discount Badge - Attractive and Eye-catching */
+.sale-card-compact .badge.bg-dark,
+.badge.bg-dark {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c92a2a 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    animation: pulse-glow 2s ease-in-out infinite;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        transform: scale(1.05);
+    }
 }
 
 .car-badge {
@@ -606,6 +712,257 @@ body {
   .sidebar {
     width: 100%;
   }
+}
+
+/* Cool Hover Effects for Cards */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(102, 102, 102, 0.05), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s;
+  opacity: 0;
+}
+
+.card:hover::before {
+  animation: shimmer 1.5s infinite;
+  opacity: 1;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Floating Animation for Icons */
+.stat-card .bi {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Pulse Effect for Badges */
+.badge {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Smooth Scroll Reveal - Removed to prevent blinking */
+.card, .stat-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glowing Border Effect */
+.form-control:focus {
+  box-shadow: 0 0 20px rgba(102, 102, 102, 0.3);
+  border-color: #666;
+}
+
+/* Button Hover Glow */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Table Row Slide Effect */
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(102, 102, 102, 0.05) 0%, transparent 100%);
+  transform: translateX(5px);
+}
+@keyframes ring {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+}
+
+.bi-bell-fill:hover {
+  animation: ring 0.5s ease;
+}
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.4s;
+}
+
+.nav-link:hover::after {
+  width: 8px;
+  height: 8px;
+  right: 15px;
+}
+.stat-card h2 {
+  background: linear-gradient(135deg, #666 0%, #2c3e50 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.pagetitle {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.breadcrumb-item {
+  opacity: 1;
+}
+.quick-action-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-action-item::before {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 102, 102, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.quick-action-item:hover::before {
+  left: 100%;
+}
+.avatar-placeholder {
+  transition: all 0.3s ease;
+}
+
+.avatar-placeholder:hover {
+  transform: rotate(360deg) scale(1.1);
+}
+.dropdown-menu {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Back to Top Bounce */
+.back-to-top {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(102, 102, 102, 0.1);
+  border-top-color: #666;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Text Gradient Effect */
+.gradient-text {
+  background: linear-gradient(135deg, #666 0%, #2c3e50 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shadow Lift on Hover */
+.shadow-lift {
+  transition: all 0.3s ease;
+}
+
+.shadow-lift:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px);
+}
+
+/* Ripple Effect on Click */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Smooth Page Transitions - Removed to prevent blinking */
+  
   
   .stat-card {
     margin-bottom: 15px;
@@ -614,7 +971,7 @@ body {
   .table-responsive {
     border-radius: 15px;
   }
-}
+
 
 /* Travel Animation for Success Messages */
 @keyframes travelSuccess {

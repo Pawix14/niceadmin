@@ -22,9 +22,6 @@ if (isset($_GET['action'])) {
             case 'travel':
                 $conn->query("DELETE FROM travel_bookings WHERE booking_id = '$id'");
                 break;
-            case 'flight':
-                $conn->query("DELETE FROM flight_bookings WHERE booking_id = '$id'");
-                break;
             case 'car':
                 $conn->query("DELETE FROM car_rentals WHERE booking_id = '$id'");
                 break;
@@ -41,9 +38,6 @@ if (isset($_GET['action'])) {
             case 'travel':
                 $conn->query("UPDATE travel_bookings SET status = '$status' WHERE booking_id = '$id'");
                 break;
-            case 'flight':
-                $conn->query("UPDATE flight_bookings SET status = '$status' WHERE booking_id = '$id'");
-                break;
             case 'car':
                 $conn->query("UPDATE car_rentals SET status = '$status' WHERE booking_id = '$id'");
                 break;
@@ -59,35 +53,7 @@ if (isset($_GET['action'])) {
 // Get all bookings for main table
 $all_bookings = [];
 
-// Travel Bookings
-$result = $conn->query("
-    SELECT 'travel' as type, booking_id as id, traveler_name as customer_name, 'Travel' as booking_type, 
-           CONCAT(from_city, ' → ', to_city) as details, 
-           COALESCE(total_amount, 0) as amount, 
-           COALESCE(agent_commission, 0) as commission,
-           status, booking_date
-    FROM travel_bookings 
-    ORDER BY booking_date DESC
-");
-while($row = $result->fetch_assoc()) {
-    $all_bookings[] = $row;
-}
-
-// Flight Bookings
-$result = $conn->query("
-    SELECT 'flight' as type, booking_id as id, passenger_name as customer_name, 'Flight' as booking_type, 
-           CONCAT(departure_airport, ' → ', arrival_airport) as details, 
-           COALESCE(total_amount, 0) as amount, 
-           COALESCE(agent_commission, 0) as commission,
-           status, booking_date
-    FROM flight_bookings 
-    ORDER BY booking_date DESC
-");
-while($row = $result->fetch_assoc()) {
-    $all_bookings[] = $row;
-}
-
-// Car Rental Bookings (get all for main table, and recent for sidebar)
+// Car Rental Bookings only
 $car_table_exists = $conn->query("SHOW TABLES LIKE 'car_rentals'");
 if ($car_table_exists && $car_table_exists->num_rows > 0) {
     $result = $conn->query("
@@ -111,12 +77,6 @@ usort($all_bookings, function($a, $b) {
 });
 
 // Get RECENT Car Rentals (last 5)
-$recent_cars = $conn->query("
-    SELECT booking_id, customer_name, car_model, car_type, pickup_date, dropoff_date as return_date, status 
-    FROM car_rentals 
-    ORDER BY created_at DESC 
-    LIMIT 5
-");
 
 // Calculate statistics
 $total_bookings = count($all_bookings);
@@ -142,108 +102,7 @@ $conn->close();
 <section class="section">
   <div class="row">
     
-    <!-- Left Column: Recent Activity -->
-    <div class="col-lg-4">
-      <!-- Recent Tours Section -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title d-flex align-items-center">
-            <i class="bi bi-compass text-warning me-2"></i>
-            Recent Tour Bookings
-          </h5>
-          
-          <?php if ($recent_tours && $recent_tours->num_rows > 0): ?>
-          <div class="list-group">
-            <?php while($tour = $recent_tours->fetch_assoc()): ?>
-            <div class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1"><?php echo htmlspecialchars($tour['tour_name']); ?></h6>
-                <small class="text-muted"><?php echo date('M d', strtotime($tour['booking_date'])); ?></small>
-              </div>
-              <p class="mb-1">
-                <small>
-                  <i class="bi bi-person"></i> <?php echo htmlspecialchars($tour['participant_name']); ?><br>
-                  <i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($tour['city']); ?>, <?php echo htmlspecialchars($tour['country']); ?>
-                </small>
-              </p>
-              <small>
-                <span class="badge bg-<?php echo $tour['status'] == 'Confirmed' ? 'success' : 'warning'; ?>">
-                  <?php echo $tour['status']; ?>
-                </span>
-                <span class="text-muted ms-2">ID: <?php echo $tour['booking_id']; ?></span>
-              </small>
-            </div>
-            <?php endwhile; ?>
-          </div>
-          <?php else: ?>
-          <div class="text-center py-3">
-            <i class="bi bi-compass display-6 text-muted"></i>
-            <p class="text-muted mt-2">No recent tour bookings</p>
-            <a href="index.php?page=tours" class="btn btn-sm btn-outline-warning">
-              <i class="bi bi-plus-circle"></i> Book a Tour
-            </a>
-          </div>
-          <?php endif; ?>
-          
-          <div class="text-center mt-3">
-            <a href="index.php?page=tours" class="btn btn-sm btn-warning">
-              <i class="bi bi-eye"></i> View All Tours
-            </a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Recent Car Rentals Section -->
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title d-flex align-items-center">
-            <i class="bi bi-car-front text-info me-2"></i>
-            Recent Car Rentals
-          </h5>
-          
-          <?php if ($recent_cars && $recent_cars->num_rows > 0): ?>
-          <div class="list-group">
-            <?php while($car = $recent_cars->fetch_assoc()): ?>
-            <div class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1"><?php echo htmlspecialchars($car['car_model']); ?></h6>
-                <small class="text-muted"><?php echo date('M d', strtotime($car['pickup_date'])); ?></small>
-              </div>
-              <p class="mb-1">
-                <small>
-                  <i class="bi bi-person"></i> <?php echo htmlspecialchars($car['customer_name']); ?><br>
-                  <i class="bi bi-car-front"></i> <?php echo $car['car_type']; ?>
-                </small>
-              </p>
-              <small>
-                <span class="badge bg-<?php echo $car['status'] == 'Active' ? 'success' : 'warning'; ?>">
-                  <?php echo $car['status']; ?>
-                </span>
-                <span class="text-muted ms-2">Until: <?php echo date('M d', strtotime($car['return_date'])); ?></span>
-              </small>
-            </div>
-            <?php endwhile; ?>
-          </div>
-          <?php else: ?>
-          <div class="text-center py-3">
-            <i class="bi bi-car-front display-6 text-muted"></i>
-            <p class="text-muted mt-2">No recent car rentals</p>
-            <a href="index.php?page=car_rental" class="btn btn-sm btn-outline-info">
-              <i class="bi bi-plus-circle"></i> Rent a Car
-            </a>
-          </div>
-          <?php endif; ?>
-          
-          <div class="text-center mt-3">
-            <a href="index.php?page=car_rental" class="btn btn-sm btn-info">
-              <i class="bi bi-eye"></i> View All Cars
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <div class="col-lg-8">
+    <div class="col-lg-12">
       <div class="row mb-4">
         <div class="col-md-4">
           <div class="card stat-card">
@@ -287,11 +146,8 @@ $conn->close();
           <div class="row mb-4">
             <div class="col-md-12">
               <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">All Bookings</h5>
+                <h5 class="card-title mb-0">Car Rental Bookings</h5>
                 <div class="btn-group">
-                  <a href="index.php?page=new_booking" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> New Booking
-                  </a>
                   <a href="index.php?page=car_rental" class="btn btn-info">
                     <i class="bi bi-car-front"></i> Rent a Car
                   </a>
@@ -307,9 +163,7 @@ $conn->close();
                 <span class="input-group-text"><i class="bi bi-filter"></i></span>
                 <select class="form-select" id="filterType">
                   <option value="">All Types</option>
-                  <option value="Travel">Travel</option>
-                  <option value="Flight">Flight</option>
-                  <option value="Car Rental">Car Rental</option>
+                  <option value="Car Rental" selected>Car Rental</option>
                 </select>
               </div>
             </div>
@@ -359,30 +213,13 @@ $conn->close();
                   $type_badge = '';
                   $type_icon = '';
                   switch($booking['booking_type']) {
-                    case 'Travel': 
-                      $type_badge = 'primary'; 
-                      $type_icon = 'bi-bus-front';
-                      break;
-                    case 'Hotel': 
-                      $type_badge = 'success'; 
-                      $type_icon = 'bi-building';
-                      break;
-                    case 'Tour': 
-                      $type_badge = 'warning'; 
-                      $type_icon = 'bi-compass';
-                      break;
-                    case 'Flight': 
-                      $type_badge = 'info'; 
-                      $type_icon = 'bi-airplane';
-                      break;
                     case 'Car Rental': 
                       $type_badge = 'dark'; 
                       $type_icon = 'bi-car-front';
                       break;
-                    case 'Cruise': 
-                      $type_badge = 'secondary'; 
-                      $type_icon = 'bi-water';
-                      break;
+                    default:
+                      $type_badge = 'secondary';
+                      $type_icon = 'bi-question';
                   }
                   
                   $status_badge = '';
@@ -558,25 +395,7 @@ function showStatusModal(type, id, bookingType, customerName) {
     statusOptions.innerHTML = '';
     
     // Define status options based on booking type
-    let statusList = [];
-    switch(bookingType) {
-        case 'Travel':
-        case 'Tour':
-            statusList = ['Pending', 'Confirmed', 'Completed', 'Cancelled'];
-            break;
-        case 'Hotel':
-            statusList = ['Pending', 'Confirmed', 'Checked-in', 'Checked-out', 'Cancelled'];
-            break;
-        case 'Flight':
-            statusList = ['Pending', 'Confirmed', 'Boarded', 'Completed', 'Cancelled'];
-            break;
-        case 'Car Rental':
-            statusList = ['Pending', 'Confirmed', 'Active', 'Returned', 'Cancelled'];
-            break;
-        case 'Cruise':
-            statusList = ['Pending', 'Confirmed', 'Boarded', 'Sailing', 'Completed', 'Cancelled'];
-            break;
-    }
+    let statusList = ['Pending', 'Confirmed', 'Active', 'Returned', 'Cancelled'];
     
     // Add status options to modal
     statusList.forEach(status => {

@@ -10,6 +10,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Update car availability based on active rentals
+$conn->query("UPDATE cars c 
+    LEFT JOIN car_rental_bookings b ON c.name = b.car_model 
+    AND b.status IN ('Confirmed', 'Pending') 
+    AND CURDATE() BETWEEN b.pickup_date AND b.return_date
+    SET c.status = IF(b.id IS NULL, 'Active', 'Rented')");
+
 // Check if we need to create the car_rentals table
 $check_table = $conn->query("SHOW TABLES LIKE 'car_rentals'");
 if ($check_table->num_rows == 0) {
@@ -67,82 +74,49 @@ if ($check_table->num_rows == 0) {
     }
 }
 
-// Available cars data
-$available_cars = [
-    'economy' => [
-        'name' => 'Economy Car',
-        'models' => [
-            [
-                'id' => 'kia-rio',
-                'name' => 'Kia Rio or Similar',
-                'image' => 'assets/img/cars/kia-rio.jpg',
-                'daily_rate' => 2850,
-                'features' => ['4-5 seats', 'Air Conditioning', 'Automatic', 'Fuel Efficient'],
-                'type' => 'Economy'
-            ],
-            [
-                'id' => 'toyota-corolla',
-                'name' => 'Toyota Corolla or Similar',
-                'image' => 'assets/img/cars/toyota-corolla.jpg',
-                'daily_rate' => 3150,
-                'features' => ['5 seats', 'Air Conditioning', 'Automatic', 'Spacious Trunk'],
-                'type' => 'Economy'
-            ]
-        ]
-    ],
-    'compact' => [
-        'name' => 'Compact Car',
-        'models' => [
-            [
-                'id' => 'honda-civic',
-                'name' => 'Honda Civic or Similar',
-                'image' => 'assets/img/cars/honda-civic.jpg',
-                'daily_rate' => 3650,
-                'features' => ['5 seats', 'Premium Sound', 'Automatic', 'GPS Navigation'],
-                'type' => 'Compact'
-            ]
-        ]
-    ],
-    'suv' => [
-        'name' => 'SUV',
-        'models' => [
-            [
-                'id' => 'ford-mustang',
-                'name' => 'Ford Mustang or Similar',
-                'image' => 'assets/img/cars/ford-mustang.jpg',
-                'daily_rate' => 5108,
-                'features' => ['4 seats', 'Sports Car', 'Automatic', 'Premium Features'],
-                'type' => 'SUV'
-            ]
-        ]
-    ],
-    'luxury' => [
-        'name' => 'Luxury SUV',
-        'models' => [
-            [
-                'id' => 'bmw-x7',
-                'name' => 'BMW X7 or Similar',
-                'image' => 'assets/img/cars/bmw-x7.jpg',
-                'daily_rate' => 5878,
-                'features' => ['7 seats', 'Leather Seats', 'Automatic', 'Premium Package'],
-                'type' => 'Luxury'
-            ]
-        ]
-    ],
-    'electric' => [
-        'name' => 'Electric Car',
-        'models' => [
-            [
-                'id' => 'tesla-model3',
-                'name' => 'Tesla Model 3 or Similar',
-                'image' => 'assets/img/cars/tesla-model3.jpg',
-                'daily_rate' => 4250,
-                'features' => ['5 seats', 'Electric', 'Autopilot', 'Premium Interior'],
-                'type' => 'Electric'
-            ]
-        ]
-    ]
-];
+// Get active car sales
+$active_sales = [];
+$sales_result = $conn->query("SELECT car_model, sale_price FROM car_sales WHERE status='Active' AND CURDATE() BETWEEN sale_start AND sale_end");
+if ($sales_result) {
+    while($sale = $sales_result->fetch_assoc()) {
+        $active_sales[$sale['car_model']] = $sale['sale_price'];
+    }
+}
+
+// Get cars from database
+$available_cars_by_type = [];
+$cars_result = $conn->query("SELECT * FROM cars WHERE status='Active' ORDER BY type, name");
+if ($cars_result) {
+    while($car = $cars_result->fetch_assoc()) {
+        $type_key = strtolower($car['type']);
+        if (!isset($available_cars_by_type[$type_key])) {
+            $available_cars_by_type[$type_key] = [
+                'name' => $car['type'] . ' Car',
+                'models' => []
+            ];
+        }
+        
+        $daily_rate = isset($active_sales[$car['name']]) ? $active_sales[$car['name']] : $car['daily_rate'];
+        $features = !empty($car['features']) ? explode(',', $car['features']) : [];
+        
+        $available_cars_by_type[$type_key]['models'][] = [
+            'id' => strtolower(str_replace(' ', '-', $car['name'])),
+            'name' => $car['name'],
+            'image' => $car['image'] ? $car['image'] : 'assets/img/cars/default.jpg',
+            'daily_rate' => $daily_rate,
+            'features' => $features,
+            'type' => $car['type'],
+            'fuel_type' => isset($car['fuel_type']) ? $car['fuel_type'] : 'Gasoline',
+            'transmission' => isset($car['transmission']) ? $car['transmission'] : 'Automatic',
+            'car_year' => isset($car['car_year']) ? $car['car_year'] : null,
+            'license_plate' => isset($car['license_plate']) ? $car['license_plate'] : null,
+            'color' => isset($car['color']) ? $car['color'] : null,
+            'seating_capacity' => isset($car['seating_capacity']) ? $car['seating_capacity'] : 5
+        ];
+    }
+}
+
+$available_cars = $available_cars_by_type;
 
 // Available pickup/dropoff locations
 $locations = [
@@ -185,13 +159,18 @@ $locations = [
     ]
 ];
 
-// Promo codes
-$promo_codes = [
-    'WELCOME20' => ['discount' => 20, 'type' => 'percentage', 'min_days' => 3],
-    'SUMMER15' => ['discount' => 15, 'type' => 'percentage', 'min_amount' => 10000],
-    'CAR50' => ['discount' => 50, 'type' => 'fixed'],
-    'WEEKLY10' => ['discount' => 10, 'type' => 'percentage', 'min_days' => 7]
-];
+// Get active promo codes from database
+$promo_codes = [];
+$promo_result = $conn->query("SELECT code, discount_type, discount_value, for_first_time_only FROM promo_codes WHERE status='Active' AND CURDATE() BETWEEN valid_from AND valid_until AND (usage_limit IS NULL OR times_used < usage_limit)");
+if ($promo_result) {
+    while($promo = $promo_result->fetch_assoc()) {
+        $promo_codes[$promo['code']] = [
+            'discount' => $promo['discount_value'],
+            'type' => $promo['discount_type'],
+            'first_time_only' => $promo['for_first_time_only']
+        ];
+    }
+}
 
 // Insurance options
 $insurance_options = [
@@ -297,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         }
         
         $payment_method = $conn->real_escape_string($_POST['payment_method']);
-        $status = 'Confirmed';
+        $status = 'Pending';
 
         // Generate booking ID
         $booking_id = 'CAR-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
@@ -326,6 +305,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             if (!empty($agent_id)) {
                 $conn->query("UPDATE travel_agents SET total_bookings = total_bookings + 1 WHERE agent_id = '$agent_id'");
             }
+            
+            // Create notification for admin
+            $conn->query("INSERT INTO notifications (user_type, title, message, booking_id, is_read) VALUES ('admin', 'New Car Rental Booking', 'New booking from $customer_name for $car_model - Pending Review', '$booking_id', 0)");
+            
+            // Create notification for customer
+            $conn->query("INSERT INTO notifications (user_type, user_id, title, message, booking_id, is_read) VALUES ('customer', '$customer_email', 'Booking Submitted', 'Your booking $booking_id has been submitted and is pending admin review.', '$booking_id', 0)");
             
             $message = "✅ Car rental booked successfully! ";
             $message .= "Booking ID: <strong>" . $booking_id . "</strong><br>";
@@ -379,7 +364,7 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
           <div class="row">
             <!-- Left Column: Car Selection -->
             <div class="col-lg-8">
-              <div class="card mb-4">
+              <div class="card mb-4" id="carSelectionCard">
                 <div class="card-header bg-light">
                   <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filters & Car Selection</h6>
                 </div>
@@ -403,21 +388,39 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                     <?php foreach($available_cars as $type => $car_data): ?>
                       <?php foreach($car_data['models'] as $car): ?>
                       <div class="col-md-6 mb-4 car-item" data-type="<?php echo $type; ?>">
-                        <div class="card h-100 border">
+                        <div class="car-card">
                           <div class="position-relative">
-                            <img src="<?php echo $car['image']; ?>" class="card-img-top" alt="<?php echo $car['name']; ?>" style="height: 200px; object-fit: cover;">
-                            <span class="position-absolute top-0 start-0 badge bg-primary m-2"><?php echo $car['type']; ?></span>
+                            <img src="<?php echo $car['image']; ?>" class="car-card-img" alt="<?php echo $car['name']; ?>">
+                            <span class="position-absolute top-0 start-0 badge badge-<?php echo strtolower($car['type']); ?> m-2"><?php echo $car['type']; ?></span>
+                            <?php if ($car['car_year']): ?>
+                            <span class="position-absolute top-0 end-0 badge bg-dark m-2"><?php echo $car['car_year']; ?></span>
+                            <?php endif; ?>
                           </div>
-                          <div class="card-body">
-                            <h6 class="card-title"><?php echo $car['name']; ?></h6>
+                          <div class="car-card-body">
+                            <h6 class="car-card-title"><?php echo $car['name']; ?></h6>
+                            <?php if ($car['license_plate']): ?>
+                            <small class="text-muted d-block mb-2"><i class="bi bi-credit-card-2-front"></i> <?php echo htmlspecialchars($car['license_plate']); ?></small>
+                            <?php endif; ?>
+                            <div class="mb-2">
+                              <small class="text-muted">
+                                <i class="bi bi-fuel-pump"></i> <?php echo $car['fuel_type']; ?> | 
+                                <i class="bi bi-gear"></i> <?php echo $car['transmission']; ?> |
+                                <i class="bi bi-people"></i> <?php echo $car['seating_capacity']; ?> seats
+                              </small>
+                            </div>
+                            <?php if ($car['color']): ?>
+                            <div class="mb-2">
+                              <small class="text-muted"><i class="bi bi-palette"></i> <strong><?php echo htmlspecialchars($car['color']); ?></strong></small>
+                            </div>
+                            <?php endif; ?>
                             <div class="mb-3">
                               <?php foreach($car['features'] as $feature): ?>
-                              <span class="badge bg-light text-dark me-1 mb-1"><?php echo $feature; ?></span>
+                              <span class="badge bg-light text-dark me-1 mb-1"><small><?php echo trim($feature); ?></small></span>
                               <?php endforeach; ?>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                               <div>
-                                <h5 class="text-primary mb-0">₱<?php echo number_format($car['daily_rate'], 2); ?><small class="text-muted">/day</small></h5>
+                                <h5 class="car-card-price mb-0">₱<?php echo number_format($car['daily_rate'], 2); ?><small class="text-muted">/day</small></h5>
                               </div>
                               <button class="btn btn-primary btn-sm select-car" 
                                       data-id="<?php echo $car['id']; ?>"
@@ -570,6 +573,9 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                     <h5 id="selectedCarName" class="text-primary"></h5>
                     <p id="selectedCarType" class="text-muted"></p>
                     <h4 id="selectedCarRate" class="text-success"></h4>
+                    <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="chooseAgainBtn">
+                      <i class="bi bi-arrow-left me-1"></i>Choose Again
+                    </button>
                     <input type="hidden" id="selected_car_id" name="car_id">
                     <input type="hidden" id="selected_car_name" name="car_name">
                     <input type="hidden" id="selected_car_type" name="car_type">
@@ -624,6 +630,9 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                       <button class="btn btn-outline-primary" type="button" id="apply_promo">Apply</button>
                     </div>
                     <div id="promo_message" class="mt-2 small"></div>
+                    <div id="promo_applied" class="alert alert-success mt-2" style="display:none;">
+                      <i class="bi bi-check-circle-fill"></i> <strong>Promo Applied:</strong> <span id="promo_details"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -830,6 +839,9 @@ document.querySelectorAll('.select-car').forEach(button => {
         
         updatePrice();
         updateBookNowButton();
+        
+        // Hide car selection card
+        document.getElementById('carSelectionCard').style.display = 'none';
     });
 });
 
@@ -989,30 +1001,27 @@ document.querySelectorAll('.insurance-option, .extra-option').forEach(element =>
 document.getElementById('apply_promo').addEventListener('click', function() {
     const promoCode = document.getElementById('promo_code').value.toUpperCase();
     const promoMessage = document.getElementById('promo_message');
-    const promoData = <?php echo json_encode($promo_codes); ?>;   
+    const promoApplied = document.getElementById('promo_applied');
+    const promoDetails = document.getElementById('promo_details');
+    const promoData = <?php echo json_encode($promo_codes); ?>;
+    
+    if (!selectedCar || rentalDays === 0) {
+        promoMessage.innerHTML = '<span class="text-danger">❌ Please select a car and dates first.</span>';
+        promoApplied.style.display = 'none';
+        return;
+    }
+    
     if (promoData[promoCode]) {
         const promo = promoData[promoCode];
-        let valid = true;
-        let message = '';
-        if (promo.min_days && rentalDays < promo.min_days) {
-            valid = false;
-            message = `Minimum ${promo.min_days} days required for this promo.`;
-        }
-        const totalBeforeDiscount = (selectedCar ? selectedCar.rate * rentalDays : 0) + insuranceFee + additionalFees;
-        if (promo.min_amount && totalBeforeDiscount < promo.min_amount) {
-            valid = false;
-            message = `Minimum amount ₱${promo.min_amount} required for this promo.`;
-        }
+        appliedPromo = promoCode;
         
-        if (valid) {
-            appliedPromo = promoCode;
-            promoMessage.innerHTML = `<span class="text-success">✅ Promo code applied! ${promo.discount}${promo.type === 'percentage' ? '%' : '₱'} discount.</span>`;
-        } else {
-            appliedPromo = null;
-            promoMessage.innerHTML = `<span class="text-danger">❌ ${message}</span>`;
-        }
+        const discountText = promo.type === 'percentage' ? `${promo.discount}% off` : `₱${promo.discount} off`;
+        promoDetails.textContent = `${promoCode} - ${discountText}`;
+        promoApplied.style.display = 'block';
+        promoMessage.innerHTML = '';
     } else {
         appliedPromo = null;
+        promoApplied.style.display = 'none';
         promoMessage.innerHTML = '<span class="text-danger">❌ Invalid promo code.</span>';
     }
     
@@ -1091,6 +1100,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for form validation
     document.getElementById('terms').addEventListener('change', updateBookNowButton);
     document.getElementById('license_valid').addEventListener('change', updateBookNowButton);
+    
+    // Check if car parameter is in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const carParam = urlParams.get('car');
+    
+    if (carParam) {
+        // Find and select the car
+        const carButtons = document.querySelectorAll('.select-car');
+        carButtons.forEach(button => {
+            if (button.dataset.name === carParam) {
+                button.click();
+            }
+        });
+    }
+    
+    // Choose Again button
+    document.getElementById('chooseAgainBtn').addEventListener('click', function() {
+        selectedCar = null;
+        document.getElementById('selectedCarPlaceholder').style.display = 'block';
+        document.getElementById('selectedCarDetails').style.display = 'none';
+        document.getElementById('carSelectionCard').style.display = 'block';
+        updateBookNowButton();
+    });
     
     // License number formatting
     const licenseInput = document.querySelector('input[name="license_number"]');
