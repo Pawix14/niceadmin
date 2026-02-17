@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2026 at 04:40 AM
+-- Generation Time: Feb 17, 2026 at 08:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,7 +47,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `admin_id`, `username`, `password`, `full_name`, `email`, `phone`, `role`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 'ADM001', 'admin', '$2y$10$e5kfnM6EOQxR/PF7ikmFeuCkfB25rREF9NM58w5bXCativDz7ZDKu', 'System Administrator', 'admin@paradise.com', NULL, 'Super Admin', 'Active', '2026-02-13 11:28:28', '2026-02-09 04:19:37', '2026-02-13 03:28:28');
+(1, 'ADM001', 'admin', '$2y$10$e5kfnM6EOQxR/PF7ikmFeuCkfB25rREF9NM58w5bXCativDz7ZDKu', 'System Administrator', 'admin@paradise.com', NULL, 'Super Admin', 'Active', '2026-02-17 15:55:49', '2026-02-09 04:19:37', '2026-02-17 07:55:49'),
+(5, 'ADM943', 'staff@gmail.com', '$2y$10$eqwobAO5oJY9ad/HLIeTJOg7/wS11NQ1ttKHpd458qD01yHhmsI/u', 'Gabriel', 'staff@gmail.com', '09940213443', 'Staff', 'Active', '2026-02-17 15:54:11', '2026-02-17 03:37:26', '2026-02-17 07:54:11');
 
 -- --------------------------------------------------------
 
@@ -92,7 +93,7 @@ INSERT INTO `cars` (`id`, `name`, `type`, `daily_rate`, `image`, `features`, `fu
 (20, 'Kia Rio or Similar', 'Economy', 2850.00, 'assets/img/cars/kia-rio.jpg', '4-5 seats, Air Conditioning, Automatic, Fuel Efficient', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22'),
 (21, 'Toyota Corolla ', 'Economy', 3150.00, 'assets/img/cars/toyota-corolla.jpg', '5 seats, Air Conditioning, Automatic, Spacious Trunk', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (22, 'Mitsubishi Mirage', 'Economy', 2650.00, 'assets/img/cars/mitsubishi-mirage.jpg', '4 seats, Air Conditioning, Manual, Compact', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
-(23, 'Hyundai Accent', 'Economy', 2950.00, 'assets/img/cars/hyundai-accent.jpg', '5 seats, Air Conditioning, Automatic, Bluetooth', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
+(23, 'Hyundai Accent', 'Economy', 2950.00, 'assets/img/cars/hyundai-accent.jpg', '5 seats, Air Conditioning, Automatic, Bluetooth', 'Gasoline', 'Automatic', 5, 200, NULL, '', '', '', 'Active', 1, '2026-02-09 05:13:22'),
 (24, 'Honda Civic', 'Compact', 3650.00, 'assets/img/cars/honda-civic.jpg', '5 seats, Premium Sound, Automatic, GPS Navigation', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22'),
 (25, 'Mazda 3', 'Compact', 3850.00, 'assets/img/cars/mazda-3.jpg', '5 seats, Leather Seats, Automatic, Sunroof', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (26, 'Volkswagen Jetta ', 'Compact', 3950.00, 'assets/img/cars/volkswagen-jetta.jpg', '5 seats, Turbo Engine, Automatic, Premium Audio', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
@@ -100,6 +101,47 @@ INSERT INTO `cars` (`id`, `name`, `type`, `daily_rate`, `image`, `features`, `fu
 (30, 'BMW X7 or Similar', 'Luxury', 5878.00, 'assets/img/cars/bmw-x7.jpg', '7 seats, Leather Seats, Automatic, Premium Package', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (33, 'Tesla Model 3 or Similar', 'Electric', 4250.00, 'assets/img/cars/tesla-model3.jpg', '5 seats, Electric, Autopilot, Premium Interior', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (35, 'Hyundai Ioniq 5 ', 'Electric', 4500.00, 'assets/img/cars/hyundai-ioniq-5.jpg', '5 seats, Electric, V2L, Ultra Fast Charging', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `car_availability`
+--
+
+CREATE TABLE `car_availability` (
+  `id` int(11) NOT NULL,
+  `car_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `status` varchar(20) DEFAULT 'Blocked',
+  `reason` varchar(255) DEFAULT NULL,
+  `price_multiplier` decimal(3,2) DEFAULT 1.00,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `car_blocked_dates`
+--
+
+CREATE TABLE `car_blocked_dates` (
+  `id` int(11) NOT NULL,
+  `car_model` varchar(100) NOT NULL,
+  `block_start` date NOT NULL,
+  `block_end` date NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `created_by` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `car_blocked_dates`
+--
+
+INSERT INTO `car_blocked_dates` (`id`, `car_model`, `block_start`, `block_end`, `reason`, `created_by`, `created_at`) VALUES
+(1, 'Honda Civic', '2026-02-17', '2026-02-18', 'Repair', 'staff@gmail.com', '2026-02-17 04:21:42'),
+(2, 'Honda Civic', '2026-02-17', '2026-03-27', 'Inspection', 'staff@gmail.com', '2026-02-17 04:45:29');
 
 -- --------------------------------------------------------
 
@@ -125,7 +167,8 @@ CREATE TABLE `car_maintenance` (
 --
 
 INSERT INTO `car_maintenance` (`id`, `car_id`, `maintenance_type`, `description`, `cost`, `maintenance_date`, `next_service_date`, `performed_by`, `status`, `created_at`) VALUES
-(1, 7, 'Tire Change', 'wewqe', 2340.00, '2026-02-13', '2026-02-21', 'admin', 'Completed', '2026-02-13 03:12:01');
+(1, 7, 'Tire Change', 'wewqe', 2340.00, '2026-02-13', '2026-02-21', 'admin', 'Completed', '2026-02-13 03:12:01'),
+(2, 30, 'Inspection', 'wdrwr', 2500.00, '2026-02-17', '2026-02-17', 'admin', 'Completed', '2026-02-17 03:50:01');
 
 -- --------------------------------------------------------
 
@@ -166,33 +209,67 @@ CREATE TABLE `car_rentals` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `license_number` varchar(50) DEFAULT '',
-  `license_expiry` date DEFAULT NULL
+  `license_expiry` date DEFAULT NULL,
+  `actual_return_date` datetime DEFAULT NULL,
+  `payment_proof` varchar(255) DEFAULT NULL,
+  `invoice_number` varchar(50) DEFAULT NULL,
+  `receipt_file` varchar(255) DEFAULT NULL,
+  `payment_verified_by` varchar(50) DEFAULT NULL,
+  `payment_verified_at` datetime DEFAULT NULL,
+  `payment_type` varchar(20) DEFAULT 'Full Payment',
+  `amount_paid` decimal(10,2) DEFAULT 0.00,
+  `remaining_balance` decimal(10,2) DEFAULT 0.00,
+  `refund_amount` decimal(10,2) DEFAULT 0.00,
+  `actual_rental_days` int(11) DEFAULT 0,
+  `pickup_status` varchar(20) DEFAULT 'Pending',
+  `pickup_confirmed_at` datetime DEFAULT NULL,
+  `return_pickup_status` varchar(20) DEFAULT 'Pending',
+  `return_pickup_confirmed_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_rentals`
 --
 
-INSERT INTO `car_rentals` (`id`, `booking_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_age`, `pickup_date`, `dropoff_date`, `pickup_time`, `dropoff_time`, `pickup_location`, `dropoff_location`, `car_type`, `car_model`, `car_image`, `rental_days`, `daily_rate`, `subtotal`, `insurance_fee`, `additional_fees`, `total_amount`, `promo_code`, `discount_amount`, `agent_id`, `agent_commission`, `status`, `admin_notes`, `payment_method`, `payment_status`, `created_at`, `updated_at`, `license_number`, `license_expiry`) VALUES
-(1, 'CAR-20260107-457060', 'Paolo', 'pmadridano@gmail.com', '096555214545', 21, '0000-00-00', '0000-00-00', '00:00:00', '00:00:00', '', '', 'Economy', 'Kia Rio or Similar', 'assets/img/cars/kia-rio.jpg', 8, 2850.00, 22800.00, 0.00, 0.00, 22800.00, '', 0.00, 'AGT001', 2850.00, 'Confirmed', NULL, 'Pay at Pickup', 'Pending', '2026-01-07 02:49:08', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(11, 'CAR-20260107-2087BC', 'Paolo', 'pmadridano@gmail.com', '096555214545', 30, '2026-01-07', '2026-01-08', '10:00:00', '10:00:00', 'MRT Taft Station', 'Any Hotel in Metro Manila (Hotel Delivery)', 'SUV', 'Ford Mustang or Similar', 'assets/img/cars/ford-mustang.jpg', 1, 5108.00, 5108.00, 0.00, 0.00, 5108.00, '', 0.00, NULL, 0.00, 'Confirmed', NULL, 'Pay at Pickup', 'Pending', '2026-01-07 03:04:02', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(12, 'CAR-20260107-8EAF81', 'Madridano Gabriel', 'pmadridano@gmail.com', '096555214545', 20, '2026-01-10', '2026-01-11', '14:03:00', '22:01:00', 'Pasay City - Mall of Asia', 'Makati City Center', 'Electric', 'Tesla Model 3 or Similar', 'assets/img/cars/tesla-model3.jpg', 1, 4250.00, 4250.00, 600.00, 800.00, 5650.00, '', 0.00, NULL, 0.00, 'Confirmed', NULL, 'PayPal', 'Pending', '2026-01-07 03:04:56', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(13, 'CAR-20260107-359E0B', 'POPOP', 'pmadridano@gmail.com', '096555214545', 23, '2026-01-10', '2026-01-11', '10:00:00', '10:00:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'MRT Ayala Station', 'Compact', 'Honda Civic or Similar', 'assets/img/cars/honda-civic.jpg', 1, 3650.00, 3650.00, 300.00, 500.00, 4450.00, '', 0.00, 'AGT2306', 890.00, 'Confirmed', NULL, 'GCash', 'Pending', '2026-01-07 04:30:11', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(14, 'CAR-20260107-0A2ACE', 'POPOP', 'pmadridano@gmail.com', '096555214545', 42, '2026-01-07', '2026-01-16', '10:00:00', '10:00:00', 'Mandaluyong City - Ortigas Center', 'PITX - Parañaque Integrated Terminal Exchange', 'Economy', 'Toyota Corolla or Similar', 'assets/img/cars/toyota-corolla.jpg', 9, 3150.00, 28350.00, 8100.00, 9000.00, 45450.00, '', 0.00, 'AGT001', 5681.25, 'Confirmed', NULL, 'Debit Card', 'Pending', '2026-01-07 04:30:40', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(15, 'CAR-20260107-A837D3', 'Paolo', 'pmadridano@gmail.com', '096553222', 32, '2026-01-07', '2026-01-15', '10:00:00', '10:00:00', 'CEB - Mactan-Cebu International Airport', 'Bonifacio Global City (BGC)', 'Luxury', 'BMW X7 or Similar', 'assets/img/cars/bmw-x7.jpg', 8, 5878.00, 47024.00, 7200.00, 6400.00, 60624.00, '', 0.00, 'AGT001', 7578.00, 'Confirmed', NULL, 'Credit Card', 'Pending', '2026-01-07 04:31:06', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(16, 'CAR-20260107-7CDF36', 'Gabriel Paolo Madridano', 'pmadridano2@gmail.com', '09619490469', 32, '2026-01-07', '2026-01-08', '10:00:00', '10:00:00', 'DVO - Francisco Bangoy International Airport', 'LRT Buendia Station', 'Electric', 'Tesla Model 3 or Similar', 'assets/img/cars/tesla-model3.jpg', 1, 4250.00, 4250.00, 900.00, 1000.00, 6150.00, '', 0.00, 'AGT001', 768.75, 'Confirmed', NULL, 'Debit Card', 'Pending', '2026-01-07 05:23:51', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(17, 'CAR-20260107-93F174', 'James', 'james@gmail.com', '09321321333', 21, '2026-01-09', '2026-01-23', '10:00:00', '10:00:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'PITX - Parañaque Integrated Terminal Exchange', 'Compact', 'Honda Civic or Similar', 'assets/img/cars/honda-civic.jpg', 14, 3650.00, 51100.00, 0.00, 0.00, 51100.00, '', 0.00, 'AGT2306', 10220.00, 'Confirmed', NULL, 'Debit Card', 'Pending', '2026-01-07 05:24:25', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(18, 'CAR-20260107-E6DC28', 'Paolo', 'pmadridano@gmail.com', '09545521115', 20, '2026-01-07', '2026-01-09', '10:00:00', '13:30:00', 'CEB - Mactan-Cebu International Airport', 'DVO - Francisco Bangoy International Airport', 'Compact', 'Honda Civic or Similar', 'assets/img/cars/honda-civic.jpg', 2, 3650.00, 7300.00, 1200.00, 1600.00, 10100.00, '', 0.00, NULL, 0.00, 'Confirmed', NULL, 'Pay at Pickup', 'Pending', '2026-01-07 05:25:18', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(19, 'CAR-20260107-3B78DA', 'Paolo', 'pmadridano@gmail.com', '096555214545', 30, '2026-01-07', '2026-01-08', '10:00:00', '10:00:00', 'MRT Taft Station', 'Makati City Center', 'SUV', 'Ford Mustang or Similar', 'assets/img/cars/ford-mustang.jpg', 1, 5108.00, 5108.00, 600.00, 500.00, 6208.00, '', 0.00, 'AGT2306', 1241.60, 'Confirmed', NULL, 'GCash', 'Pending', '2026-01-07 06:02:11', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(20, 'CAR-20260107-AE2928', 'Paolo', 'pmadridano@gmail.com', '096555214545', 20, '2026-01-07', '2026-01-08', '10:00:00', '10:00:00', 'MNL - Manila Ninoy Aquino International Airport', 'Quezon City - Cubao', 'Economy', 'Kia Rio or Similar', 'assets/img/cars/kia-rio.jpg', 1, 2850.00, 2850.00, 300.00, 200.00, 3350.00, '', 0.00, 'AGT2306', 670.00, 'Confirmed', NULL, 'Credit Card', 'Pending', '2026-01-07 06:10:50', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(21, 'CAR-20260113-AA6D62', 'POPOP', 'pmadridano@gmail.com', '096555214545', 23, '2026-01-13', '2026-01-14', '10:00:00', '10:00:00', 'PITX - Parañaque Integrated Terminal Exchange', 'PITX - Parañaque Integrated Terminal Exchange', 'Economy', 'Kia Rio or Similar', 'assets/img/cars/kia-rio.jpg', 1, 2850.00, 2850.00, 0.00, 500.00, 3350.00, '', 0.00, 'AGT001', 418.75, 'Confirmed', NULL, 'Debit Card', 'Pending', '2026-01-13 12:39:54', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(22, 'CAR-20260113-3599A9', 'Paolo', 'pmadridano@gmail.com', '096555214545', 32, '2026-01-13', '2026-01-14', '10:00:00', '10:00:00', 'Shangri-La Hotel', 'Shangri-La Hotel', 'Compact', 'Honda Civic or Similar', 'assets/img/cars/honda-civic.jpg', 1, 3650.00, 3650.00, 300.00, 300.00, 4250.00, '', 0.00, 'AGT2306', 850.00, 'Confirmed', NULL, 'Credit Card', 'Pending', '2026-01-13 12:41:39', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(23, 'CAR-20260113-468695', 'Paolo', 'pmadridano@gmail.com', '096555214545', 32, '2026-01-13', '2026-01-15', '10:00:00', '02:00:00', 'PITX - Parañaque Integrated Terminal Exchange', 'PITX - Parañaque Integrated Terminal Exchange', 'Economy', 'Kia Rio or Similar', 'assets/img/cars/kia-rio.jpg', 2, 2850.00, 5700.00, 1200.00, 1600.00, 8500.00, '', 0.00, NULL, 0.00, 'Confirmed', NULL, 'Pay at Pickup', 'Pending', '2026-01-13 12:43:48', '2026-02-09 04:03:58', 'N00-00-000000', '2025-12-31'),
-(24, 'CAR-20260209-EAD63F', 'Paolo', 'pmadridano@gmail.com', '096555214545', 45, '2026-02-09', '2026-02-13', '10:00:00', '10:00:00', 'MRT Taft Station', 'MRT Ayala Station', 'Compact', 'Honda Civic or Similar', 'assets/img/cars/honda-civic.jpg', 4, 3650.00, 14600.00, 1200.00, 2000.00, 17800.00, '', 0.00, NULL, 0.00, 'Confirmed', 'Your car is ready', 'Pay at Pickup', 'Pending', '2026-02-09 05:53:50', '2026-02-09 05:54:20', 'A01-02-030304', '2026-02-26'),
-(25, 'CAR-20260209-B5641C', 'Gabrie', 'Paolo@gmail.com', '096555214545', 21, '2026-02-09', '2026-02-10', '10:00:00', '10:00:00', 'CRK - Clark International Airport', 'CEB - Mactan-Cebu International Airport', 'SUV', 'Ford Mustang or Similar', 'assets/img/cars/ford-mustang.jpg', 1, 3831.00, 3831.00, 900.00, 1000.00, 4871.35, 'WELCOME2024', 859.65, NULL, 0.00, 'Confirmed', 'ok', 'GCash', 'Pending', '2026-02-09 05:58:03', '2026-02-09 05:58:29', 'A01-20-201303', '2026-02-12'),
-(26, 'CAR-20260209-5EBDB0', 'Madridano', 'Madridano@gmail.com', '09619490469', 23, '2026-02-09', '2026-02-11', '10:00:00', '10:00:00', 'Okada Manila', 'Okada Manila', 'Luxury', 'BMW X7 or Similar', 'assets/img/cars/bmw-x7.jpg', 2, 5878.00, 11756.00, 1200.00, 2000.00, 12712.60, 'PAOLO123', 2243.40, 'AGT2306', 2542.52, 'Completed', '45', 'Pay at Pickup', 'Pending', '2026-02-09 06:25:09', '2026-02-09 06:31:06', 'A01-30-620434', '2026-02-11'),
-(27, 'CAR-20260209-318224', 'Madridano Gabriel', 'Pa2lo@gmail.com', '09619490469', 32, '2026-02-09', '2026-02-10', '10:00:00', '10:00:00', 'DVO - Francisco Bangoy International Airport', 'CEB - Mactan-Cebu International Airport', 'Compact', 'Honda Civic', 'assets/img/cars/honda-civic.jpg', 1, 3650.00, 3650.00, 300.00, 0.00, 3950.00, '', 0.00, 'AGT2306', 790.00, 'Confirmed', 'OOOOOOOOOOOOO', 'GCash', 'Pending', '2026-02-09 06:32:03', '2026-02-09 06:36:43', 'A01-30-620434', '2030-11-01'),
-(28, 'CAR-20260209-992441', 'POPOP', 'paolo@gmail.com', '09619490469', 23, '2026-02-09', '2026-02-10', '10:00:00', '10:00:00', 'CEB - Mactan-Cebu International Airport', 'CEB - Mactan-Cebu International Airport', 'Compact', 'Mazda 3', 'assets/img/cars/mazda-3.jpg', 1, 3850.00, 3850.00, 600.00, 1000.00, 5450.00, '', 0.00, NULL, 0.00, 'Completed', 'qweqw', 'Pay at Pickup', 'Pending', '2026-02-09 06:38:17', '2026-02-09 06:38:30', 'A01-02-024303', '2026-03-14');
+INSERT INTO `car_rentals` (`id`, `booking_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_age`, `pickup_date`, `dropoff_date`, `pickup_time`, `dropoff_time`, `pickup_location`, `dropoff_location`, `car_type`, `car_model`, `car_image`, `rental_days`, `daily_rate`, `subtotal`, `insurance_fee`, `additional_fees`, `total_amount`, `promo_code`, `discount_amount`, `agent_id`, `agent_commission`, `status`, `admin_notes`, `payment_method`, `payment_status`, `created_at`, `updated_at`, `license_number`, `license_expiry`, `actual_return_date`, `payment_proof`, `invoice_number`, `receipt_file`, `payment_verified_by`, `payment_verified_at`, `payment_type`, `amount_paid`, `remaining_balance`, `refund_amount`, `actual_rental_days`, `pickup_status`, `pickup_confirmed_at`, `return_pickup_status`, `return_pickup_confirmed_at`) VALUES
+(103, 'CAR-20260115-A1B2C3', 'John Doe', 'john.doe@email.com', '+63 917 123 4567', 35, '2026-01-20', '2026-01-25', '10:00:00', '10:00:00', 'MNL - Manila Ninoy Aquino International Airport', 'MNL - Manila Ninoy Aquino International Airport', 'Sedan', 'Toyota Camry', NULL, 5, 2500.00, 12500.00, 1500.00, 0.00, 14000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-15 02:30:00', '2026-02-17 07:06:12', 'N01-23-456789', '2028-12-31', NULL, NULL, 'INV-20260115-0001', 'REC-20260115-0001', 'Gabriel', '2026-01-15 11:00:00', 'Full Payment', 14000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(104, 'CAR-20260116-D4E5F6', 'Maria Santos', 'maria.santos@email.com', '+63 918 234 5678', 28, '2026-02-18', '2026-02-22', '09:00:00', '09:00:00', 'Makati City Center', 'Makati City Center', 'SUV', 'Honda CR-V', NULL, 4, 3500.00, 14000.00, 1200.00, 0.00, 15200.00, NULL, 0.00, NULL, 0.00, 'Active', NULL, 'PayPal', 'Paid', '2026-01-16 03:00:00', '2026-02-17 07:06:12', 'M02-34-567890', '2029-06-30', NULL, NULL, 'INV-20260116-0002', 'REC-20260116-0002', 'Gabriel', '2026-01-16 12:00:00', 'Downpayment', 7600.00, 7600.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(105, 'CAR-20260117-G7H8I9', 'Pedro Cruz', 'pedro.cruz@email.com', '+63 919 345 6789', 42, '2026-02-20', '2026-02-23', '14:00:00', '14:00:00', 'Bonifacio Global City (BGC)', 'Bonifacio Global City (BGC)', 'Luxury', 'BMW 5 Series', NULL, 3, 5000.00, 15000.00, 2700.00, 0.00, 17700.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'Credit Card', 'Paid', '2026-01-17 01:15:00', '2026-02-17 07:07:43', 'P03-45-678901', '2027-11-15', NULL, NULL, 'INV-20260117-0003', 'REC-20260117-0003', 'Gabriel', '2026-01-17 10:00:00', 'Full Payment', 17700.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(106, 'CAR-20260118-J1K2L3', 'Ana Reyes', 'ana.reyes@email.com', '+63 920 456 7890', 31, '2026-01-22', '2026-01-27', '11:00:00', '11:00:00', 'Quezon City - Cubao', 'Quezon City - Cubao', 'Compact', 'Toyota Vios', NULL, 5, 1800.00, 9000.00, 1500.00, 0.00, 10500.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-18 06:20:00', '2026-02-17 07:06:12', 'A04-56-789012', '2028-08-20', NULL, NULL, 'INV-20260118-0004', 'REC-20260118-0004', 'Gabriel', '2026-01-18 15:00:00', 'Downpayment', 10500.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(107, 'CAR-20260119-M4N5O6', 'Carlos Garcia', 'carlos.garcia@email.com', '+63 921 567 8901', 38, '2026-02-19', '2026-02-24', '08:00:00', '08:00:00', 'Pasay City - Mall of Asia', 'Pasay City - Mall of Asia', 'Van', 'Toyota Hiace', NULL, 5, 4000.00, 20000.00, 1500.00, 0.00, 21500.00, NULL, 0.00, NULL, 0.00, 'Active', NULL, 'Debit Card', 'Paid', '2026-01-19 00:45:00', '2026-02-17 07:06:12', 'C05-67-890123', '2029-03-10', NULL, NULL, 'INV-20260119-0005', 'REC-20260119-0005', 'Gabriel', '2026-01-19 09:30:00', 'Full Payment', 21500.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(108, 'CAR-20260120-P7Q8R9', 'Lisa Tan', 'lisa.tan@email.com', '+63 922 678 9012', 29, '2026-02-21', '2026-02-25', '13:00:00', '13:00:00', 'CEB - Mactan-Cebu International Airport', 'CEB - Mactan-Cebu International Airport', 'Electric', 'Tesla Model 3 or Similar', NULL, 4, 3800.00, 15200.00, 1200.00, 0.00, 16400.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'PayPal', 'Paid', '2026-01-20 05:30:00', '2026-02-17 07:07:41', 'L06-78-901234', '2028-05-25', NULL, NULL, 'INV-20260120-0006', 'REC-20260120-0006', 'Gabriel', '2026-01-20 14:00:00', 'Downpayment', 8200.00, 8200.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(109, 'CAR-20260121-S1T2U3', 'Miguel Lopez', 'miguel.lopez@email.com', '+63 923 789 0123', 45, '2026-01-25', '2026-01-28', '10:30:00', '10:30:00', 'Mandaluyong City - Ortigas Center', 'Mandaluyong City - Ortigas Center', 'Sedan', 'Honda Accord', NULL, 3, 2800.00, 8400.00, 900.00, 0.00, 9300.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-21 02:00:00', '2026-02-17 07:06:12', 'M07-89-012345', '2027-12-31', NULL, NULL, 'INV-20260121-0007', 'REC-20260121-0007', 'Gabriel', '2026-01-21 11:00:00', 'Full Payment', 9300.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(110, 'CAR-20260122-V4W5X6', 'Sofia Martinez', 'sofia.martinez@email.com', '+63 924 890 1234', 33, '2026-02-22', '2026-02-26', '15:00:00', '15:00:00', 'MRT Ayala Station', 'MRT Ayala Station', 'SUV', 'Mitsubishi Montero Sport', NULL, 4, 3600.00, 14400.00, 1200.00, 0.00, 15600.00, NULL, 0.00, NULL, 0.00, 'Active', NULL, 'Credit Card', 'Paid', '2026-01-22 07:45:00', '2026-02-17 07:06:12', 'S08-90-123456', '2029-07-15', NULL, NULL, 'INV-20260122-0008', 'REC-20260122-0008', 'Gabriel', '2026-01-22 16:00:00', 'Downpayment', 7800.00, 7800.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(111, 'CAR-20260123-Y7Z8A9', 'David Wong', 'david.wong@email.com', '+63 925 901 2345', 40, '2026-02-23', '2026-02-27', '09:30:00', '09:30:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Luxury', 'Mercedes-Benz E-Class', NULL, 4, 5500.00, 22000.00, 2400.00, 0.00, 24400.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'PayPal', 'Paid', '2026-01-23 01:30:00', '2026-02-17 07:07:39', 'D09-01-234567', '2028-10-20', NULL, NULL, 'INV-20260123-0009', 'REC-20260123-0009', 'Gabriel', '2026-01-23 10:00:00', 'Full Payment', 24400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(112, 'CAR-20260124-B1C2D3', 'Elena Rivera', 'elena.rivera@email.com', '+63 926 012 3456', 27, '2026-01-28', '2026-02-02', '12:00:00', '12:00:00', 'CRK - Clark International Airport', 'CRK - Clark International Airport', 'Compact', 'Mazda 3', NULL, 5, 2200.00, 11000.00, 1500.00, 0.00, 12500.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-24 03:15:00', '2026-02-17 07:06:12', 'E10-12-345678', '2029-04-30', NULL, NULL, 'INV-20260124-0010', 'REC-20260124-0010', 'Gabriel', '2026-01-24 12:00:00', 'Downpayment', 12500.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(113, 'CAR-20260125-E4F5G6', 'Robert Kim', 'robert.kim@email.com', '+63 927 123 4567', 36, '2026-02-24', '2026-02-28', '14:30:00', '14:30:00', 'Shangri-La Hotel', 'Shangri-La Hotel', 'Van', 'Nissan Urvan', NULL, 4, 3800.00, 15200.00, 1200.00, 0.00, 16400.00, NULL, 0.00, NULL, 0.00, 'Active', NULL, 'Debit Card', 'Paid', '2026-01-25 06:00:00', '2026-02-17 07:06:12', 'R11-23-456789', '2028-09-15', NULL, NULL, 'INV-20260125-0011', 'REC-20260125-0011', 'Gabriel', '2026-01-25 15:00:00', 'Full Payment', 16400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(114, 'CAR-20260126-H7I8J9', 'Carmen Flores', 'carmen.flores@email.com', '+63 928 234 5678', 32, '2026-02-25', '2026-03-01', '11:00:00', '11:00:00', 'DVO - Francisco Bangoy International Airport', 'DVO - Francisco Bangoy International Airport', 'Sedan', 'Hyundai Elantra', NULL, 4, 2400.00, 9600.00, 1200.00, 0.00, 10800.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'PayPal', 'Paid', '2026-01-26 02:45:00', '2026-02-17 07:07:36', 'C12-34-567890', '2029-01-20', NULL, NULL, 'INV-20260126-0012', 'REC-20260126-0012', 'Gabriel', '2026-01-26 11:30:00', 'Downpayment', 5400.00, 5400.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(115, 'CAR-20260127-K1L2M3', 'James Lee', 'james.lee@email.com', '+63 929 345 6789', 41, '2026-01-30', '2026-02-03', '13:45:00', '13:45:00', 'Okada Manila', 'Okada Manila', 'SUV', 'Ford Everest', NULL, 4, 3700.00, 14800.00, 1200.00, 0.00, 16000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Credit Card', 'Paid', '2026-01-27 05:20:00', '2026-02-17 07:06:12', 'J13-45-678901', '2027-10-31', NULL, NULL, 'INV-20260127-0013', 'REC-20260127-0013', 'Gabriel', '2026-01-27 14:00:00', 'Full Payment', 16000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(116, 'CAR-20260128-N4O5P6', 'Isabel Ramos', 'isabel.ramos@email.com', '+63 930 456 7890', 30, '2026-02-26', '2026-03-02', '09:15:00', '09:15:00', 'Solaire Resort & Casino', 'Solaire Resort & Casino', 'Electric', 'Nissan Leaf', NULL, 4, 3500.00, 14000.00, 1200.00, 0.00, 15200.00, NULL, 0.00, NULL, 0.00, 'Active', NULL, 'GCash', 'Paid', '2026-01-28 01:00:00', '2026-02-17 07:06:12', 'I14-56-789012', '2028-11-30', NULL, NULL, 'INV-20260128-0014', 'REC-20260128-0014', 'Gabriel', '2026-01-28 10:00:00', 'Downpayment', 7600.00, 7600.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(117, 'CAR-20260129-Q7R8S9', 'Daniel Chen', 'daniel.chen@email.com', '+63 931 567 8901', 37, '2026-02-27', '2026-03-03', '16:45:00', '16:45:00', 'LRT Buendia Station', 'LRT Buendia Station', 'Luxury', 'Audi A6', NULL, 4, 5200.00, 20800.00, 2400.00, 0.00, 23200.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'PayPal', 'Paid', '2026-01-29 08:30:00', '2026-02-17 07:07:34', 'D15-67-890123', '2029-02-28', NULL, NULL, 'INV-20260129-0015', 'REC-20260129-0015', 'Gabriel', '2026-01-29 17:00:00', 'Full Payment', 23200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(118, 'CAR-20251105-A1A1A1', 'Mark Johnson', 'mark.johnson@email.com', '+63 932 111 2222', 34, '2025-11-10', '2025-11-15', '10:00:00', '10:00:00', 'MNL - Manila Ninoy Aquino International Airport', 'MNL - Manila Ninoy Aquino International Airport', 'Sedan', 'Toyota Camry', NULL, 5, 2500.00, 12500.00, 1500.00, 0.00, 14000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2025-11-05 01:30:00', '2026-02-17 07:06:12', 'M16-11-111111', '2028-12-31', NULL, NULL, 'INV-20251105-0016', 'REC-20251105-0016', 'Gabriel', '2025-11-05 10:00:00', 'Full Payment', 14000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(119, 'CAR-20251112-B2B2B2', 'Sarah Williams', 'sarah.williams@email.com', '+63 933 222 3333', 29, '2025-11-18', '2025-11-22', '11:00:00', '11:00:00', 'Makati City Center', 'Makati City Center', 'SUV', 'Honda CR-V', NULL, 4, 3500.00, 14000.00, 1200.00, 0.00, 15200.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Credit Card', 'Paid', '2025-11-12 03:00:00', '2026-02-17 07:06:12', 'S17-22-222222', '2029-05-15', NULL, NULL, 'INV-20251112-0017', 'REC-20251112-0017', 'Gabriel', '2025-11-12 11:30:00', 'Downpayment', 15200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(120, 'CAR-20251118-C3C3C3', 'Kevin Brown', 'kevin.brown@email.com', '+63 934 333 4444', 41, '2025-11-25', '2025-11-28', '14:00:00', '14:00:00', 'Bonifacio Global City (BGC)', 'Bonifacio Global City (BGC)', 'Compact', 'Toyota Vios', NULL, 3, 1800.00, 5400.00, 900.00, 0.00, 6300.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'PayPal', 'Paid', '2025-11-18 06:00:00', '2026-02-17 07:06:12', 'K18-33-333333', '2027-09-20', NULL, NULL, 'INV-20251118-0018', 'REC-20251118-0018', 'Gabriel', '2025-11-18 14:30:00', 'Full Payment', 6300.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(121, 'CAR-20251122-D4D4D4', 'Amanda Davis', 'amanda.davis@email.com', '+63 935 444 5555', 26, '2025-11-28', '2025-12-02', '09:00:00', '09:00:00', 'Quezon City - Cubao', 'Quezon City - Cubao', 'Van', 'Toyota Hiace', NULL, 4, 4000.00, 16000.00, 1200.00, 0.00, 17200.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2025-11-22 01:00:00', '2026-02-17 07:06:12', 'A19-44-444444', '2029-03-10', NULL, NULL, 'INV-20251122-0019', 'REC-20251122-0019', 'Gabriel', '2025-11-22 09:30:00', 'Downpayment', 17200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(122, 'CAR-20251126-E5E5E5', 'Ryan Miller', 'ryan.miller@email.com', '+63 936 555 6666', 38, '2025-11-29', '2025-12-03', '13:00:00', '13:00:00', 'Pasay City - Mall of Asia', 'Pasay City - Mall of Asia', 'Luxury', 'BMW 5 Series', NULL, 4, 5000.00, 20000.00, 2400.00, 0.00, 22400.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Debit Card', 'Paid', '2025-11-26 05:00:00', '2026-02-17 07:06:12', 'R20-55-555555', '2028-07-25', NULL, NULL, 'INV-20251126-0020', 'REC-20251126-0020', 'Gabriel', '2025-11-26 13:30:00', 'Full Payment', 22400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(123, 'CAR-20251203-F6F6F6', 'Jessica Moore', 'jessica.moore@email.com', '+63 937 666 7777', 31, '2025-12-08', '2025-12-12', '10:30:00', '10:30:00', 'CEB - Mactan-Cebu International Airport', 'CEB - Mactan-Cebu International Airport', 'Sedan', 'Honda Accord', NULL, 4, 2800.00, 11200.00, 1200.00, 0.00, 12400.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'PayPal', 'Paid', '2025-12-03 02:30:00', '2026-02-17 07:06:12', 'J21-66-666666', '2028-11-30', NULL, NULL, 'INV-20251203-0021', 'REC-20251203-0021', 'Gabriel', '2025-12-03 11:00:00', 'Full Payment', 12400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(124, 'CAR-20251210-G7G7G7', 'Brian Taylor', 'brian.taylor@email.com', '+63 938 777 8888', 35, '2025-12-15', '2025-12-19', '12:00:00', '12:00:00', 'Mandaluyong City - Ortigas Center', 'Mandaluyong City - Ortigas Center', 'SUV', 'Mitsubishi Montero Sport', NULL, 4, 3600.00, 14400.00, 1200.00, 0.00, 15600.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Credit Card', 'Paid', '2025-12-10 04:00:00', '2026-02-17 07:06:12', 'B22-77-777777', '2029-01-15', NULL, NULL, 'INV-20251210-0022', 'REC-20251210-0022', 'Gabriel', '2025-12-10 12:30:00', 'Downpayment', 15600.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(125, 'CAR-20251215-H8H8H8', 'Nicole Anderson', 'nicole.anderson@email.com', '+63 939 888 9999', 28, '2025-12-20', '2025-12-24', '15:00:00', '15:00:00', 'MRT Ayala Station', 'MRT Ayala Station', 'Electric', 'Tesla Model 3 or Similar', NULL, 4, 3800.00, 15200.00, 1200.00, 0.00, 16400.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2025-12-15 07:00:00', '2026-02-17 07:06:12', 'N23-88-888888', '2028-10-20', NULL, NULL, 'INV-20251215-0023', 'REC-20251215-0023', 'Gabriel', '2025-12-15 15:30:00', 'Full Payment', 16400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(126, 'CAR-20251220-I9I9I9', 'Christopher Thomas', 'chris.thomas@email.com', '+63 940 999 0000', 43, '2025-12-25', '2025-12-29', '09:30:00', '09:30:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Van', 'Nissan Urvan', NULL, 4, 3800.00, 15200.00, 1200.00, 0.00, 16400.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'PayPal', 'Paid', '2025-12-20 01:30:00', '2026-02-17 07:06:12', 'C24-99-999999', '2027-08-31', NULL, NULL, 'INV-20251220-0024', 'REC-20251220-0024', 'Gabriel', '2025-12-20 10:00:00', 'Downpayment', 16400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(127, 'CAR-20251228-J1J1J1', 'Michelle Jackson', 'michelle.jackson@email.com', '+63 941 000 1111', 33, '2025-12-30', '2026-01-03', '14:00:00', '14:00:00', 'CRK - Clark International Airport', 'CRK - Clark International Airport', 'Luxury', 'Mercedes-Benz E-Class', NULL, 4, 5500.00, 22000.00, 2400.00, 0.00, 24400.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Debit Card', 'Paid', '2025-12-28 06:00:00', '2026-02-17 07:06:12', 'M25-00-000000', '2029-04-15', NULL, NULL, 'INV-20251228-0025', 'REC-20251228-0025', 'Gabriel', '2025-12-28 14:30:00', 'Full Payment', 24400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(128, 'CAR-20260105-K2K2K2', 'Steven White', 'steven.white@email.com', '+63 942 111 2222', 39, '2026-01-08', '2026-01-12', '11:00:00', '11:00:00', 'Shangri-La Hotel', 'Shangri-La Hotel', 'Sedan', 'Hyundai Elantra', NULL, 4, 2400.00, 9600.00, 1200.00, 0.00, 10800.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-05 03:00:00', '2026-02-17 07:06:12', 'S26-11-111112', '2028-06-30', NULL, NULL, 'INV-20260105-0026', 'REC-20260105-0026', 'Gabriel', '2026-01-05 11:30:00', 'Full Payment', 10800.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(129, 'CAR-20260108-L3L3L3', 'Rachel Harris', 'rachel.harris@email.com', '+63 943 222 3333', 27, '2026-01-12', '2026-01-16', '13:00:00', '13:00:00', 'DVO - Francisco Bangoy International Airport', 'DVO - Francisco Bangoy International Airport', 'SUV', 'Ford Everest', NULL, 4, 3700.00, 14800.00, 1200.00, 0.00, 16000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Credit Card', 'Paid', '2026-01-08 05:00:00', '2026-02-17 07:06:12', 'R27-22-222223', '2029-02-28', NULL, NULL, 'INV-20260108-0027', 'REC-20260108-0027', 'Gabriel', '2026-01-08 13:30:00', 'Downpayment', 16000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(130, 'CAR-20260110-M4M4M4', 'Andrew Martin', 'andrew.martin@email.com', '+63 944 333 4444', 36, '2026-01-14', '2026-01-18', '10:00:00', '10:00:00', 'Okada Manila', 'Okada Manila', 'Compact', 'Mazda 3', NULL, 4, 2200.00, 8800.00, 1200.00, 0.00, 10000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'PayPal', 'Paid', '2026-01-10 02:00:00', '2026-02-17 07:06:12', 'A28-33-333334', '2028-09-15', NULL, NULL, 'INV-20260110-0028', 'REC-20260110-0028', 'Gabriel', '2026-01-10 10:30:00', 'Full Payment', 10000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(131, 'CAR-20260112-N5N5N5', 'Laura Thompson', 'laura.thompson@email.com', '+63 945 444 5555', 30, '2026-01-16', '2026-01-20', '15:30:00', '15:30:00', 'Solaire Resort & Casino', 'Solaire Resort & Casino', 'Electric', 'Nissan Leaf', NULL, 4, 3500.00, 14000.00, 1200.00, 0.00, 15200.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-01-12 07:30:00', '2026-02-17 07:06:12', 'L29-44-444445', '2029-06-20', NULL, NULL, 'INV-20260112-0029', 'REC-20260112-0029', 'Gabriel', '2026-01-12 16:00:00', 'Downpayment', 15200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(132, 'CAR-20260114-O6O6O6', 'Patrick Garcia', 'patrick.garcia@email.com', '+63 946 555 6666', 44, '2026-01-18', '2026-01-22', '09:00:00', '09:00:00', 'LRT Buendia Station', 'LRT Buendia Station', 'Luxury', 'Audi A6', NULL, 4, 5200.00, 20800.00, 2400.00, 0.00, 23200.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, 'Debit Card', 'Paid', '2026-01-14 01:00:00', '2026-02-17 07:06:12', 'P30-55-555556', '2027-12-31', NULL, NULL, 'INV-20260114-0030', 'REC-20260114-0030', 'Gabriel', '2026-01-14 09:30:00', 'Full Payment', 23200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(133, 'CAR-20260305-P7P7P7', 'Jennifer Martinez', 'jennifer.martinez@email.com', '+63 947 666 7777', 32, '2026-03-10', '2026-03-14', '10:00:00', '10:00:00', 'MNL - Manila Ninoy Aquino International Airport', 'MNL - Manila Ninoy Aquino International Airport', 'Sedan', 'Toyota Camry', NULL, 4, 2500.00, 10000.00, 1200.00, 0.00, 11200.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'GCash', 'Paid', '2026-03-05 02:00:00', '2026-02-17 07:07:31', 'J31-66-666667', '2028-08-25', NULL, NULL, 'INV-20260305-0031', 'REC-20260305-0031', 'Gabriel', '2026-03-05 10:30:00', 'Full Payment', 11200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(134, 'CAR-20260310-Q8Q8Q8', 'Timothy Robinson', 'timothy.robinson@email.com', '+63 948 777 8888', 37, '2026-03-15', '2026-03-19', '12:00:00', '12:00:00', 'Makati City Center', 'Makati City Center', 'SUV', 'Honda CR-V', NULL, 4, 3500.00, 14000.00, 1200.00, 0.00, 15200.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'Credit Card', 'Paid', '2026-03-10 04:00:00', '2026-02-17 07:07:29', 'T32-77-777778', '2029-05-10', NULL, NULL, 'INV-20260310-0032', 'REC-20260310-0032', 'Gabriel', '2026-03-10 12:30:00', 'Downpayment', 7600.00, 7600.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(135, 'CAR-20260315-R9R9R9', 'Samantha Clark', 'samantha.clark@email.com', '+63 949 888 9999', 29, '2026-03-20', '2026-03-24', '14:00:00', '14:00:00', 'Bonifacio Global City (BGC)', 'Bonifacio Global City (BGC)', 'Van', 'Toyota Hiace', NULL, 4, 4000.00, 16000.00, 1200.00, 0.00, 17200.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'PayPal', 'Paid', '2026-03-15 06:00:00', '2026-02-17 07:07:26', 'S33-88-888889', '2028-11-15', NULL, NULL, 'INV-20260315-0033', 'REC-20260315-0033', 'Gabriel', '2026-03-15 14:30:00', 'Full Payment', 17200.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(136, 'CAR-20260320-S1S1S1', 'Gregory Lewis', 'gregory.lewis@email.com', '+63 950 999 0000', 40, '2026-03-25', '2026-03-29', '11:30:00', '11:30:00', 'Quezon City - Cubao', 'Quezon City - Cubao', 'Luxury', 'BMW 5 Series', NULL, 4, 5000.00, 20000.00, 2400.00, 0.00, 22400.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'GCash', 'Paid', '2026-03-20 03:30:00', '2026-02-17 07:07:24', 'G34-99-999990', '2027-10-20', NULL, NULL, 'INV-20260320-0034', 'REC-20260320-0034', 'Gabriel', '2026-03-20 12:00:00', 'Downpayment', 11200.00, 11200.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(137, 'CAR-20260325-T2T2T2', 'Kimberly Walker', 'kimberly.walker@email.com', '+63 951 000 1111', 26, '2026-03-28', '2026-04-01', '16:00:00', '16:00:00', 'Pasay City - Mall of Asia', 'Pasay City - Mall of Asia', 'Electric', 'Tesla Model 3 or Similar', NULL, 4, 3800.00, 15200.00, 1200.00, 0.00, 16400.00, NULL, 0.00, NULL, 0.00, 'Cancelled', NULL, 'Debit Card', 'Paid', '2026-03-25 08:00:00', '2026-02-17 07:07:20', 'K35-00-000001', '2029-07-30', NULL, NULL, 'INV-20260325-0035', 'REC-20260325-0035', 'Gabriel', '2026-03-25 16:30:00', 'Full Payment', 16400.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(138, 'CAR-20260217-AC3C8C', 'test2', 'test@gmail.com', '09546131252', 21, '2026-03-28', '2026-03-31', '10:00:00', '10:00:00', 'MRT Taft Station', 'PITX - Parañaque Integrated Terminal Exchange', 'Compact', 'Honda Civic', 'http://localhost/NiceAdmin/assets/img/cars/honda-civic.jpg', 3, 3650.00, 10950.00, 900.00, 0.00, 11850.00, '', 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-02-17 07:09:46', '2026-02-17 07:24:34', 'A01-30-620434', '2028-06-25', '2026-02-17 15:24:34', 'uploads/payments/payment_138_1771312346.png', 'INV-20260217-0138', NULL, 'Gabriel', '2026-02-17 15:12:37', 'Downpayment', 11850.00, 0.00, 0.00, 38, 'Pending', NULL, 'Pending', NULL),
+(139, 'CAR-20260217-FCA551', 'test3', 'Paolo@gmail.com', '09940213443', 21, '2026-03-28', '2026-03-30', '10:00:00', '10:00:00', 'MNL - Manila Ninoy Aquino International Airport', 'MNL - Manila Ninoy Aquino International Airport', 'Compact', 'Honda Civic', 'http://localhost/NiceAdmin/assets/img/cars/honda-civic.jpg', 2, 3650.00, 7300.00, 1800.00, 0.00, 9100.00, '', 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-02-17 07:27:11', '2026-02-17 07:28:31', 'P01-23-233432', '2026-10-21', '2026-02-17 15:28:31', 'uploads/payments/payment_139_1771313240.png', 'INV-20260217-0139', NULL, 'Gabriel', '2026-02-17 15:28:15', 'Full Payment', 9100.00, 0.00, 0.00, 38, 'Pending', NULL, 'Pending', NULL),
+(140, 'CAR-20260217-88F8D0', 'p', 'p@gmail.com', '09619490469', 22, '2026-04-14', '2026-04-21', '10:00:00', '10:00:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Compact', 'Honda Civic', 'http://localhost/NiceAdmin/assets/img/cars/honda-civic.jpg', 7, 3650.00, 25550.00, 0.00, 1400.00, 26950.00, '', 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-02-17 07:52:24', '2026-02-17 07:53:58', 'A01-20-201303', '2030-07-03', '2026-02-17 15:53:58', 'uploads/payments/payment_140_1771314757.png', 'INV-20260217-0140', NULL, 'Gabriel', '2026-02-17 15:53:25', 'Downpayment', 13475.00, 13475.00, 0.00, 56, 'Picked Up', '2026-02-17 15:53:51', 'Ready', NULL);
 
 -- --------------------------------------------------------
 
@@ -218,7 +295,26 @@ CREATE TABLE `car_rental_bookings` (
   `agent_commission` decimal(10,2) DEFAULT 0.00,
   `booking_date` date NOT NULL,
   `status` varchar(50) DEFAULT 'Pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `actual_return_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `car_reviews`
+--
+
+CREATE TABLE `car_reviews` (
+  `id` int(11) NOT NULL,
+  `booking_id` varchar(50) NOT NULL,
+  `car_model` varchar(100) NOT NULL,
+  `customer_email` varchar(100) NOT NULL,
+  `customer_name` varchar(100) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` between 1 and 5),
+  `review_text` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` varchar(20) DEFAULT 'Approved'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -255,114 +351,6 @@ INSERT INTO `car_sales` (`id`, `car_model`, `original_price`, `sale_price`, `dis
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cities`
---
-
-CREATE TABLE `cities` (
-  `id` int(11) NOT NULL,
-  `country_code` varchar(3) NOT NULL,
-  `city_name` varchar(100) NOT NULL,
-  `airport_code` varchar(3) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cities`
---
-
-INSERT INTO `cities` (`id`, `country_code`, `city_name`, `airport_code`) VALUES
-(1, 'PHL', 'Manila', 'MNL'),
-(2, 'PHL', 'Cebu', 'CEB'),
-(3, 'PHL', 'Davao', 'DVO'),
-(4, 'PHL', 'Cagayan de Oro', 'CGY'),
-(5, 'PHL', 'Bacolod', 'BCD'),
-(6, 'USA', 'New York', 'JFK'),
-(7, 'USA', 'Los Angeles', 'LAX'),
-(8, 'USA', 'Chicago', 'ORD'),
-(9, 'JPN', 'Tokyo', 'NRT'),
-(10, 'JPN', 'Osaka', 'KIX'),
-(11, 'SGP', 'Singapore', 'SIN'),
-(12, 'UAE', 'Dubai', 'DXB'),
-(77, 'AUS', 'Sydney', NULL),
-(78, 'AUS', 'Melbourne', NULL),
-(79, 'AUS', 'Brisbane', NULL),
-(80, 'AUS', 'Perth', NULL),
-(81, 'CAN', 'Toronto', NULL),
-(82, 'CAN', 'Vancouver', NULL),
-(83, 'CAN', 'Montreal', NULL),
-(84, 'CAN', 'Calgary', NULL),
-(85, 'FRA', 'Paris', NULL),
-(86, 'FRA', 'Marseille', NULL),
-(87, 'FRA', 'Lyon', NULL),
-(88, 'FRA', 'Toulouse', NULL),
-(89, 'GER', 'Berlin', NULL),
-(90, 'GER', 'Munich', NULL),
-(91, 'GER', 'Hamburg', NULL),
-(92, 'GER', 'Cologne', NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `commissions`
---
-
-CREATE TABLE `commissions` (
-  `id` int(11) NOT NULL,
-  `commission_id` varchar(20) NOT NULL,
-  `agent_id` varchar(20) NOT NULL,
-  `booking_id` varchar(20) NOT NULL,
-  `booking_type` enum('Travel','Hotel','Tour','Flight') NOT NULL,
-  `booking_amount` decimal(10,2) NOT NULL,
-  `commission_rate` decimal(5,2) NOT NULL,
-  `commission_amount` decimal(10,2) NOT NULL,
-  `payment_id` varchar(20) DEFAULT NULL,
-  `status` enum('Pending','Paid','Cancelled') DEFAULT 'Pending',
-  `booking_date` date DEFAULT NULL,
-  `due_date` date NOT NULL,
-  `paid_date` date DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `calculated_date` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `commissions`
---
-
-INSERT INTO `commissions` (`id`, `commission_id`, `agent_id`, `booking_id`, `booking_type`, `booking_amount`, `commission_rate`, `commission_amount`, `payment_id`, `status`, `booking_date`, `due_date`, `paid_date`, `created_at`, `calculated_date`) VALUES
-(1, 'COM-20251229-437', 'AGT003', 'TRV-20251229-835', 'Travel', 64500.00, 15.00, 9675.00, NULL, 'Pending', NULL, '2026-01-28', NULL, '2025-12-29 06:12:24', '2026-01-07 14:32:38');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `countries`
---
-
-CREATE TABLE `countries` (
-  `id` int(11) NOT NULL,
-  `country_code` varchar(3) NOT NULL,
-  `country_name` varchar(100) NOT NULL,
-  `continent` varchar(50) DEFAULT NULL,
-  `currency` varchar(10) DEFAULT 'PHP'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `countries`
---
-
-INSERT INTO `countries` (`id`, `country_code`, `country_name`, `continent`, `currency`) VALUES
-(1, 'PHL', 'Philippines', 'Asia', 'PHP'),
-(2, 'USA', 'United States', 'North America', 'USD'),
-(3, 'JPN', 'Japan', 'Asia', 'JPY'),
-(4, 'SGP', 'Singapore', 'Asia', 'SGD'),
-(5, 'UAE', 'United Arab Emirates', 'Asia', 'AED'),
-(6, 'UK', 'United Kingdom', 'Europe', 'GBP'),
-(7, 'FRA', 'France', 'Europe', 'EUR'),
-(8, 'GER', 'Germany', 'Europe', 'EUR'),
-(9, 'AUS', 'Australia', 'Oceania', 'AUD'),
-(10, 'CAN', 'Canada', 'North America', 'CAD');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `customers`
 --
 
@@ -387,7 +375,73 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `customer_id`, `username`, `password`, `full_name`, `email`, `phone`, `address`, `profile_picture`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 'CUST8350', 'paolo123', '$2y$10$l2vwH.YGmjREiLtltR7aAu1HgLNn5ijFlEGa0HviScdBeVzfw257m', 'Gabriel Paolo Madridano', 'paolo@gmail.com', '09940213443', 'Km6 Upper Balulang', 'uploads/profiles/profile_CUST8350_1770611917.png', 'Active', '2026-02-13 11:35:42', '2026-02-09 04:31:55', '2026-02-13 03:35:42');
+(1, 'CUST8350', 'paolo123', '$2y$10$l2vwH.YGmjREiLtltR7aAu1HgLNn5ijFlEGa0HviScdBeVzfw257m', 'Gabriel Paolo Madridano', 'paolo@gmail.com', '09940213443', 'Km6 Upper Balulang', 'uploads/profiles/profile_CUST8350_1770611917.png', 'Active', '2026-02-17 15:28:27', '2026-02-09 04:31:55', '2026-02-17 07:28:27'),
+(2, 'CUST3509', 'gabriel@gmail.com', '$2y$10$s60Km.iRTe1F6z31siNy7ubFCWV6EJfFRJMSqYuA1PzyQIiafq3Fe', 'Gabriel', 'g@gmail.com', '09619490469', NULL, NULL, 'Active', '2026-02-17 14:46:31', '2026-02-17 06:36:07', '2026-02-17 06:46:31'),
+(18, 'CUST9227', 'test1', '$2y$10$7gqWt0/CQMdQiKP.9tIij.1EHObXG5xlQYPGoq43uJ3J6kcwxEZdC', 'Gabriel Paolo Madridano', 'test@gmail.com', '09232424222', NULL, NULL, 'Active', '2026-02-17 15:20:50', '2026-02-17 07:08:23', '2026-02-17 07:20:50'),
+(19, 'CUST4541', 'test3', '$2y$10$ILZT4K46l2dbGxvHqpREneZG0t.Kab5UAqvs9wRdkNOfr0eV.Feuq', 'test3', 'test3@gmail.com', '09940213443', NULL, NULL, 'Active', '2026-02-17 15:50:44', '2026-02-17 07:50:28', '2026-02-17 07:50:44'),
+(20, 'CUST3834', 'paolo1', '$2y$10$HzzKb9wPmXOpdLnCxKQob.Cm2gmmNsgWTlbZvwk65g4jvt8x7DGKS', 'gg', 'p@gmail.com', '09940213443', NULL, NULL, 'Active', '2026-02-17 15:54:48', '2026-02-17 07:51:25', '2026-02-17 07:54:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_documents`
+--
+
+CREATE TABLE `customer_documents` (
+  `id` int(11) NOT NULL,
+  `booking_id` varchar(50) NOT NULL,
+  `customer_email` varchar(100) NOT NULL,
+  `document_type` varchar(50) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `verified_by` varchar(100) DEFAULT NULL,
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `verification_status` varchar(20) DEFAULT 'Pending',
+  `verification_notes` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer_documents`
+--
+
+INSERT INTO `customer_documents` (`id`, `booking_id`, `customer_email`, `document_type`, `file_path`, `uploaded_at`, `verified_by`, `verified_at`, `verification_status`, `verification_notes`) VALUES
+(15, 'CAR-20260217-AC3C8C', 'test@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260217-AC3C8C_1771312280.png', '2026-02-17 07:11:20', NULL, NULL, 'Pending', NULL),
+(16, 'CAR-20260217-AC3C8C', 'test@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260217-AC3C8C_1771312280.png', '2026-02-17 07:11:20', NULL, NULL, 'Pending', NULL),
+(17, 'CAR-20260217-AC3C8C', 'test@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260217-AC3C8C_1771312287.png', '2026-02-17 07:11:27', NULL, NULL, 'Pending', NULL),
+(18, 'CAR-20260217-AC3C8C', 'test@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260217-AC3C8C_1771312295.png', '2026-02-17 07:11:35', NULL, NULL, 'Pending', NULL),
+(19, 'CAR-20260217-FCA551', 'paolo@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260217-FCA551_1771313255.png', '2026-02-17 07:27:35', NULL, NULL, 'Pending', NULL),
+(20, 'CAR-20260217-FCA551', 'paolo@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260217-FCA551_1771313273.png', '2026-02-17 07:27:53', NULL, NULL, 'Pending', NULL),
+(21, 'CAR-20260217-FCA551', 'paolo@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260217-FCA551_1771313273.png', '2026-02-17 07:27:53', NULL, NULL, 'Pending', NULL),
+(22, 'CAR-20260217-FCA551', 'paolo@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260217-FCA551_1771313280.png', '2026-02-17 07:28:00', NULL, NULL, 'Pending', NULL),
+(23, 'CAR-20260217-88F8D0', 'p@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260217-88F8D0_1771314770.png', '2026-02-17 07:52:50', NULL, NULL, 'Pending', NULL),
+(24, 'CAR-20260217-88F8D0', 'p@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260217-88F8D0_1771314770.png', '2026-02-17 07:52:50', NULL, NULL, 'Pending', NULL),
+(25, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260217-88F8D0_1771314778.png', '2026-02-17 07:52:58', 'staff@gmail.com', '2026-02-17 07:54:34', 'Approved', ''),
+(26, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260217-88F8D0_1771314785.png', '2026-02-17 07:53:05', 'staff@gmail.com', '2026-02-17 07:54:30', 'Approved', ''),
+(27, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Contract', 'uploads/contracts/CONTRACT_CAR-20260217-88F8D0.html', '2026-02-17 07:54:36', NULL, NULL, 'Approved', NULL),
+(28, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Contract', 'uploads/contracts/CONTRACT_CAR-20260217-88F8D0.html', '2026-02-17 07:54:39', NULL, NULL, 'Approved', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorite_cars`
+--
+
+CREATE TABLE `favorite_cars` (
+  `id` int(11) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `car_model` varchar(255) NOT NULL,
+  `car_type` varchar(100) DEFAULT NULL,
+  `car_image` varchar(500) DEFAULT NULL,
+  `daily_rate` decimal(10,2) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `favorite_cars`
+--
+
+INSERT INTO `favorite_cars` (`id`, `customer_email`, `car_model`, `car_type`, `car_image`, `daily_rate`, `created_at`) VALUES
+(1, 'p@gmail.com', 'Honda Civic or Similar', 'Compact', 'assets/img/cars/honda-civic.jpg', 0.00, '2026-02-17 07:55:39');
 
 -- --------------------------------------------------------
 
@@ -435,7 +489,150 @@ INSERT INTO `notifications` (`id`, `user_type`, `user_id`, `title`, `message`, `
 (22, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Mazda 3 - Pending Review', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17'),
 (23, 'customer', 'paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-992441 has been submitted and is pending admin review.', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17'),
 (24, 'customer', 'paolo@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-992441 has been Completed by admin. Note: qweqw', 'CAR-20260209-992441', 1, '2026-02-09 06:38:30'),
-(25, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'r - From: paolo@gmail.com', NULL, 1, '2026-02-13 03:17:43');
+(25, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'r - From: paolo@gmail.com', NULL, 1, '2026-02-13 03:17:43'),
+(26, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo for Mitsubishi Mirage - Pending Review', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52'),
+(27, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-80EC8B has been submitted and is pending admin review.', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52'),
+(28, 'customer', 'Paolo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260217-80EC8B has been Confirmed by admin. Note: retert', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:24:46'),
+(29, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:26:44'),
+(30, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:28:22'),
+(31, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Mitsubishi Mirage is ending on 2026-02-18. Please return the car on time.', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:29:02'),
+(32, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0029', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:42:41'),
+(33, 'customer', 'Paolo@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0029 is ready for download.', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:42:42'),
+(34, 'admin', NULL, 'Message from Customer: Gabriel', 'w - From: ', NULL, 0, '2026-02-17 03:50:11'),
+(35, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 1, '2026-02-17 04:12:15'),
+(36, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 0, '2026-02-17 04:12:15'),
+(37, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabrie for Mazda 3 - Pending Review', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:53:01'),
+(38, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-D46BA7 has been submitted and is pending admin review.', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:53:01'),
+(39, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:58:26'),
+(40, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:03'),
+(41, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:03'),
+(42, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:12'),
+(43, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:12'),
+(44, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:21'),
+(45, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:21'),
+(46, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-D46BA7 has been approved!', 'CAR-20260217-D46BA7', 0, '2026-02-17 05:02:25'),
+(47, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Pending Review', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
+(48, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Review documents and approve', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
+(49, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-BA7F01 has been submitted and is pending admin review.', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
+(50, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Pending Review', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
+(51, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Review documents and approve', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
+(52, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-CB9BFC has been submitted and is pending admin review.', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
+(53, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:16:28'),
+(54, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:17:04'),
+(55, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-CB9BFC has been rejected. Reason: dqw', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:18:07'),
+(56, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Pending Review', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
+(57, 'staff', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Review documents and approve', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
+(58, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-860682 has been submitted and is pending admin review.', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
+(59, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:48'),
+(60, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:48'),
+(61, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:59'),
+(62, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:59'),
+(63, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:22:15'),
+(64, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:22:15'),
+(65, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-BA7F01 has been approved!', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:22:53'),
+(66, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-860682 has been approved!', 'CAR-20260217-860682', 0, '2026-02-17 05:25:46'),
+(67, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:25'),
+(68, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:27'),
+(69, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Front has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:28'),
+(70, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Back has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:30'),
+(71, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 0, '2026-02-17 06:04:00'),
+(72, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 0, '2026-02-17 06:04:00'),
+(73, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Honda Civic is ending on 2026-04-23. Please return the car on time.', 'CAR-20260217-BA7F01', 0, '2026-02-17 06:04:15'),
+(74, 'admin', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Pending Review', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
+(75, 'staff', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Review documents and approve', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
+(76, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-172BE3 has been submitted and is pending admin review.', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
+(77, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:08'),
+(78, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:47'),
+(79, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-172BE3 has been approved!', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:53'),
+(80, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Pending Review', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
+(81, 'staff', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Review documents and approve', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
+(82, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-DF2F1B has been submitted and is pending admin review.', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
+(83, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Pending Review', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
+(84, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Review documents and approve', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
+(85, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-B2118B has been submitted and is pending admin review.', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
+(86, 'customer', 'Paolo@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-172BE3 has been extended by 3 days. Additional payment: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
+(87, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
+(88, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
+(89, 'admin', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Pending Review', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:37:18'),
+(90, 'staff', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Review documents and approve', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:37:18'),
+(91, 'customer', 'g@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-EE36FB has been submitted and is pending admin review.', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:37:18'),
+(92, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:03'),
+(93, 'customer', 'g@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:11'),
+(94, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:46'),
+(95, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:46'),
+(96, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:56'),
+(97, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:56'),
+(98, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:05'),
+(99, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:05'),
+(100, 'customer', 'g@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱3,867.50 for booking CAR-20260217-EE36FB. Please settle the balance before pickup.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:33'),
+(101, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:36'),
+(102, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-172BE3 has been rejected. Reason: wew', 'CAR-20260217-172BE3', 0, '2026-02-17 06:39:46'),
+(103, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-BA7F01 has been rejected. Reason: ewqe', 'CAR-20260217-BA7F01', 1, '2026-02-17 06:39:49'),
+(104, 'customer', 'g@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-EE36FB has been extended by 3 days. Additional payment: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
+(105, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
+(106, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
+(107, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-EE36FB. Amount: ₱17,517.50', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:45:39'),
+(108, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:05'),
+(109, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:18'),
+(110, 'customer', 'g@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0037 is ready for download.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:22'),
+(111, 'customer', 'kimberly.walker@email.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:00'),
+(112, 'customer', 'kimberly.walker@email.com', 'Booking Rejected', 'Your booking CAR-20260325-T2T2T2 has been rejected. Reason: q', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:20'),
+(113, 'customer', 'gregory.lewis@email.com', 'Booking Rejected', 'Your booking CAR-20260320-S1S1S1 has been rejected. Reason: qwe', 'CAR-20260320-S1S1S1', 0, '2026-02-17 07:07:24'),
+(114, 'customer', 'samantha.clark@email.com', 'Booking Rejected', 'Your booking CAR-20260315-R9R9R9 has been rejected. Reason: qwe', 'CAR-20260315-R9R9R9', 0, '2026-02-17 07:07:26'),
+(115, 'customer', 'timothy.robinson@email.com', 'Booking Rejected', 'Your booking CAR-20260310-Q8Q8Q8 has been rejected. Reason: eqwe', 'CAR-20260310-Q8Q8Q8', 0, '2026-02-17 07:07:29'),
+(116, 'customer', 'jennifer.martinez@email.com', 'Booking Rejected', 'Your booking CAR-20260305-P7P7P7 has been rejected. Reason: qeqw', 'CAR-20260305-P7P7P7', 0, '2026-02-17 07:07:31'),
+(117, 'customer', 'daniel.chen@email.com', 'Booking Rejected', 'Your booking CAR-20260129-Q7R8S9 has been rejected. Reason: qweqweqw', 'CAR-20260129-Q7R8S9', 0, '2026-02-17 07:07:34'),
+(118, 'customer', 'carmen.flores@email.com', 'Booking Rejected', 'Your booking CAR-20260126-H7I8J9 has been rejected. Reason: qweqwe', 'CAR-20260126-H7I8J9', 0, '2026-02-17 07:07:36'),
+(119, 'customer', 'david.wong@email.com', 'Booking Rejected', 'Your booking CAR-20260123-Y7Z8A9 has been rejected. Reason: qweqw', 'CAR-20260123-Y7Z8A9', 0, '2026-02-17 07:07:39'),
+(120, 'customer', 'lisa.tan@email.com', 'Booking Rejected', 'Your booking CAR-20260120-P7Q8R9 has been rejected. Reason: qweqw', 'CAR-20260120-P7Q8R9', 0, '2026-02-17 07:07:41'),
+(121, 'customer', 'pedro.cruz@email.com', 'Booking Rejected', 'Your booking CAR-20260117-G7H8I9 has been rejected. Reason: qwewq', 'CAR-20260117-G7H8I9', 0, '2026-02-17 07:07:43'),
+(122, 'admin', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Pending Review', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
+(123, 'staff', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Review documents and approve', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
+(124, 'customer', 'test@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-AC3C8C has been submitted and is pending admin review.', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
+(125, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱1,975.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:15'),
+(126, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:38'),
+(127, 'customer', 'test@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:43'),
+(128, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:20'),
+(129, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:20'),
+(130, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:27'),
+(131, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:27'),
+(132, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:35'),
+(133, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:35'),
+(134, 'customer', 'test@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-AC3C8C has been approved!', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:54'),
+(135, 'customer', 'test@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-AC3C8C has been extended by 2 days. Additional payment: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
+(136, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
+(137, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
+(138, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱9,875.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:26'),
+(139, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:37'),
+(140, 'admin', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Pending Review', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:11'),
+(141, 'staff', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Review documents and approve', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:11'),
+(142, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-FCA551 has been submitted and is pending admin review.', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:11'),
+(143, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-FCA551. Amount: ₱9,100.00', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:20'),
+(144, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:35'),
+(145, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:35'),
+(146, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:53'),
+(147, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:53'),
+(148, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:28:00'),
+(149, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:28:00'),
+(150, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0139', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:15'),
+(151, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-FCA551 has been approved!', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:18'),
+(152, 'admin', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Pending Review', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
+(153, 'staff', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Review documents and approve', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
+(154, 'customer', 'p@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-88F8D0 has been submitted and is pending admin review.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
+(155, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-88F8D0. Amount: ₱13,475.00', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:37'),
+(156, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:50'),
+(157, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:50'),
+(158, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:58'),
+(159, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:58'),
+(160, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:05'),
+(161, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:05'),
+(162, 'customer', 'p@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0140', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:26'),
+(163, 'customer', 'p@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱13,475.00 for booking CAR-20260217-88F8D0. Please settle the balance before pickup.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:32'),
+(164, 'customer', 'p@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260217-88F8D0 has been approved! Please pick up your car at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:34'),
+(165, 'staff', 'admin', 'Car Picked Up', 'Customer has picked up car for booking CAR-20260217-88F8D0 at Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:51'),
+(166, 'staff', 'admin', 'Car Ready for Return Pickup', 'Customer returned car for booking CAR-20260217-88F8D0. Pick up at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:58'),
+(167, 'customer', 'p@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:30'),
+(168, 'customer', 'p@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:34');
 
 -- --------------------------------------------------------
 
@@ -471,6 +668,29 @@ INSERT INTO `promo_codes` (`id`, `code`, `discount_type`, `discount_value`, `des
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `seasonal_pricing`
+--
+
+CREATE TABLE `seasonal_pricing` (
+  `id` int(11) NOT NULL,
+  `car_model` varchar(100) NOT NULL,
+  `season_name` varchar(100) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `price_multiplier` decimal(3,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `seasonal_pricing`
+--
+
+INSERT INTO `seasonal_pricing` (`id`, `car_model`, `season_name`, `start_date`, `end_date`, `price_multiplier`, `created_at`) VALUES
+(1, 'Kia Rio or Similar', 'summer', '2026-02-17', '2026-02-18', 1.40, '2026-02-17 04:21:29');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `travel_agents`
 --
 
@@ -498,8 +718,8 @@ INSERT INTO `travel_agents` (`id`, `agent_id`, `agent_name`, `email`, `phone`, `
 (2, 'AGT002', 'John Lim', 'john@asiantravel.com', '+65981234567', 'Asian Travel Hub', 'Flights', 10.00, 0, 0.00, 'Active', '2025-12-29 06:10:37'),
 (3, 'AGT003', 'Sarah Johnson', 'sarah@luxurytravel.com', '+441234567890', 'Luxury Travel Co.', 'Packages', 15.00, 0, 0.00, 'Active', '2025-12-29 06:10:37'),
 (4, 'AGT9237', 'James Bond', 'James@gmail.com', '09940213443', 'Loko', 'All', 5.00, 0, 0.00, 'Active', '2026-01-03 03:15:35'),
-(5, 'AGT2306', 'Paolo M', 'Pmadridano@gmail.com', '096134214123', 'KI', 'All', 20.00, 2, 0.00, 'Active', '2026-01-06 04:59:22'),
-(6, 'AGT8711', 'LOKK', 'lok@gmail.co', '09564642123', 'Tours', 'All', 10.00, 0, 0.00, 'Active', '2026-01-06 05:56:37');
+(5, 'AGT2306', 'Paolo M', 'Pmadridano@gmail.com', '096134214123', 'KI', 'All', 20.00, 3, 0.00, 'Active', '2026-01-06 04:59:22'),
+(6, 'AGT8711', 'LOKK', 'lok@gmail.co', '09564642123', 'Tours', 'All', 10.00, 1, 0.00, 'Active', '2026-01-06 05:56:37');
 
 -- --------------------------------------------------------
 
@@ -559,6 +779,19 @@ ALTER TABLE `cars`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `car_availability`
+--
+ALTER TABLE `car_availability`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `car_id` (`car_id`);
+
+--
+-- Indexes for table `car_blocked_dates`
+--
+ALTER TABLE `car_blocked_dates`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `car_maintenance`
 --
 ALTER TABLE `car_maintenance`
@@ -582,32 +815,17 @@ ALTER TABLE `car_rental_bookings`
   ADD KEY `agent_id` (`agent_id`);
 
 --
+-- Indexes for table `car_reviews`
+--
+ALTER TABLE `car_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `booking_id` (`booking_id`);
+
+--
 -- Indexes for table `car_sales`
 --
 ALTER TABLE `car_sales`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `cities`
---
-ALTER TABLE `cities`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `country_code` (`country_code`);
-
---
--- Indexes for table `commissions`
---
-ALTER TABLE `commissions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `commission_id` (`commission_id`);
-
---
--- Indexes for table `countries`
---
-ALTER TABLE `countries`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `country_code` (`country_code`),
-  ADD UNIQUE KEY `country_name` (`country_name`);
 
 --
 -- Indexes for table `customers`
@@ -617,6 +835,20 @@ ALTER TABLE `customers`
   ADD UNIQUE KEY `customer_id` (`customer_id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `customer_documents`
+--
+ALTER TABLE `customer_documents`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `booking_id` (`booking_id`);
+
+--
+-- Indexes for table `favorite_cars`
+--
+ALTER TABLE `favorite_cars`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_favorite` (`customer_email`,`car_model`);
 
 --
 -- Indexes for table `notifications`
@@ -630,6 +862,12 @@ ALTER TABLE `notifications`
 ALTER TABLE `promo_codes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`);
+
+--
+-- Indexes for table `seasonal_pricing`
+--
+ALTER TABLE `seasonal_pricing`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `travel_agents`
@@ -656,7 +894,7 @@ ALTER TABLE `travel_bookings`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cars`
@@ -665,16 +903,28 @@ ALTER TABLE `cars`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
+-- AUTO_INCREMENT for table `car_availability`
+--
+ALTER TABLE `car_availability`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `car_blocked_dates`
+--
+ALTER TABLE `car_blocked_dates`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `car_maintenance`
 --
 ALTER TABLE `car_maintenance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `car_rentals`
 --
 ALTER TABLE `car_rentals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT for table `car_rental_bookings`
@@ -683,46 +933,52 @@ ALTER TABLE `car_rental_bookings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `car_reviews`
+--
+ALTER TABLE `car_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `car_sales`
 --
 ALTER TABLE `car_sales`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `cities`
---
-ALTER TABLE `cities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
-
---
--- AUTO_INCREMENT for table `commissions`
---
-ALTER TABLE `commissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `countries`
---
-ALTER TABLE `countries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `customer_documents`
+--
+ALTER TABLE `customer_documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
+-- AUTO_INCREMENT for table `favorite_cars`
+--
+ALTER TABLE `favorite_cars`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 
 --
 -- AUTO_INCREMENT for table `promo_codes`
 --
 ALTER TABLE `promo_codes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `seasonal_pricing`
+--
+ALTER TABLE `seasonal_pricing`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `travel_agents`
@@ -739,6 +995,12 @@ ALTER TABLE `travel_bookings`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `car_availability`
+--
+ALTER TABLE `car_availability`
+  ADD CONSTRAINT `car_availability_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `car_maintenance`
@@ -759,10 +1021,16 @@ ALTER TABLE `car_rental_bookings`
   ADD CONSTRAINT `car_rental_bookings_ibfk_1` FOREIGN KEY (`agent_id`) REFERENCES `travel_agents` (`agent_id`);
 
 --
--- Constraints for table `cities`
+-- Constraints for table `car_reviews`
 --
-ALTER TABLE `cities`
-  ADD CONSTRAINT `cities_ibfk_1` FOREIGN KEY (`country_code`) REFERENCES `countries` (`country_code`) ON DELETE CASCADE;
+ALTER TABLE `car_reviews`
+  ADD CONSTRAINT `car_reviews_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `car_rentals` (`booking_id`);
+
+--
+-- Constraints for table `customer_documents`
+--
+ALTER TABLE `customer_documents`
+  ADD CONSTRAINT `customer_documents_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `car_rentals` (`booking_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
