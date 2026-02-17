@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->query("UPDATE admins SET last_login=NOW() WHERE id=" . $user['id']);
             
             $_SESSION['logged_in'] = true;
-            $_SESSION['user_type'] = 'admin';
+            $_SESSION['user_type'] = $user['role'] == 'Staff' ? 'staff' : 'admin';
             $_SESSION['user_id'] = $user['admin_id'];
             $_SESSION['user_name'] = $user['full_name'];
             $_SESSION['user_role'] = $user['role'];

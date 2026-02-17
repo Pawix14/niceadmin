@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $host = 'localhost';
 $user = 'root';
 $pass = '';
@@ -8,6 +11,13 @@ $conn = new mysqli($host, $user, $pass, $dbname);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
+}
+
+// Check for rebook parameter from session
+$rebook_car = null;
+if(isset($_SESSION['rebook_data'])) {
+    $rebook_car = $_SESSION['rebook_data']['car_model'];
+    unset($_SESSION['rebook_data']); // Clear after use
 }
 
 // Update car availability based on active rentals
@@ -215,6 +225,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         $license_number = $conn->real_escape_string($_POST['license_number']);
         $license_expiry = $conn->real_escape_string($_POST['license_expiry']);
         
+        $pickup_date = $conn->real_escape_string($_POST['pickup_date']);
+        $dropoff_date = $conn->real_escape_string($_POST['dropoff_date']);
+        $car_model = $conn->real_escape_string($_POST['car_model']);
+        
+        // Check if customer already has active booking for this car
+        $active_check = $conn->query("SELECT COUNT(*) as count FROM car_rentals 
+            WHERE customer_email='$customer_email' 
+            AND car_model='$car_model' 
+            AND status IN ('Pending', 'Confirmed', 'Active') 
+            AND ((pickup_date <= '$dropoff_date' AND dropoff_date >= '$pickup_date'))");
+        $active_result = $active_check->fetch_assoc();
+        
+        if ($active_result['count'] > 0) {
+            $message = "❌ You already have an active booking for this car during the selected dates.";
+            $message_type = "error";
+        } else {
+            // Check if car has reached 2 booking limit for the date range
+            $booking_count = $conn->query("SELECT COUNT(*) as count FROM car_rentals 
+                WHERE car_model='$car_model' 
+                AND status IN ('Pending', 'Confirmed', 'Active') 
+                AND ((pickup_date <= '$dropoff_date' AND dropoff_date >= '$pickup_date'))");
+            $count_result = $booking_count->fetch_assoc();
+            
+            if ($count_result['count'] >= 2) {
+                $message = "❌ This car is fully booked for the selected dates. Please choose different dates or another car.";
+                $message_type = "error";
+            } else {
+        
         // Validate license number format (Philippine format: A00-00-000000)
         if (!preg_match('/^[A-Z]\d{2}-\d{2}-\d{6}$/', $license_number)) {
             $message = "❌ Invalid license number format. Please use format: A00-00-000000 (e.g., N01-23-456789)";
@@ -276,7 +314,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
         }
         
         $payment_method = $conn->real_escape_string($_POST['payment_method']);
+        $payment_type = isset($_POST['payment_type']) ? $conn->real_escape_string($_POST['payment_type']) : 'Full Payment';
         $status = 'Pending';
+        
+        // Payment amounts - all bookings start with 0 paid and full amount as balance
+        $amount_paid = 0;
+        $remaining_balance = $total_amount;
 
         // Generate booking ID
         $booking_id = 'CAR-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
@@ -289,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             pickup_location, dropoff_location, car_type, car_model, car_image,
             rental_days, daily_rate, subtotal, insurance_fee, additional_fees,
             total_amount, promo_code, discount_amount, agent_id, agent_commission,
-            status, payment_method
+            status, payment_method, payment_type, amount_paid, remaining_balance
         ) VALUES (
             '$booking_id', '$customer_name', '$customer_email', '$customer_phone', $customer_age,
             '$license_number', '$license_expiry',
@@ -297,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             '$pickup_location', '$dropoff_location', '$car_type', '$car_model', '$car_image',
             $rental_days, $daily_rate, $subtotal, $insurance_fee, $additional_fees,
             $total_amount, '$promo_code', $discount_amount, " . ($agent_id === NULL ? "NULL" : "'$agent_id'") . ", $agent_commission,
-            '$status', '$payment_method'
+            '$status', '$payment_method', '$payment_type', $amount_paid, $remaining_balance
         )";
         
         if ($conn->query($sql)) {
@@ -309,12 +352,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             // Create notification for admin
             $conn->query("INSERT INTO notifications (user_type, title, message, booking_id, is_read) VALUES ('admin', 'New Car Rental Booking', 'New booking from $customer_name for $car_model - Pending Review', '$booking_id', 0)");
             
+            // Create notification for staff
+            $conn->query("INSERT INTO notifications (user_type, title, message, booking_id, is_read) VALUES ('staff', 'New Car Rental Booking', 'New booking from $customer_name for $car_model - Review documents and approve', '$booking_id', 0)");
+            
             // Create notification for customer
             $conn->query("INSERT INTO notifications (user_type, user_id, title, message, booking_id, is_read) VALUES ('customer', '$customer_email', 'Booking Submitted', 'Your booking $booking_id has been submitted and is pending admin review.', '$booking_id', 0)");
             
-            $message = "✅ Car rental booked successfully! ";
+            $message = "✅ Booking submitted successfully! ";
             $message .= "Booking ID: <strong>" . $booking_id . "</strong><br>";
-            $message .= "Total Amount: <strong>₱" . number_format($total_amount, 2) . "</strong>";
+            $message .= "Status: <strong class='text-warning'>Pending Approval</strong><br>";
+            $message .= "Total Amount: <strong>₱" . number_format($total_amount, 2) . "</strong><br><br>";
+            $message .= "<div class='alert alert-info mt-2 mb-0'><i class='bi bi-info-circle'></i> <strong>Next Steps:</strong><br>";
+            $message .= "1. Upload required documents (Driver's License, Valid ID, Proof of Address) at <a href='index.php?page=documents'>My Profile > Documents</a><br>";
+            $message .= "2. Staff will review your documents and booking<br>";
+            $message .= "3. You'll receive a notification once approved</div>";
             
             if ($agent_commission > 0) {
                 $message .= "<br>📊 Agent Commission: <strong>₱" . number_format($agent_commission, 2) . "</strong>";
@@ -328,6 +379,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             $message = "❌ Error creating booking: " . $conn->error;
             $message_type = "error";
         }
+            }
+            }
         }
     }
 }
@@ -422,14 +475,18 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                               <div>
                                 <h5 class="car-card-price mb-0">₱<?php echo number_format($car['daily_rate'], 2); ?><small class="text-muted">/day</small></h5>
                               </div>
-                              <button class="btn btn-primary btn-sm select-car" 
-                                      data-id="<?php echo $car['id']; ?>"
-                                      data-name="<?php echo $car['name']; ?>"
-                                      data-type="<?php echo $car['type']; ?>"
-                                      data-image="<?php echo $car['image']; ?>"
-                                      data-rate="<?php echo $car['daily_rate']; ?>">
-                                <i class="bi bi-check-lg"></i> Select
-                              </button>
+                              <div class="d-flex gap-1">
+                                  <button class="btn btn-outline-danger btn-sm favorite-btn" 
+                                          data-car-model="<?php echo htmlspecialchars($car['name']); ?>"
+                                          data-car-type="<?php echo htmlspecialchars($car['type']); ?>"
+                                          data-car-image="<?php echo htmlspecialchars($car['image']); ?>"
+                                          data-car-rate="<?php echo $car['daily_rate']; ?>">
+                                      <i class="bi bi-heart"></i>
+                                  </button>
+                                  <a href="index.php?page=car_availability_customer&car_name=<?php echo urlencode($car['name']); ?>" class="btn btn-primary btn-sm">
+                                      <i class="bi bi-calendar-week me-1"></i>Select
+                                  </a>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -746,6 +803,25 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                         <option value="GCash" <?php echo (isset($_POST['payment_method']) && $_POST['payment_method'] == 'GCash') ? 'selected' : ''; ?>>📱 GCash</option>
                         <option value="Pay at Pickup" <?php echo (isset($_POST['payment_method']) && $_POST['payment_method'] == 'Pay at Pickup') ? 'selected' : ''; ?>>💵 Pay at Pickup</option>
                       </select>
+                    </div>
+                    
+                    <!-- Payment Type -->
+                    <div class="mb-3">
+                      <label class="form-label">Payment Type *</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_type" id="full_payment" value="Full Payment" checked>
+                        <label class="form-check-label" for="full_payment">
+                          <strong>Full Payment</strong>
+                          <small class="text-muted d-block">Pay the total amount now</small>
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_type" id="downpayment" value="Downpayment">
+                        <label class="form-check-label" for="downpayment">
+                          <strong>Downpayment (50%)</strong>
+                          <small class="text-muted d-block">Pay 50% now, remaining balance before pickup</small>
+                        </label>
+                      </div>
                     </div>
                     
                     <!-- Terms & Conditions -->
@@ -1085,13 +1161,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    if (!document.getElementById('pickup_date').value) {
+    
+    // Check for URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const carName = urlParams.get('car_name');
+    const pickupParam = urlParams.get('pickup');
+    const dropoffParam = urlParams.get('dropoff');
+    
+    // Check for rebook parameter from PHP
+    const rebookCar = '<?php echo $rebook_car ? addslashes($rebook_car) : ""; ?>';
+    
+    if(pickupParam) {
+        document.getElementById('pickup_date').value = pickupParam;
+    } else if (!document.getElementById('pickup_date').value) {
         document.getElementById('pickup_date').value = today.toISOString().split('T')[0];
     }
     
-    if (!document.getElementById('dropoff_date').value) {
+    if(dropoffParam) {
+        document.getElementById('dropoff_date').value = dropoffParam;
+    } else if (!document.getElementById('dropoff_date').value) {
         document.getElementById('dropoff_date').value = tomorrow.toISOString().split('T')[0];
     }
+    
     const pickupDate = new Date(document.getElementById('pickup_date').value);
     const minDropoff = new Date(pickupDate);
     minDropoff.setDate(minDropoff.getDate() + 1);
@@ -1101,16 +1192,63 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('terms').addEventListener('change', updateBookNowButton);
     document.getElementById('license_valid').addEventListener('change', updateBookNowButton);
     
-    // Check if car parameter is in URL
-    const urlParams = new URLSearchParams(window.location.search);
+    // Check if car parameter is in URL or rebook
     const carParam = urlParams.get('car');
+    const targetCar = rebookCar || carParam || carName;
     
-    if (carParam) {
-        // Find and select the car
-        const carButtons = document.querySelectorAll('.select-car');
-        carButtons.forEach(button => {
-            if (button.dataset.name === carParam) {
-                button.click();
+    if (targetCar) {
+        // Find car data from the page and auto-select it
+        const carCards = document.querySelectorAll('.car-item');
+        
+        carCards.forEach(card => {
+            const cardTitle = card.querySelector('.car-card-title');
+            if (cardTitle && cardTitle.textContent.trim() === targetCar) {
+                // Extract car data from the card
+                const priceText = card.querySelector('.car-card-price').textContent;
+                const rate = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+                const typeText = card.querySelector('.badge').textContent;
+                const imgSrc = card.querySelector('.car-card-img').src;
+                
+                // Set selected car
+                selectedCar = {
+                    id: targetCar.toLowerCase().replace(/ /g, '-'),
+                    name: targetCar,
+                    type: typeText,
+                    image: imgSrc,
+                    rate: rate
+                };
+                
+                // Update UI
+                document.getElementById('selectedCarPlaceholder').style.display = 'none';
+                const detailsDiv = document.getElementById('selectedCarDetails');
+                detailsDiv.style.display = 'block';
+                
+                document.getElementById('selectedCarImage').src = selectedCar.image;
+                document.getElementById('selectedCarName').textContent = selectedCar.name;
+                document.getElementById('selectedCarType').textContent = selectedCar.type + ' Car';
+                document.getElementById('selectedCarRate').textContent = '₱' + selectedCar.rate.toFixed(2) + '/day';
+                
+                // Update form hidden fields
+                document.getElementById('form_car_model').value = selectedCar.name;
+                document.getElementById('form_car_type').value = selectedCar.type;
+                document.getElementById('form_car_image').value = selectedCar.image;
+                document.getElementById('form_daily_rate').value = selectedCar.rate;
+                
+                // Hide car selection card
+                document.getElementById('carSelectionCard').style.display = 'none';
+                
+                // If rebook, scroll to rental details
+                if(rebookCar) {
+                    setTimeout(() => {
+                        const rentalDetailsCard = document.querySelector('.card.mb-4:nth-of-type(2)');
+                        if(rentalDetailsCard) {
+                            rentalDetailsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 300);
+                }
+                
+                updatePrice();
+                updateBookNowButton();
             }
         });
     }
@@ -1191,6 +1329,83 @@ document.addEventListener('DOMContentLoaded', function() {
         updateBookNowButton();
     }
 });
+document.querySelectorAll('.favorite-btn').forEach(btn => {
+    // Check if car is already favorited
+    checkFavoriteStatus(btn);
+    
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const carModel = this.dataset.carModel;
+        const isFavorite = this.classList.contains('favorited');
+        
+        if (isFavorite) {
+            removeFavorite(carModel, this);
+        } else {
+            addFavorite(this);
+        }
+    });
+});
+
+function checkFavoriteStatus(btn) {
+    fetch('modules/favorite_car_handler.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'action=check&car_model=' + encodeURIComponent(btn.dataset.carModel)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.is_favorite) {
+            btn.classList.add('favorited', 'btn-danger');
+            btn.classList.remove('btn-outline-danger');
+            btn.querySelector('i').classList.replace('bi-heart', 'bi-heart-fill');
+        }
+    });
+}
+
+function addFavorite(btn) {
+    const formData = new FormData();
+    formData.append('action', 'add');
+    formData.append('car_model', btn.dataset.carModel);
+    formData.append('car_type', btn.dataset.carType);
+    formData.append('car_image', btn.dataset.carImage);
+    formData.append('car_rate', btn.dataset.carRate);
+    
+    fetch('modules/favorite_car_handler.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            btn.classList.add('favorited', 'btn-danger');
+            btn.classList.remove('btn-outline-danger');
+            btn.querySelector('i').classList.replace('bi-heart', 'bi-heart-fill');
+            alert('✅ Added to favorites!');
+        } else {
+            alert('❌ ' + data.message);
+        }
+    });
+}
+
+function removeFavorite(carModel, btn) {
+    const formData = new FormData();
+    formData.append('action', 'remove');
+    formData.append('car_model', carModel);
+    
+    fetch('modules/favorite_car_handler.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            btn.classList.remove('favorited', 'btn-danger');
+            btn.classList.add('btn-outline-danger');
+            btn.querySelector('i').classList.replace('bi-heart-fill', 'bi-heart');
+            alert('✅ Removed from favorites!');
+        }
+    });
+}
 </script>
 
 <style>

@@ -23,6 +23,10 @@ if (isset($_GET['action'])) {
                 $conn->query("DELETE FROM travel_bookings WHERE booking_id = '$id'");
                 break;
             case 'car':
+                // Delete related records first (in order)
+                $conn->query("DELETE FROM car_reviews WHERE booking_id = '$id'");
+                $conn->query("DELETE FROM customer_documents WHERE booking_id = '$id'");
+                // Then delete the booking
                 $conn->query("DELETE FROM car_rentals WHERE booking_id = '$id'");
                 break;
         }

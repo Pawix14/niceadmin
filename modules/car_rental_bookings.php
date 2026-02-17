@@ -76,10 +76,10 @@ $reminder_result = $conn->query("SELECT * FROM car_rental_bookings
     AND reminder_sent = 0");
 
 while($booking = $reminder_result->fetch_assoc()) {
-    $conn->query("INSERT INTO notifications (user_email, message, type, created_at) 
-        VALUES ('{$booking['customer_email']}', 
+    $conn->query("INSERT INTO notifications (user_type, user_id, title, message, booking_id, is_read, created_at) 
+        VALUES ('customer', '{$booking['customer_email']}', 'Return Reminder', 
         'Reminder: Your rental for {$booking['car_model']} ends tomorrow ({$booking['return_date']}). Please return the car on time.', 
-        'rental_reminder', NOW())");
+        '', 0, NOW())");
     
     $conn->query("UPDATE car_rental_bookings SET reminder_sent = 1 WHERE id = {$booking['id']}");
 }

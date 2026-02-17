@@ -10,6 +10,28 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$message = '';
+$message_type = '';
+
+// Send reminder
+if(isset($_GET['remind'])) {
+    $booking_id = intval($_GET['remind']);
+    $booking = $conn->query("SELECT * FROM car_rentals WHERE id=$booking_id")->fetch_assoc();
+    if($booking) {
+        $insert = $conn->query("INSERT INTO notifications (user_type, user_id, title, message, booking_id, is_read, created_at) 
+            VALUES ('customer', '{$booking['customer_email']}', 'Return Reminder', 
+            'Reminder: Your rental for {$booking['car_model']} is ending on {$booking['dropoff_date']}. Please return the car on time.', 
+            '{$booking['booking_id']}', 0, NOW())");
+        if($insert) {
+            $message = '✅ Reminder sent to customer!';
+            $message_type = 'success';
+        } else {
+            $message = '❌ Error: ' . $conn->error;
+            $message_type = 'danger';
+        }
+    }
+}
+
 // Get all cars with booking count
 $cars = [];
 $result = $conn->query("SELECT c.*, 
@@ -32,6 +54,9 @@ if ($sales_result) {
     }
 }
 
+// Get active bookings
+$bookings = $conn->query("SELECT * FROM car_rentals WHERE status IN ('Confirmed', 'Pending') ORDER BY dropoff_date ASC")->fetch_all(MYSQLI_ASSOC);
+
 $conn->close();
 ?>
 
@@ -46,6 +71,59 @@ $conn->close();
 </div>
 
 <section class="section">
+  <?php if($message): ?>
+  <div class="alert alert-<?php echo $message_type; ?> alert-dismissible fade show">
+    <?php echo $message; ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <?php endif; ?>
+
+  <div class="card mb-4">
+    <div class="card-header" style="background-color: #0a2540; color: white;">
+      <h6 class="mb-0">📋 Active Rentals</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Customer</th>
+              <th>Car</th>
+              <th>Return Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach($bookings as $booking): 
+              $days_left = (strtotime($booking['dropoff_date']) - time()) / 86400;
+            ?>
+            <tr>
+              <td><?php echo $booking['booking_id']; ?></td>
+              <td><?php echo htmlspecialchars($booking['customer_name']); ?></td>
+              <td><?php echo htmlspecialchars($booking['car_model']); ?></td>
+              <td>
+                <?php echo date('M d, Y', strtotime($booking['dropoff_date'])); ?>
+                <?php if($days_left <= 2 && $days_left >= 0): ?>
+                <span class="badge bg-warning text-dark">Due Soon</span>
+                <?php endif; ?>
+              </td>
+              <td><span class="badge bg-<?php echo $booking['status']=='Confirmed'?'success':'warning'; ?>"><?php echo $booking['status']; ?></span></td>
+              <td>
+                <a href="?page=admin_car_rental&remind=<?php echo $booking['id']; ?>" class="btn btn-sm btn-warning" onclick="return confirm('Send reminder to customer?')"><i class="bi bi-bell"></i> Remind</a>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if(empty($bookings)): ?>
+            <tr><td colspan="6" class="text-center text-muted">No active rentals</td></tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-header bg-light">
       <h6 class="mb-0">🚙 All Available Cars</h6>

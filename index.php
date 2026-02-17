@@ -9,11 +9,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 $user_type = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : 'customer';
 $is_admin = ($user_type === 'admin');
+$is_staff = ($user_type === 'staff');
 $unread_notifications = 0;
 $conn_notif = new mysqli('localhost', 'root', '', 'travel_db_improved');
 if (!$conn_notif->connect_error) {
     if ($is_admin) {
         $result = $conn_notif->query("SELECT COUNT(*) as count FROM notifications WHERE user_type='admin' AND is_read=0");
+    } elseif ($is_staff) {
+        $result = $conn_notif->query("SELECT COUNT(*) as count FROM notifications WHERE user_type='staff' AND is_read=0");
     } else {
         $username = isset($_SESSION['username']) ? $conn_notif->real_escape_string($_SESSION['username']) : '';
         $customer_result = $conn_notif->query("SELECT email FROM customers WHERE username='$username'");
@@ -65,7 +68,7 @@ if (!$is_admin && isset($_SESSION['username'])) {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #666 100%);
       background-attachment: fixed;
-      padding-top: <?php echo $is_admin ? '70px' : '130px'; ?>;
+      padding-top: <?php echo ($is_admin || $is_staff) ? '70px' : '130px'; ?>;
       color: #333;
       position: relative;
     }
@@ -196,9 +199,9 @@ if (!$is_admin && isset($_SESSION['username'])) {
 
     /* Main Content Area */
     #main {
-      margin-left: <?php echo $is_admin ? '260px' : '0'; ?>;
+      margin-left: <?php echo ($is_admin || $is_staff) ? '260px' : '0'; ?>;
       padding: 30px;
-      min-height: calc(100vh - <?php echo $is_admin ? '70px' : '130px'; ?>);
+      min-height: calc(100vh - <?php echo ($is_admin || $is_staff) ? '70px' : '130px'; ?>);
       transition: all 0.3s ease;
       position: relative;
       z-index: 1;
@@ -905,22 +908,37 @@ if (!$is_admin && isset($_SESSION['username'])) {
     /* Alert Professional Style */
     .alert {
       border-left: 4px solid;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 16px 20px;
     }
 
     .alert-success {
-      border-left-color: #198754;
-      background: rgba(25, 135, 84, 0.1);
+      border-left-color: #10b981;
+      background: #d1fae5 !important;
+      color: #065f46 !important;
+      border: 2px solid #10b981 !important;
     }
 
     .alert-danger {
       border-left-color: #dc3545;
-      background: rgba(220, 53, 69, 0.1);
+      background: #fee2e2 !important;
+      color: #991b1b !important;
+      border: 2px solid #dc3545 !important;
     }
 
     .alert-warning {
-      border-left-color: #ffc107;
-      background: rgba(255, 193, 7, 0.1);
+      border-left-color: #f59e0b;
+      background: #fef3c7 !important;
+      color: #92400e !important;
+      border: 2px solid #f59e0b !important;
+    }
+
+    .alert-info {
+      border-left-color: #3b82f6;
+      background: #dbeafe !important;
+      color: #1e40af !important;
+      border: 2px solid #3b82f6 !important;
     }
 
     /* Image Professional Style */
@@ -1018,41 +1036,18 @@ if (!$is_admin && isset($_SESSION['username'])) {
   <aside id="sidebar" class="sidebar" style="background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #666 100%) !important;">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link <?php echo (!isset($_GET['page']) || $_GET['page'] == 'dashboard') ? 'active' : ''; ?>" href="index.php?page=dashboard" style="color: rgba(255, 255, 255, 0.85) !important;">
-          <i class="bi bi-house-door" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+        <a class="nav-link <?php echo (!isset($_GET['page']) || $_GET['page'] == 'dashboard' || $_GET['page'] == 'admin_dashboard') ? 'active' : ''; ?>" href="index.php?page=admin_dashboard" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-speedometer2" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
           <span>Dashboard</span>
         </a>
       </li>
 
-      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">✈️ Bookings</li>
-
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'all_bookings') ? 'active' : ''; ?>" href="index.php?page=all_bookings" style="color: rgba(255, 255, 255, 0.85) !important;">
-          <i class="bi bi-journal-text" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
-          <span>All Bookings</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'admin_car_rental') ? 'active' : ''; ?>" href="index.php?page=admin_car_rental" style="color: rgba(255, 255, 255, 0.85) !important;">
-          <i class="bi bi-car-front" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
-          <span>Car Rental</span>
-        </a>
-      </li>
-
-      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">🏝️ Management</li>
+      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">⚙️ System</li>
 
       <li class="nav-item">
         <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'cars') ? 'active' : ''; ?>" href="index.php?page=cars" style="color: rgba(255, 255, 255, 0.85) !important;">
           <i class="bi bi-car-front-fill" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
           <span>Cars</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_maintenance') ? 'active' : ''; ?>" href="index.php?page=car_maintenance" style="color: rgba(255, 255, 255, 0.85) !important;">
-          <i class="bi bi-tools" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
-          <span>Maintenance</span>
         </a>
       </li>
 
@@ -1084,7 +1079,42 @@ if (!$is_admin && isset($_SESSION['username'])) {
         </a>
       </li>
 
-      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">⚙️ System</li>
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'admin_management') ? 'active' : ''; ?>" href="index.php?page=admin_management" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-shield-lock" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Admin Management</span>
+        </a>
+      </li>
+
+      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">📊 Management</li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'booking_calendar') ? 'active' : ''; ?>" href="index.php?page=booking_calendar" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-calendar-week" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Booking Calendar</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_availability') ? 'active' : ''; ?>" href="index.php?page=car_availability" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-calendar-check" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Car Availability</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_reviews') ? 'active' : ''; ?>" href="index.php?page=car_reviews" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-star" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Reviews & Ratings</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'documents') ? 'active' : ''; ?>" href="index.php?page=documents" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-file-earmark-text" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Documents</span>
+        </a>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'notifications') ? 'active' : ''; ?>" href="index.php?page=notifications" style="color: rgba(255, 255, 255, 0.85) !important;">
@@ -1095,11 +1125,100 @@ if (!$is_admin && isset($_SESSION['username'])) {
           <?php endif; ?>
         </a>
       </li>
+    </ul>
+  </aside>
+  <?php elseif ($is_staff): ?>
+  <!-- SIDEBAR - Staff -->
+  <aside id="sidebar" class="sidebar" style="background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #666 100%) !important;">
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link <?php echo (!isset($_GET['page']) || $_GET['page'] == 'dashboard') ? 'active' : ''; ?>" href="index.php?page=dashboard" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-house-door" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">📋 Operations</li>
 
       <li class="nav-item">
-        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'admin_management') ? 'active' : ''; ?>" href="index.php?page=admin_management" style="color: rgba(255, 255, 255, 0.85) !important;">
-          <i class="bi bi-shield-lock" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
-          <span>Admin Management</span>
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'staff_booking_review') ? 'active' : ''; ?>" href="index.php?page=staff_booking_review" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-clipboard-check" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Booking Review</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'all_bookings') ? 'active' : ''; ?>" href="index.php?page=all_bookings" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-journal-text" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>All Bookings</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'admin_car_rental') ? 'active' : ''; ?>" href="index.php?page=admin_car_rental" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-car-front" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Car Rentals</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_maintenance') ? 'active' : ''; ?>" href="index.php?page=car_maintenance" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-tools" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Maintenance</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'customers') ? 'active' : ''; ?>" href="index.php?page=customers" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-people" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'payments') ? 'active' : ''; ?>" href="index.php?page=payments" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-credit-card" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Payments</span>
+        </a>
+      </li>
+
+      <li class="nav-heading" style="color: rgba(255, 255, 255, 0.6) !important;">📊 Management</li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'booking_calendar') ? 'active' : ''; ?>" href="index.php?page=booking_calendar" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-calendar-week" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Booking Calendar</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_availability') ? 'active' : ''; ?>" href="index.php?page=car_availability" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-calendar-check" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Car Availability</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_reviews') ? 'active' : ''; ?>" href="index.php?page=car_reviews" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-star" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Reviews & Ratings</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'documents') ? 'active' : ''; ?>" href="index.php?page=documents" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-file-earmark-text" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Documents</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'notifications') ? 'active' : ''; ?>" href="index.php?page=notifications" style="color: rgba(255, 255, 255, 0.85) !important;">
+          <i class="bi bi-bell" style="color: rgba(255, 255, 255, 0.85) !important;"></i>
+          <span>Notifications</span>
+          <?php if ($unread_notifications > 0): ?>
+          <span class="badge bg-danger ms-2"><?php echo $unread_notifications; ?></span>
+          <?php endif; ?>
         </a>
       </li>
     </ul>
@@ -1121,9 +1240,33 @@ if (!$is_admin && isset($_SESSION['username'])) {
         </a>
       </li>
       <li class="topnav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'my_payments') ? 'active' : ''; ?>" href="index.php?page=my_payments">
+          <i class="bi bi-credit-card"></i>
+          <span>My Payments</span>
+        </a>
+      </li>
+      <li class="topnav-item">
         <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_rental') ? 'active' : ''; ?>" href="index.php?page=car_rental">
           <i class="bi bi-car-front"></i>
           <span>Book a Car</span>
+        </a>
+      </li>
+      <li class="topnav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'favorite_cars') ? 'active' : ''; ?>" href="index.php?page=favorite_cars">
+          <i class="bi bi-heart"></i>
+          <span>Favorites</span>
+        </a>
+      </li>
+      <li class="topnav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'car_reviews') ? 'active' : ''; ?>" href="index.php?page=car_reviews">
+          <i class="bi bi-star"></i>
+          <span>Reviews</span>
+        </a>
+      </li>
+      <li class="topnav-item">
+        <a class="nav-link <?php echo (isset($_GET['page']) && $_GET['page'] == 'documents') ? 'active' : ''; ?>" href="index.php?page=documents">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Documents</span>
         </a>
       </li>
       <li class="topnav-item">
@@ -1152,6 +1295,8 @@ if (!$is_admin && isset($_SESSION['username'])) {
         // Show different dashboard based on user type
         if ($is_admin) {
             include 'modules/dashboard.php';
+        } elseif ($is_staff) {
+            include 'modules/staff_dashboard.php';
         } else {
             include 'modules/customer_dashboard.php';
         }
@@ -1182,6 +1327,14 @@ if (!$is_admin && isset($_SESSION['username'])) {
 
   <!-- Back to Top Button -->
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Global Loading Spinner -->
+  <div id="globalLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+    <div style="text-align:center; color:white;">
+      <div class="spinner-border" style="width:4rem; height:4rem;" role="status"></div>
+      <p class="mt-3" style="font-size:18px; font-weight:600;">Processing...</p>
+    </div>
+  </div>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -1263,6 +1416,45 @@ if (!$is_admin && isset($_SESSION['username'])) {
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <!-- Global Loading & Validation Scripts -->
+  <script>
+    // Show loader on form submit
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        if(this.checkValidity()) {
+          document.getElementById('globalLoader').style.display = 'flex';
+        }
+      });
+    });
+
+    // Form validation feedback
+    (function() {
+      'use strict';
+      var forms = document.querySelectorAll('.needs-validation');
+      Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+          if(!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            // Show first error
+            const firstInvalid = form.querySelector(':invalid');
+            if(firstInvalid) {
+              firstInvalid.focus();
+              const errorMsg = firstInvalid.validationMessage;
+              alert('⚠️ ' + errorMsg);
+            }
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+
+    // Hide loader on page load
+    window.addEventListener('load', function() {
+      document.getElementById('globalLoader').style.display = 'none';
+    });
+  </script>
 
 </body>
 </html>

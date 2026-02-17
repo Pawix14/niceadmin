@@ -240,6 +240,18 @@ $conn->close();
           </div>
         </div>
       </div>
+
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Quick Upload Documents</h6>
+        </div>
+        <div class="card-body">
+          <p class="small text-muted mb-3">Upload your verification documents</p>
+          <a href="index.php?page=documents" class="btn btn-sm btn-primary w-100">
+            <i class="bi bi-upload me-2"></i>Upload License/ID
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>

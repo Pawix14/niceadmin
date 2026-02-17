@@ -43,10 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_admin_message'])
 
 // Get user type and email
 $is_admin = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin';
+$is_staff = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'staff';
 
 // For customers, get email from customers table
 $user_email = '';
-if (!$is_admin && isset($_SESSION['username'])) {
+if (!$is_admin && !$is_staff && isset($_SESSION['username'])) {
     $username = $conn->real_escape_string($_SESSION['username']);
     $customer_result = $conn->query("SELECT email FROM customers WHERE username='$username'");
     if ($customer_result && $customer_row = $customer_result->fetch_assoc()) {
@@ -58,6 +59,8 @@ if (!$is_admin && isset($_SESSION['username'])) {
 $notifications = [];
 if ($is_admin) {
     $result = $conn->query("SELECT * FROM notifications WHERE user_type='admin' ORDER BY created_at DESC");
+} elseif ($is_staff) {
+    $result = $conn->query("SELECT * FROM notifications WHERE user_type='staff' ORDER BY created_at DESC");
 } else {
     $result = $conn->query("SELECT * FROM notifications WHERE user_type='customer' AND user_id='$user_email' ORDER BY created_at DESC");
 }

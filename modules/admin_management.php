@@ -151,11 +151,48 @@ $active_admins = $conn->query("SELECT COUNT(*) as count FROM admins WHERE status
       <div class="card">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
           <h6 class="mb-0"><i class="bi bi-people me-2"></i>Admin List</h6>
-          <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addAdminModal">
-            <i class="bi bi-plus-circle"></i> Add Admin
-          </button>
         </div>
         <div class="card-body">
+          <div class="mb-3">
+            <button class="btn btn-primary" onclick="document.getElementById('addAdminForm').style.display='block'"><i class="bi bi-plus-circle"></i> Add Admin</button>
+          </div>
+          
+          <div id="addAdminForm" style="display:none;" class="mb-4 p-3 border rounded bg-light">
+            <h6>Add New Admin</h6>
+            <form method="POST">
+              <input type="hidden" name="add_admin" value="1">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" name="full_name" placeholder="Full Name" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="password" class="form-control" name="password" placeholder="Password" required minlength="6">
+                </div>
+                <div class="col-md-6">
+                  <input type="email" class="form-control" name="email" placeholder="Email" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="tel" class="form-control" name="phone" placeholder="Phone">
+                </div>
+                <div class="col-md-6">
+                  <select class="form-select" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Super Admin">Super Admin</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-success">Add Admin</button>
+                  <button type="button" class="btn btn-secondary" onclick="document.getElementById('addAdminForm').style.display='none'">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
@@ -183,12 +220,6 @@ $active_admins = $conn->query("SELECT COUNT(*) as count FROM admins WHERE status
                     </span>
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editAdmin(<?php echo htmlspecialchars(json_encode($admin)); ?>)">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-warning" onclick="changePassword(<?php echo $admin['id']; ?>, '<?php echo htmlspecialchars($admin['full_name']); ?>')">
-                      <i class="bi bi-key"></i>
-                    </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteAdmin(<?php echo $admin['id']; ?>, '<?php echo htmlspecialchars($admin['username']); ?>')">
                       <i class="bi bi-trash"></i>
                     </button>
@@ -243,150 +274,7 @@ $active_admins = $conn->query("SELECT COUNT(*) as count FROM admins WHERE status
   </div>
 </section>
 
-<!-- Add Admin Modal -->
-<div class="modal fade" id="addAdminModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add New Admin</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <input type="hidden" name="add_admin" value="1">
-          <div class="mb-3">
-            <label class="form-label">Full Name *</label>
-            <input type="text" class="form-control" name="full_name" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Username *</label>
-            <input type="text" class="form-control" name="username" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Password *</label>
-            <input type="password" class="form-control" name="password" required minlength="6">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email *</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="tel" class="form-control" name="phone">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Role *</label>
-            <select class="form-select" name="role" required>
-              <option value="Admin">Admin</option>
-              <option value="Super Admin">Super Admin</option>
-              <option value="Manager">Manager</option>
-              <option value="Staff">Staff</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add Admin</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Admin Modal -->
-<div class="modal fade" id="editAdminModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Admin</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <input type="hidden" name="update_admin" value="1">
-          <input type="hidden" name="admin_id" id="edit_admin_id">
-          <div class="mb-3">
-            <label class="form-label">Full Name *</label>
-            <input type="text" class="form-control" name="full_name" id="edit_full_name" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email *</label>
-            <input type="email" class="form-control" name="email" id="edit_email" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="tel" class="form-control" name="phone" id="edit_phone">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Role *</label>
-            <select class="form-select" name="role" id="edit_role" required>
-              <option value="Admin">Admin</option>
-              <option value="Super Admin">Super Admin</option>
-              <option value="Manager">Manager</option>
-              <option value="Staff">Staff</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Status *</label>
-            <select class="form-select" name="status" id="edit_status" required>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Update Admin</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Change Password</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <input type="hidden" name="change_password" value="1">
-          <input type="hidden" name="admin_id" id="pwd_admin_id">
-          <p>Changing password for: <strong id="pwd_admin_name"></strong></p>
-          <div class="mb-3">
-            <label class="form-label">New Password *</label>
-            <input type="password" class="form-control" name="new_password" required minlength="6">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-warning">Change Password</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <script>
-function editAdmin(admin) {
-    document.getElementById('edit_admin_id').value = admin.id;
-    document.getElementById('edit_full_name').value = admin.full_name;
-    document.getElementById('edit_email').value = admin.email;
-    document.getElementById('edit_phone').value = admin.phone || '';
-    document.getElementById('edit_role').value = admin.role;
-    document.getElementById('edit_status').value = admin.status;
-    new bootstrap.Modal(document.getElementById('editAdminModal')).show();
-}
-
-function changePassword(id, name) {
-    document.getElementById('pwd_admin_id').value = id;
-    document.getElementById('pwd_admin_name').textContent = name;
-    new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
-}
-
 function deleteAdmin(id, username) {
     if (confirm('Are you sure you want to delete admin: ' + username + '?')) {
         window.location.href = 'index.php?page=admin_management&delete=1&id=' + id;
@@ -425,6 +313,18 @@ function deleteAdmin(id, username) {
   background-color: #666;
   border-color: #666;
   color: white;
+}
+
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+.modal {
+  z-index: 1050 !important;
+}
+
+.modal-dialog {
+  z-index: 1060 !important;
 }
 </style>
 
