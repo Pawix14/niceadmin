@@ -1,0 +1,42 @@
+
+QUICK FIX FOR MOST NOTICEABLE VALIDATIONS
+==========================================
+
+Add these checks in car_rental.php around line 200 (before the booking insert):
+
+1. PAST DATE CHECK:
+if (strtotime($pickup_date) < strtotime(date('Y-m-d'))) {
+    $message = '❌ Cannot book dates in the past!';
+    $message_type = 'error';
+}
+
+2. SAME DAY RETURN CHECK:
+if (strtotime($dropoff_date) <= strtotime($pickup_date)) {
+    $message = '❌ Return date must be at least 1 day after pickup!';
+    $message_type = 'error';
+}
+
+3. DOUBLE BOOKING FIX:
+Change line 217 from:
+if ($count_result['count'] >= 2) {
+To:
+if ($count_result['count'] >= 1) {
+
+4. LICENSE EXPIRY THROUGH RENTAL:
+if (strtotime($license_expiry) < strtotime($dropoff_date)) {
+    $message = '❌ License must be valid through entire rental period!';
+    $message_type = 'error';
+}
+
+5. ADVANCE BOOKING LIMIT:
+if (strtotime($pickup_date) > strtotime('+90 days')) {
+    $message = '❌ Cannot book more than 90 days in advance!';
+    $message_type = 'error';
+}
+
+6. MAX RENTAL PERIOD:
+$rental_days = (strtotime($dropoff_date) - strtotime($pickup_date)) / 86400;
+if ($rental_days > 30) {
+    $message = '❌ Maximum rental period is 30 days!';
+    $message_type = 'error';
+}

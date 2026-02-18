@@ -168,7 +168,23 @@ $conn->close();
           $amount_paid = $booking['amount_paid'] ?? 0;
           $remaining_balance = $booking['remaining_balance'] ?? 0;
           $is_fully_paid = ($booking['payment_status'] == 'Paid') || ($amount_paid > 0 && $remaining_balance == 0);
+          $pickup_status = $booking['pickup_status'] ?? 'Not Picked Up';
           ?>
+          
+          <!-- Pickup Status Indicator -->
+          <?php if ($booking['status'] == 'Confirmed'): ?>
+          <div class="mb-3 p-2" style="background-color: <?php echo ($pickup_status == 'Picked Up') ? '#d1fae5' : '#fef3c7'; ?>; border-radius: 8px; border-left: 4px solid <?php echo ($pickup_status == 'Picked Up') ? '#10b981' : '#f59e0b'; ?>;">
+            <small class="text-muted fw-bold">🚗 Pickup Status</small>
+            <?php if ($pickup_status == 'Picked Up'): ?>
+            <p class="mb-1 small text-success"><i class="bi bi-check-circle-fill"></i> <strong>Car Picked Up</strong></p>
+            <p class="mb-0 small"><i class="bi bi-clock"></i> Picked up on: <strong><?php echo date('M d, Y g:i A', strtotime($booking['pickup_confirmed_at'])); ?></strong></p>
+            <?php else: ?>
+            <p class="mb-1 small text-warning"><i class="bi bi-hourglass-split"></i> <strong>Waiting for Customer Pickup</strong></p>
+            <p class="mb-0 small">Customer has not confirmed pickup yet</p>
+            <?php endif; ?>
+          </div>
+          <?php endif; ?>
+          
           <div class="mb-3 p-2" style="background-color: <?php echo ($remaining_balance > 0) ? '#fef3c7' : ($is_fully_paid ? '#d1fae5' : '#f3f4f6'); ?>; border-radius: 8px;">
             <small class="text-muted fw-bold">💳 Payment Information</small>
             <p class="mb-1 small"><i class="bi bi-cash"></i> Type: <strong><?php echo $booking['payment_type'] ?? 'Full Payment'; ?></strong></p>

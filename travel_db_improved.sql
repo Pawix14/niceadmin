@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2026 at 09:17 AM
+-- Generation Time: Feb 18, 2026 at 02:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,8 +47,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `admin_id`, `username`, `password`, `full_name`, `email`, `phone`, `role`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 'ADM001', 'admin', '$2y$10$e5kfnM6EOQxR/PF7ikmFeuCkfB25rREF9NM58w5bXCativDz7ZDKu', 'System Administrator', 'admin@paradise.com', NULL, 'Super Admin', 'Active', '2026-02-17 15:55:49', '2026-02-09 04:19:37', '2026-02-17 07:55:49'),
-(5, 'ADM943', 'staff@gmail.com', '$2y$10$eqwobAO5oJY9ad/HLIeTJOg7/wS11NQ1ttKHpd458qD01yHhmsI/u', 'Gabriel', 'staff@gmail.com', '09940213443', 'Staff', 'Active', '2026-02-17 15:54:11', '2026-02-17 03:37:26', '2026-02-17 07:54:11');
+(1, 'ADM001', 'admin', '$2y$10$e5kfnM6EOQxR/PF7ikmFeuCkfB25rREF9NM58w5bXCativDz7ZDKu', 'System Administrator', 'admin@paradise.com', NULL, 'Super Admin', 'Active', '2026-02-18 09:19:04', '2026-02-09 04:19:37', '2026-02-18 01:19:04'),
+(5, 'ADM943', 'staff@gmail.com', '$2y$10$eqwobAO5oJY9ad/HLIeTJOg7/wS11NQ1ttKHpd458qD01yHhmsI/u', 'Gabriel', 'staff@gmail.com', '09940213443', 'Staff', 'Active', '2026-02-18 09:35:26', '2026-02-17 03:37:26', '2026-02-18 01:35:26');
 
 -- --------------------------------------------------------
 
@@ -89,8 +89,8 @@ INSERT INTO `cars` (`id`, `name`, `type`, `daily_rate`, `image`, `features`, `fu
 (6, 'Tesla Model 3 or Similar', 'Electric', 4250.00, 'assets/img/cars/tesla-model3.jpg', '5 seats, Electric, Autopilot, Premium Interior', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:09:52'),
 (7, 'Kia Rio or Similar', 'Economy', 2850.00, 'assets/img/cars/kia-rio.jpg', '4-5 seats, Air Conditioning, Automatic, Fuel Efficient', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:12:20'),
 (8, 'Toyota Corolla or Similar', 'Economy', 3150.00, 'assets/img/cars/toyota-corolla.jpg', '5 seats, Air Conditioning, Automatic, Spacious Trunk', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:12:20'),
-(11, 'Honda Civic or Similar', 'Compact', 3650.00, 'assets/img/cars/honda-civic.jpg', '5 seats, Premium Sound, Automatic, GPS Navigation', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:12:20'),
-(20, 'Kia Rio or Similar', 'Economy', 2850.00, 'assets/img/cars/kia-rio.jpg', '4-5 seats, Air Conditioning, Automatic, Fuel Efficient', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22'),
+(11, 'Honda Civic 1', 'Compact', 3650.00, 'assets/img/cars/honda-civic.jpg', '5 seats, Premium Sound, Automatic, GPS Navigation', 'Gasoline', 'Automatic', 5, 200, NULL, '', '', '', 'Active', 1, '2026-02-09 05:12:20'),
+(20, 'Kia Rio 1', 'Economy', 2850.00, 'assets/img/cars/kia-rio.jpg', '4-5 seats, Air Conditioning, Automatic, Fuel Efficient', 'Gasoline', 'Automatic', 5, 200, NULL, '', '', '', 'Active', 1, '2026-02-09 05:13:22'),
 (21, 'Toyota Corolla ', 'Economy', 3150.00, 'assets/img/cars/toyota-corolla.jpg', '5 seats, Air Conditioning, Automatic, Spacious Trunk', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (22, 'Mitsubishi Mirage', 'Economy', 2650.00, 'assets/img/cars/mitsubishi-mirage.jpg', '4 seats, Air Conditioning, Manual, Compact', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (23, 'Hyundai Accent', 'Economy', 2950.00, 'assets/img/cars/hyundai-accent.jpg', '5 seats, Air Conditioning, Automatic, Bluetooth', 'Gasoline', 'Automatic', 5, 200, NULL, '', '', '', 'Active', 1, '2026-02-09 05:13:22'),
@@ -99,8 +99,9 @@ INSERT INTO `cars` (`id`, `name`, `type`, `daily_rate`, `image`, `features`, `fu
 (26, 'Volkswagen Jetta ', 'Compact', 3950.00, 'assets/img/cars/volkswagen-jetta.jpg', '5 seats, Turbo Engine, Automatic, Premium Audio', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (27, 'Ford Mustang or Similar', 'SUV', 5108.00, 'assets/img/cars/ford-mustang.jpg', '4 seats, Sports Car, Automatic, Premium Features', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
 (30, 'BMW X7 or Similar', 'Luxury', 5878.00, 'assets/img/cars/bmw-x7.jpg', '7 seats, Leather Seats, Automatic, Premium Package', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
-(33, 'Tesla Model 3 or Similar', 'Electric', 4250.00, 'assets/img/cars/tesla-model3.jpg', '5 seats, Electric, Autopilot, Premium Interior', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 0, '2026-02-09 05:13:22'),
-(35, 'Hyundai Ioniq 5 ', 'Electric', 4500.00, 'assets/img/cars/hyundai-ioniq-5.jpg', '5 seats, Electric, V2L, Ultra Fast Charging', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22');
+(33, 'Tesla Model 4', 'Electric', 4250.00, 'assets/img/cars/tesla-model3.jpg', '5 seats, Electric, Autopilot, Premium Interior', 'Gasoline', 'Automatic', 5, 200, NULL, '', '', '', 'Active', 0, '2026-02-09 05:13:22'),
+(35, 'Hyundai Ioniq 5 ', 'Electric', 4500.00, 'assets/img/cars/hyundai-ioniq-5.jpg', '5 seats, Electric, V2L, Ultra Fast Charging', 'Gasoline', 'Automatic', 5, 200, NULL, NULL, NULL, NULL, 'Active', 1, '2026-02-09 05:13:22'),
+(36, 'Test', 'Luxury', 4500.00, 'uploads/cars/69950e2217d0b.png', 'TEST', 'Electric', 'Automatic', 2, 3000, 2026, 'ABC-2313', '203230204202030402', 'Black', 'Active', 0, '2026-02-18 00:56:02');
 
 -- --------------------------------------------------------
 
@@ -294,7 +295,11 @@ INSERT INTO `car_rentals` (`id`, `booking_id`, `customer_name`, `customer_email`
 (162, 'BK-RC-002', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 0, '2025-02-20', '2025-02-23', '09:00:00', '17:00:00', 'Makati Branch', 'Makati Branch', 'Luxury', 'BMW 3 Series', 'uploads/cars/bmw3.jpg', 3, 3000.00, 0.00, 300.00, 0.00, 9300.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, NULL, 'Paid', '2025-02-15 02:00:00', '2026-02-17 08:17:39', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 9300.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
 (163, 'BK-RC-003', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 0, '2025-03-24', '2025-03-27', '08:00:00', '18:00:00', 'Manila Office', 'Manila Office', 'SUV', 'Jeep Wrangler', 'uploads/cars/wrangler.jpg', 3, 2800.00, 0.00, 300.00, 0.00, 8700.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, NULL, 'Paid', '2025-03-19 01:00:00', '2026-02-17 08:17:39', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 8700.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
 (164, 'BK-RC-004', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 0, '2025-04-18', '2025-04-21', '10:00:00', '17:00:00', 'Quezon City Branch', 'Quezon City Branch', 'Sedan', 'Chevrolet Malibu', 'uploads/cars/malibu.jpg', 3, 1900.00, 0.00, 300.00, 0.00, 6000.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, NULL, 'Paid', '2025-04-14 03:00:00', '2026-02-17 08:17:39', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 6000.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
-(165, 'BK-RC-005', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 0, '2025-05-26', '2025-05-29', '09:00:00', '18:00:00', 'Pasig Branch', 'Pasig Branch', 'Sedan', 'Volkswagen Jetta', 'uploads/cars/jetta.jpg', 3, 1800.00, 0.00, 300.00, 0.00, 5700.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, NULL, 'Paid', '2025-05-22 02:00:00', '2026-02-17 08:17:39', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 5700.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL);
+(165, 'BK-RC-005', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 0, '2025-05-26', '2025-05-29', '09:00:00', '18:00:00', 'Pasig Branch', 'Pasig Branch', 'Sedan', 'Volkswagen Jetta', 'uploads/cars/jetta.jpg', 3, 1800.00, 0.00, 300.00, 0.00, 5700.00, NULL, 0.00, NULL, 0.00, 'Completed', NULL, NULL, 'Paid', '2025-05-22 02:00:00', '2026-02-17 08:17:39', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 5700.00, 0.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(166, 'CAR-20260218-36D683', 'POPOP', 'Paolo@gmail.com', '09619490469', 21, '2026-02-18', '2026-02-19', '10:00:00', '10:00:00', 'Pasay City - Mall of Asia', 'Pasay City - Mall of Asia', 'Compact', 'Mazda 3', 'http://localhost/NiceAdmin/assets/img/cars/mazda-3.jpg', 1, 3388.00, 3388.00, 0.00, 500.00, 3888.00, '', 0.00, NULL, 0.00, 'Pending', NULL, 'Pay at Pickup', 'Pending', '2026-02-18 01:09:39', '2026-02-18 01:09:39', 'A01-02-030304', '2026-03-27', NULL, NULL, NULL, NULL, NULL, NULL, 'Full Payment', 0.00, 3888.00, 0.00, 0, 'Pending', NULL, 'Pending', NULL),
+(167, 'CAR-20260218-6AE33B', 'Last', 'Last@gmail.com', '09619490469', 21, '2026-02-18', '2026-02-28', '10:00:00', '10:00:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Economy', 'Kia Rio or Similar', 'http://localhost/NiceAdmin/assets/img/cars/kia-rio.jpg', 10, 2850.00, 28500.00, 9000.00, 7000.00, 44500.00, '', 0.00, NULL, 0.00, 'Completed', NULL, 'Pay at Pickup', 'Paid', '2026-02-18 01:22:14', '2026-02-18 01:28:25', 'P01-30-620434', '2031-11-19', '2026-02-18 09:28:25', 'uploads/payments/payment_167_1771377794.png', 'INV-20260218-0167', 'REC-20260218-0167', 'Gabriel', '2026-02-18 09:23:48', 'Full Payment', 22250.00, 22250.00, 33750.00, 1, 'Picked Up', '2026-02-18 09:25:45', 'Ready', NULL),
+(168, 'CAR-20260218-65474A', 'Paolo3', 'Paolo@gmail.com', '096555214545', 22, '2026-02-18', '2026-02-21', '10:00:00', '10:00:00', 'Any Hotel in Metro Manila (Hotel Delivery)', 'Shangri-La Hotel', 'Compact', 'Honda Civic or Similar', 'http://localhost/NiceAdmin/assets/img/cars/honda-civic.jpg', 3, 3650.00, 10950.00, 2700.00, 0.00, 13650.00, '', 0.00, NULL, 0.00, 'Completed', NULL, 'GCash', 'Paid', '2026-02-18 01:29:42', '2026-02-18 01:32:00', 'A01-02-024303', '2031-10-22', '2026-02-18 09:32:00', 'uploads/payments/payment_168_1771378194.png', 'INV-20260218-0168', NULL, 'Gabriel', '2026-02-18 09:30:52', 'Downpayment', 6825.00, 6825.00, 9100.00, 1, 'Picked Up', '2026-02-18 09:31:58', 'Ready', NULL),
+(169, 'CAR-20260218-B71464', 'POPOP', 'Last@gmail.com', '09619490469', 22, '2026-02-18', '2026-02-19', '10:00:00', '10:00:00', 'MRT Taft Station', 'MRT Ayala Station', 'Economy', 'Kia Rio or Similar', 'http://localhost/NiceAdmin/assets/img/cars/kia-rio.jpg', 1, 2850.00, 2850.00, 900.00, 0.00, 3750.00, '', 0.00, NULL, 0.00, 'Active', NULL, 'Pay at Pickup', 'Paid', '2026-02-18 01:34:19', '2026-02-18 01:37:23', 'P01-30-620434', '2044-06-07', NULL, 'uploads/payments/payment_169_1771378519.png', 'INV-20260218-0169', NULL, 'Gabriel', '2026-02-18 09:35:42', 'Downpayment', 1875.00, 1875.00, 0.00, 0, 'Picked Up', '2026-02-18 09:37:23', 'Pending', NULL);
 
 -- --------------------------------------------------------
 
@@ -361,7 +366,8 @@ INSERT INTO `car_reviews` (`id`, `booking_id`, `car_model`, `customer_email`, `c
 (30, 'CAR-20251210-G7G7G7', 'Mitsubishi Montero Sport', 'brian.taylor@email.com', 'Brian Taylor', 3, 'Luxury at its finest. Comfortable seats, great sound system, and smooth ride. A bit pricey but worth it for special occasions.', '2025-12-19 16:00:00', 'Approved'),
 (31, 'CAR-20251215-H8H8H8', 'Tesla Model 3 or Similar', 'nicole.anderson@email.com', 'Nicole Anderson', 5, 'Absolutely stunning car! The interior is luxurious and the drive is incredibly smooth. Staff was very professional.', '2025-12-24 16:00:00', 'Approved'),
 (32, 'CAR-20251220-I9I9I9', 'Nissan Urvan', 'chris.thomas@email.com', 'Christopher Thomas', 4, 'Perfect for off-road adventures! Took it to the mountains and it handled everything like a champ. Very spacious too.', '2025-12-29 16:00:00', 'Approved'),
-(33, 'CAR-20251228-J1J1J1', 'Mercedes-Benz E-Class', 'michelle.jackson@email.com', 'Michelle Jackson', 5, 'Reliable and comfortable sedan. Great for family trips. Good fuel economy and plenty of trunk space.', '2026-01-03 16:00:00', 'Approved');
+(33, 'CAR-20251228-J1J1J1', 'Mercedes-Benz E-Class', 'michelle.jackson@email.com', 'Michelle Jackson', 5, 'Reliable and comfortable sedan. Great for family trips. Good fuel economy and plenty of trunk space.', '2026-01-03 16:00:00', 'Approved'),
+(34, 'CAR-20260218-6AE33B', 'Kia Rio or Similar', 'last@gmail.com', 'Last', 5, '', '2026-02-18 01:34:32', 'Approved');
 
 -- --------------------------------------------------------
 
@@ -421,16 +427,17 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `customer_id`, `username`, `password`, `full_name`, `email`, `phone`, `address`, `profile_picture`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 'CUST8350', 'paolo123', '$2y$10$l2vwH.YGmjREiLtltR7aAu1HgLNn5ijFlEGa0HviScdBeVzfw257m', 'Gabriel Paolo Madridano', 'paolo@gmail.com', '09940213443', 'Km6 Upper Balulang', 'uploads/profiles/profile_CUST8350_1770611917.png', 'Active', '2026-02-17 15:28:27', '2026-02-09 04:31:55', '2026-02-17 07:28:27'),
+(1, 'CUST8350', 'paolo123', '$2y$10$l2vwH.YGmjREiLtltR7aAu1HgLNn5ijFlEGa0HviScdBeVzfw257m', 'Gabriel Paolo Madridano', 'paolo@gmail.com', '09940213443', 'Km6 Upper Balulang', 'uploads/profiles/profile_CUST8350_1770611917.png', 'Active', '2026-02-18 09:31:54', '2026-02-09 04:31:55', '2026-02-18 01:31:54'),
 (2, 'CUST3509', 'gabriel@gmail.com', '$2y$10$s60Km.iRTe1F6z31siNy7ubFCWV6EJfFRJMSqYuA1PzyQIiafq3Fe', 'Gabriel', 'g@gmail.com', '09619490469', NULL, NULL, 'Active', '2026-02-17 14:46:31', '2026-02-17 06:36:07', '2026-02-17 06:46:31'),
-(18, 'CUST9227', 'test1', '$2y$10$7gqWt0/CQMdQiKP.9tIij.1EHObXG5xlQYPGoq43uJ3J6kcwxEZdC', 'Gabriel Paolo Madridano', 'test@gmail.com', '09232424222', NULL, NULL, 'Active', '2026-02-17 15:20:50', '2026-02-17 07:08:23', '2026-02-17 07:20:50'),
+(18, 'CUST9227', 'test1', '$2y$10$7gqWt0/CQMdQiKP.9tIij.1EHObXG5xlQYPGoq43uJ3J6kcwxEZdC', 'Gabriel Paolo Madridano', 'test@gmail.com', '09232424222', NULL, NULL, 'Active', '2026-02-18 09:09:52', '2026-02-17 07:08:23', '2026-02-18 01:09:52'),
 (19, 'CUST4541', 'test3', '$2y$10$ILZT4K46l2dbGxvHqpREneZG0t.Kab5UAqvs9wRdkNOfr0eV.Feuq', 'test3', 'test3@gmail.com', '09940213443', NULL, NULL, 'Active', '2026-02-17 15:50:44', '2026-02-17 07:50:28', '2026-02-17 07:50:44'),
 (20, 'CUST3834', 'paolo1', '$2y$10$HzzKb9wPmXOpdLnCxKQob.Cm2gmmNsgWTlbZvwk65g4jvt8x7DGKS', 'gg', 'p@gmail.com', '09940213443', NULL, NULL, 'Active', '2026-02-17 15:54:48', '2026-02-17 07:51:25', '2026-02-17 07:54:48'),
 (26, 'CUST-JDC', 'jdelacruz', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Juan Dela Cruz', 'juan.delacruz@email.com', '09171234567', 'Manila, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38'),
 (27, 'CUST-MS', 'msantos', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Maria Santos', 'maria.santos@email.com', '09181234567', 'Quezon City, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38'),
 (28, 'CUST-PR', 'preyes', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Pedro Reyes', 'pedro.reyes@email.com', '09191234567', 'Makati, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38'),
 (29, 'CUST-AG', 'agarcia', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Ana Garcia', 'ana.garcia@email.com', '09201234567', 'Pasig, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38'),
-(30, 'CUST-RC', 'rcruz', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 'Taguig, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38');
+(30, 'CUST-RC', 'rcruz', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', 'Ramon Cruz', 'ramon.cruz@email.com', '09211234567', 'Taguig, Philippines', NULL, 'Active', NULL, '2026-02-17 08:17:38', '2026-02-17 08:17:38'),
+(31, 'CUST1313', 'last123', '$2y$10$v6IuXWqXWvGNQ2kAaRY7J.PJEn2vN.8mdzDL7WEmZqA.JQTIDEjVy', 'last', 'last@gmail.com', '09619490469', NULL, NULL, 'Active', '2026-02-18 09:37:19', '2026-02-18 01:20:39', '2026-02-18 01:37:19');
 
 -- --------------------------------------------------------
 
@@ -469,7 +476,19 @@ INSERT INTO `customer_documents` (`id`, `booking_id`, `customer_email`, `documen
 (25, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260217-88F8D0_1771314778.png', '2026-02-17 07:52:58', 'staff@gmail.com', '2026-02-17 07:54:34', 'Approved', ''),
 (26, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260217-88F8D0_1771314785.png', '2026-02-17 07:53:05', 'staff@gmail.com', '2026-02-17 07:54:30', 'Approved', ''),
 (27, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Contract', 'uploads/contracts/CONTRACT_CAR-20260217-88F8D0.html', '2026-02-17 07:54:36', NULL, NULL, 'Approved', NULL),
-(28, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Contract', 'uploads/contracts/CONTRACT_CAR-20260217-88F8D0.html', '2026-02-17 07:54:39', NULL, NULL, 'Approved', NULL);
+(28, 'CAR-20260217-88F8D0', 'p@gmail.com', 'Contract', 'uploads/contracts/CONTRACT_CAR-20260217-88F8D0.html', '2026-02-17 07:54:39', NULL, NULL, 'Approved', NULL),
+(29, 'CAR-20260218-6AE33B', 'last@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260218-6AE33B_1771377754.png', '2026-02-18 01:22:34', NULL, NULL, 'Pending', NULL),
+(30, 'CAR-20260218-6AE33B', 'last@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260218-6AE33B_1771377762.png', '2026-02-18 01:22:42', NULL, NULL, 'Pending', NULL),
+(31, 'CAR-20260218-6AE33B', 'last@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260218-6AE33B_1771377775.png', '2026-02-18 01:22:55', NULL, NULL, 'Pending', NULL),
+(32, 'CAR-20260218-6AE33B', 'last@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260218-6AE33B_1771377775.png', '2026-02-18 01:22:55', NULL, NULL, 'Pending', NULL),
+(33, 'CAR-20260218-65474A', 'paolo@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260218-65474A_1771378205.png', '2026-02-18 01:30:05', NULL, NULL, 'Pending', NULL),
+(34, 'CAR-20260218-65474A', 'paolo@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260218-65474A_1771378215.png', '2026-02-18 01:30:15', NULL, NULL, 'Pending', NULL),
+(35, 'CAR-20260218-65474A', 'paolo@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260218-65474A_1771378231.png', '2026-02-18 01:30:31', NULL, NULL, 'Pending', NULL),
+(36, 'CAR-20260218-65474A', 'paolo@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260218-65474A_1771378231.png', '2026-02-18 01:30:31', NULL, NULL, 'Pending', NULL),
+(37, 'CAR-20260218-B71464', 'last@gmail.com', 'Valid_ID', 'uploads/documents/Valid_ID_CAR-20260218-B71464_1771378486.png', '2026-02-18 01:34:46', NULL, NULL, 'Pending', NULL),
+(38, 'CAR-20260218-B71464', 'last@gmail.com', 'Proof_of_Address', 'uploads/documents/Proof_of_Address_CAR-20260218-B71464_1771378495.png', '2026-02-18 01:34:55', NULL, NULL, 'Pending', NULL),
+(39, 'CAR-20260218-B71464', 'last@gmail.com', 'License_Front', 'uploads/documents/License_Front_CAR-20260218-B71464_1771378508.png', '2026-02-18 01:35:08', NULL, NULL, 'Pending', NULL),
+(40, 'CAR-20260218-B71464', 'last@gmail.com', 'License_Back', 'uploads/documents/License_Back_CAR-20260218-B71464_1771378508.png', '2026-02-18 01:35:08', NULL, NULL, 'Pending', NULL);
 
 -- --------------------------------------------------------
 
@@ -508,182 +527,241 @@ CREATE TABLE `notifications` (
   `message` text NOT NULL,
   `booking_id` varchar(50) DEFAULT NULL,
   `is_read` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `category` varchar(50) DEFAULT 'general' COMMENT 'booking, payment, document, message, alert',
+  `priority` varchar(20) DEFAULT 'normal' COMMENT 'critical, important, normal',
+  `icon` varchar(50) DEFAULT 'bell' COMMENT 'Icon identifier',
+  `action_url` varchar(255) DEFAULT NULL COMMENT 'URL for action button',
+  `action_label` varchar(50) DEFAULT NULL COMMENT 'Label for action button',
+  `expires_at` datetime DEFAULT NULL COMMENT 'Auto-dismiss after this date',
+  `dismissed_at` datetime DEFAULT NULL COMMENT 'When user dismissed notification'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `user_type`, `user_id`, `title`, `message`, `booking_id`, `is_read`, `created_at`) VALUES
-(1, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo for Honda Civic or Similar', 'CAR-20260209-EAD63F', 1, '2026-02-09 05:53:50'),
-(2, 'customer', 'pmadridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-EAD63F has been Confirmed by admin. Note: Your car is ready', 'CAR-20260209-EAD63F', 0, '2026-02-09 05:54:20'),
-(3, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabrie for Ford Mustang or Similar - Pending Review', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:03'),
-(4, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-B5641C has been submitted and is pending admin review.', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:03'),
-(5, 'customer', 'Paolo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-B5641C has been Confirmed by admin. Note: ok', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:29'),
-(6, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'OK Sir - From: paolo@gmail.com', NULL, 1, '2026-02-09 06:03:04'),
-(7, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano for BMW X7 or Similar - Pending Review', 'CAR-20260209-5EBDB0', 1, '2026-02-09 06:25:09'),
-(8, 'customer', 'Madridano@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-5EBDB0 has been submitted and is pending admin review.', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:25:09'),
-(9, 'customer', 'Madridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-5EBDB0 has been Confirmed by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:25:43'),
-(10, 'customer', 'Madridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-5EBDB0 has been Confirmed by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:27:52'),
-(11, 'customer', 'Madridano@gmail.com', 'Booking Cancelled', 'Your booking CAR-20260209-5EBDB0 has been Cancelled by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:27:57'),
-(12, 'customer', 'paolo@gmail.com', 'Message from Admin', 'rer', NULL, 1, '2026-02-09 06:29:41'),
-(13, 'customer', 'Madridano@gmail.com', 'Booking Active', 'Your booking CAR-20260209-5EBDB0 has been Active by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:29:45'),
-(14, 'customer', 'Madridano@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-5EBDB0 has been Completed by admin. Note: 45', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:31:06'),
-(15, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Honda Civic - Pending Review', 'CAR-20260209-318224', 1, '2026-02-09 06:32:03'),
-(16, 'customer', 'Pa2lo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-318224 has been submitted and is pending admin review.', 'CAR-20260209-318224', 0, '2026-02-09 06:32:03'),
-(17, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:18'),
-(18, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:49'),
-(19, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:59'),
-(20, 'customer', 'Pa2lo@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-318224 has been Completed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:35:29'),
-(21, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:36:43'),
-(22, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Mazda 3 - Pending Review', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17'),
-(23, 'customer', 'paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-992441 has been submitted and is pending admin review.', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17'),
-(24, 'customer', 'paolo@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-992441 has been Completed by admin. Note: qweqw', 'CAR-20260209-992441', 1, '2026-02-09 06:38:30'),
-(25, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'r - From: paolo@gmail.com', NULL, 1, '2026-02-13 03:17:43'),
-(26, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo for Mitsubishi Mirage - Pending Review', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52'),
-(27, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-80EC8B has been submitted and is pending admin review.', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52'),
-(28, 'customer', 'Paolo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260217-80EC8B has been Confirmed by admin. Note: retert', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:24:46'),
-(29, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:26:44'),
-(30, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:28:22'),
-(31, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Mitsubishi Mirage is ending on 2026-02-18. Please return the car on time.', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:29:02'),
-(32, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0029', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:42:41'),
-(33, 'customer', 'Paolo@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0029 is ready for download.', 'CAR-20260217-80EC8B', 0, '2026-02-17 03:42:42'),
-(34, 'admin', NULL, 'Message from Customer: Gabriel', 'w - From: ', NULL, 0, '2026-02-17 03:50:11'),
-(35, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 1, '2026-02-17 04:12:15'),
-(36, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 0, '2026-02-17 04:12:15'),
-(37, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabrie for Mazda 3 - Pending Review', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:53:01'),
-(38, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-D46BA7 has been submitted and is pending admin review.', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:53:01'),
-(39, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:58:26'),
-(40, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:03'),
-(41, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:03'),
-(42, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:12'),
-(43, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:12'),
-(44, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:21'),
-(45, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 0, '2026-02-17 04:59:21'),
-(46, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-D46BA7 has been approved!', 'CAR-20260217-D46BA7', 0, '2026-02-17 05:02:25'),
-(47, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Pending Review', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
-(48, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Review documents and approve', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
-(49, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-BA7F01 has been submitted and is pending admin review.', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:06:51'),
-(50, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Pending Review', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
-(51, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Review documents and approve', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
-(52, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-CB9BFC has been submitted and is pending admin review.', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:09:48'),
-(53, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:16:28'),
-(54, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:17:04'),
-(55, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-CB9BFC has been rejected. Reason: dqw', 'CAR-20260217-CB9BFC', 0, '2026-02-17 05:18:07'),
-(56, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Pending Review', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
-(57, 'staff', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Review documents and approve', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
-(58, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-860682 has been submitted and is pending admin review.', 'CAR-20260217-860682', 0, '2026-02-17 05:21:12'),
-(59, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:48'),
-(60, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:48'),
-(61, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:59'),
-(62, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:21:59'),
-(63, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:22:15'),
-(64, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 0, '2026-02-17 05:22:15'),
-(65, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-BA7F01 has been approved!', 'CAR-20260217-BA7F01', 0, '2026-02-17 05:22:53'),
-(66, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-860682 has been approved!', 'CAR-20260217-860682', 0, '2026-02-17 05:25:46'),
-(67, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:25'),
-(68, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:27'),
-(69, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Front has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:28'),
-(70, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Back has been Approved.', 'CAR-20260217-860682', 0, '2026-02-17 05:26:30'),
-(71, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 0, '2026-02-17 06:04:00'),
-(72, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 0, '2026-02-17 06:04:00'),
-(73, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Honda Civic is ending on 2026-04-23. Please return the car on time.', 'CAR-20260217-BA7F01', 0, '2026-02-17 06:04:15'),
-(74, 'admin', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Pending Review', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
-(75, 'staff', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Review documents and approve', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
-(76, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-172BE3 has been submitted and is pending admin review.', 'CAR-20260217-172BE3', 0, '2026-02-17 06:14:09'),
-(77, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:08'),
-(78, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:47'),
-(79, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-172BE3 has been approved!', 'CAR-20260217-172BE3', 0, '2026-02-17 06:16:53'),
-(80, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Pending Review', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
-(81, 'staff', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Review documents and approve', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
-(82, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-DF2F1B has been submitted and is pending admin review.', 'CAR-20260217-DF2F1B', 0, '2026-02-17 06:18:54'),
-(83, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Pending Review', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
-(84, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Review documents and approve', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
-(85, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-B2118B has been submitted and is pending admin review.', 'CAR-20260217-B2118B', 0, '2026-02-17 06:26:51'),
-(86, 'customer', 'Paolo@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-172BE3 has been extended by 3 days. Additional payment: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
-(87, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
-(88, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 0, '2026-02-17 06:35:16'),
-(89, 'admin', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Pending Review', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:37:18'),
-(90, 'staff', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Review documents and approve', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:37:18'),
-(91, 'customer', 'g@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-EE36FB has been submitted and is pending admin review.', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:37:18'),
-(92, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:03'),
-(93, 'customer', 'g@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:11'),
-(94, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:46'),
-(95, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:46'),
-(96, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:56'),
-(97, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:56'),
-(98, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:05'),
-(99, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:05'),
-(100, 'customer', 'g@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱3,867.50 for booking CAR-20260217-EE36FB. Please settle the balance before pickup.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:33'),
-(101, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:36'),
-(102, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-172BE3 has been rejected. Reason: wew', 'CAR-20260217-172BE3', 0, '2026-02-17 06:39:46'),
-(103, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-BA7F01 has been rejected. Reason: ewqe', 'CAR-20260217-BA7F01', 1, '2026-02-17 06:39:49'),
-(104, 'customer', 'g@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-EE36FB has been extended by 3 days. Additional payment: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
-(105, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
-(106, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26'),
-(107, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-EE36FB. Amount: ₱17,517.50', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:45:39'),
-(108, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:05'),
-(109, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:18'),
-(110, 'customer', 'g@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0037 is ready for download.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:22'),
-(111, 'customer', 'kimberly.walker@email.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:00'),
-(112, 'customer', 'kimberly.walker@email.com', 'Booking Rejected', 'Your booking CAR-20260325-T2T2T2 has been rejected. Reason: q', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:20'),
-(113, 'customer', 'gregory.lewis@email.com', 'Booking Rejected', 'Your booking CAR-20260320-S1S1S1 has been rejected. Reason: qwe', 'CAR-20260320-S1S1S1', 0, '2026-02-17 07:07:24'),
-(114, 'customer', 'samantha.clark@email.com', 'Booking Rejected', 'Your booking CAR-20260315-R9R9R9 has been rejected. Reason: qwe', 'CAR-20260315-R9R9R9', 0, '2026-02-17 07:07:26'),
-(115, 'customer', 'timothy.robinson@email.com', 'Booking Rejected', 'Your booking CAR-20260310-Q8Q8Q8 has been rejected. Reason: eqwe', 'CAR-20260310-Q8Q8Q8', 0, '2026-02-17 07:07:29'),
-(116, 'customer', 'jennifer.martinez@email.com', 'Booking Rejected', 'Your booking CAR-20260305-P7P7P7 has been rejected. Reason: qeqw', 'CAR-20260305-P7P7P7', 0, '2026-02-17 07:07:31'),
-(117, 'customer', 'daniel.chen@email.com', 'Booking Rejected', 'Your booking CAR-20260129-Q7R8S9 has been rejected. Reason: qweqweqw', 'CAR-20260129-Q7R8S9', 0, '2026-02-17 07:07:34'),
-(118, 'customer', 'carmen.flores@email.com', 'Booking Rejected', 'Your booking CAR-20260126-H7I8J9 has been rejected. Reason: qweqwe', 'CAR-20260126-H7I8J9', 0, '2026-02-17 07:07:36'),
-(119, 'customer', 'david.wong@email.com', 'Booking Rejected', 'Your booking CAR-20260123-Y7Z8A9 has been rejected. Reason: qweqw', 'CAR-20260123-Y7Z8A9', 0, '2026-02-17 07:07:39'),
-(120, 'customer', 'lisa.tan@email.com', 'Booking Rejected', 'Your booking CAR-20260120-P7Q8R9 has been rejected. Reason: qweqw', 'CAR-20260120-P7Q8R9', 0, '2026-02-17 07:07:41'),
-(121, 'customer', 'pedro.cruz@email.com', 'Booking Rejected', 'Your booking CAR-20260117-G7H8I9 has been rejected. Reason: qwewq', 'CAR-20260117-G7H8I9', 0, '2026-02-17 07:07:43'),
-(122, 'admin', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Pending Review', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
-(123, 'staff', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Review documents and approve', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
-(124, 'customer', 'test@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-AC3C8C has been submitted and is pending admin review.', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46'),
-(125, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱1,975.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:15'),
-(126, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:38'),
-(127, 'customer', 'test@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:43'),
-(128, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:20'),
-(129, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:20'),
-(130, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:27'),
-(131, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:27'),
-(132, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:35'),
-(133, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:35'),
-(134, 'customer', 'test@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-AC3C8C has been approved!', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:54'),
-(135, 'customer', 'test@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-AC3C8C has been extended by 2 days. Additional payment: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
-(136, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
-(137, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17'),
-(138, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱9,875.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:26'),
-(139, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:37'),
-(140, 'admin', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Pending Review', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:11'),
-(141, 'staff', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Review documents and approve', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:11'),
-(142, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-FCA551 has been submitted and is pending admin review.', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:11'),
-(143, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-FCA551. Amount: ₱9,100.00', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:20'),
-(144, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:35'),
-(145, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:35'),
-(146, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:53'),
-(147, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:27:53'),
-(148, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:28:00'),
-(149, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 0, '2026-02-17 07:28:00'),
-(150, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0139', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:15'),
-(151, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-FCA551 has been approved!', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:18'),
-(152, 'admin', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Pending Review', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
-(153, 'staff', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Review documents and approve', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
-(154, 'customer', 'p@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-88F8D0 has been submitted and is pending admin review.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24'),
-(155, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-88F8D0. Amount: ₱13,475.00', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:37'),
-(156, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:50'),
-(157, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:50'),
-(158, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:58'),
-(159, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:58'),
-(160, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:05'),
-(161, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:05'),
-(162, 'customer', 'p@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0140', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:26'),
-(163, 'customer', 'p@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱13,475.00 for booking CAR-20260217-88F8D0. Please settle the balance before pickup.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:32'),
-(164, 'customer', 'p@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260217-88F8D0 has been approved! Please pick up your car at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:34'),
-(165, 'staff', 'admin', 'Car Picked Up', 'Customer has picked up car for booking CAR-20260217-88F8D0 at Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:51'),
-(166, 'staff', 'admin', 'Car Ready for Return Pickup', 'Customer returned car for booking CAR-20260217-88F8D0. Pick up at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:58'),
-(167, 'customer', 'p@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:30'),
-(168, 'customer', 'p@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:34');
+INSERT INTO `notifications` (`id`, `user_type`, `user_id`, `title`, `message`, `booking_id`, `is_read`, `created_at`, `category`, `priority`, `icon`, `action_url`, `action_label`, `expires_at`, `dismissed_at`) VALUES
+(1, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo for Honda Civic or Similar', 'CAR-20260209-EAD63F', 1, '2026-02-09 05:53:50', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(2, 'customer', 'pmadridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-EAD63F has been Confirmed by admin. Note: Your car is ready', 'CAR-20260209-EAD63F', 0, '2026-02-09 05:54:20', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(3, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabrie for Ford Mustang or Similar - Pending Review', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:03', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(4, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-B5641C has been submitted and is pending admin review.', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:03', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(5, 'customer', 'Paolo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-B5641C has been Confirmed by admin. Note: ok', 'CAR-20260209-B5641C', 1, '2026-02-09 05:58:29', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(6, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'OK Sir - From: paolo@gmail.com', NULL, 1, '2026-02-09 06:03:04', 'message', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(7, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano for BMW X7 or Similar - Pending Review', 'CAR-20260209-5EBDB0', 1, '2026-02-09 06:25:09', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(8, 'customer', 'Madridano@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-5EBDB0 has been submitted and is pending admin review.', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:25:09', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(9, 'customer', 'Madridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-5EBDB0 has been Confirmed by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:25:43', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(10, 'customer', 'Madridano@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-5EBDB0 has been Confirmed by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:27:52', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(11, 'customer', 'Madridano@gmail.com', 'Booking Cancelled', 'Your booking CAR-20260209-5EBDB0 has been Cancelled by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:27:57', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(12, 'customer', 'paolo@gmail.com', 'Message from Admin', 'rer', NULL, 1, '2026-02-09 06:29:41', 'message', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(13, 'customer', 'Madridano@gmail.com', 'Booking Active', 'Your booking CAR-20260209-5EBDB0 has been Active by admin. Note: PO', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:29:45', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(14, 'customer', 'Madridano@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-5EBDB0 has been Completed by admin. Note: 45', 'CAR-20260209-5EBDB0', 0, '2026-02-09 06:31:06', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(15, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Honda Civic - Pending Review', 'CAR-20260209-318224', 1, '2026-02-09 06:32:03', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(16, 'customer', 'Pa2lo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-318224 has been submitted and is pending admin review.', 'CAR-20260209-318224', 0, '2026-02-09 06:32:03', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(17, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(18, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:49', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(19, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:32:59', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(20, 'customer', 'Pa2lo@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-318224 has been Completed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:35:29', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(21, 'customer', 'Pa2lo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260209-318224 has been Confirmed by admin. Note: OOOOOOOOOOOOO', 'CAR-20260209-318224', 0, '2026-02-09 06:36:43', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(22, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Mazda 3 - Pending Review', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(23, 'customer', 'paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260209-992441 has been submitted and is pending admin review.', 'CAR-20260209-992441', 1, '2026-02-09 06:38:17', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(24, 'customer', 'paolo@gmail.com', 'Booking Completed', 'Your booking CAR-20260209-992441 has been Completed by admin. Note: qweqw', 'CAR-20260209-992441', 1, '2026-02-09 06:38:30', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(25, 'admin', NULL, 'Message from Customer: Gabriel Paolo Madridano', 'r - From: paolo@gmail.com', NULL, 1, '2026-02-13 03:17:43', 'message', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(26, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo for Mitsubishi Mirage - Pending Review', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(27, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-80EC8B has been submitted and is pending admin review.', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:23:52', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(28, 'customer', 'Paolo@gmail.com', 'Booking Confirmed', 'Your booking CAR-20260217-80EC8B has been Confirmed by admin. Note: retert', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:24:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(29, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:26:44', 'general', 'important', 'bell', NULL, NULL, NULL, NULL),
+(30, 'customer', 'pmadridano@gmail.com', 'Return Reminder', 'Reminder: Your rental for Kia Rio or Similar is ending on 0000-00-00. Please return the car on time.', 'CAR-20260107-457060', 0, '2026-02-17 03:28:22', 'general', 'important', 'bell', NULL, NULL, NULL, NULL),
+(31, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Mitsubishi Mirage is ending on 2026-02-18. Please return the car on time.', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:29:02', 'general', 'important', 'bell', NULL, NULL, NULL, NULL),
+(32, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0029', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:42:41', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(33, 'customer', 'Paolo@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0029 is ready for download.', 'CAR-20260217-80EC8B', 1, '2026-02-17 03:42:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(34, 'admin', NULL, 'Message from Customer: Gabriel', 'w - From: ', NULL, 1, '2026-02-17 03:50:11', 'message', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(35, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 1, '2026-02-17 04:12:15', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(36, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mitsubishi Mirage', 'CAR-20260217-80EC8B', 1, '2026-02-17 04:12:15', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(37, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabrie for Mazda 3 - Pending Review', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:53:01', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(38, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-D46BA7 has been submitted and is pending admin review.', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:53:01', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(39, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:58:26', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(40, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:03', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(41, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:03', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(42, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:12', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(43, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:12', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(44, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:21', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(45, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-D46BA7', 'CAR-20260217-D46BA7', 1, '2026-02-17 04:59:21', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(46, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-D46BA7 has been approved!', 'CAR-20260217-D46BA7', 1, '2026-02-17 05:02:25', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(47, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Pending Review', 'CAR-20260217-BA7F01', 1, '2026-02-17 05:06:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(48, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic - Review documents and approve', 'CAR-20260217-BA7F01', 1, '2026-02-17 05:06:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(49, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-BA7F01 has been submitted and is pending admin review.', 'CAR-20260217-BA7F01', 1, '2026-02-17 05:06:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(50, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Pending Review', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:09:48', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(51, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Honda Civic or Similar - Review documents and approve', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:09:48', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(52, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-CB9BFC has been submitted and is pending admin review.', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:09:48', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(53, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:16:28', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(54, 'customer', 'Paolo@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:17:04', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(55, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-CB9BFC has been rejected. Reason: dqw', 'CAR-20260217-CB9BFC', 1, '2026-02-17 05:18:07', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(56, 'admin', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Pending Review', 'CAR-20260217-860682', 1, '2026-02-17 05:21:12', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(57, 'staff', NULL, 'New Car Rental Booking', 'New booking from Gabriel Paolo Madridano for Mazda 3 - Review documents and approve', 'CAR-20260217-860682', 1, '2026-02-17 05:21:12', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(58, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-860682 has been submitted and is pending admin review.', 'CAR-20260217-860682', 1, '2026-02-17 05:21:12', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(59, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:21:48', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(60, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:21:48', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(61, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:21:59', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(62, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:21:59', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(63, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:22:15', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(64, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-860682', 'CAR-20260217-860682', 1, '2026-02-17 05:22:15', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(65, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-BA7F01 has been approved!', 'CAR-20260217-BA7F01', 1, '2026-02-17 05:22:53', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(66, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-860682 has been approved!', 'CAR-20260217-860682', 1, '2026-02-17 05:25:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(67, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-860682', 1, '2026-02-17 05:26:25', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(68, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-860682', 1, '2026-02-17 05:26:27', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(69, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Front has been Approved.', 'CAR-20260217-860682', 1, '2026-02-17 05:26:28', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(70, 'customer', 'paolo@gmail.com', 'Document Verification', 'Your License_Back has been Approved.', 'CAR-20260217-860682', 1, '2026-02-17 05:26:30', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(71, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 1, '2026-02-17 06:04:00', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(72, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Mazda 3', 'CAR-20260217-860682', 1, '2026-02-17 06:04:00', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(73, 'customer', 'Paolo@gmail.com', 'Return Reminder', 'Reminder: Your rental for Honda Civic is ending on 2026-04-23. Please return the car on time.', 'CAR-20260217-BA7F01', 1, '2026-02-17 06:04:15', 'general', 'important', 'bell', NULL, NULL, NULL, NULL),
+(74, 'admin', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Pending Review', 'CAR-20260217-172BE3', 1, '2026-02-17 06:14:09', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(75, 'staff', NULL, 'New Car Rental Booking', 'New booking from oy for Hyundai Accent - Review documents and approve', 'CAR-20260217-172BE3', 1, '2026-02-17 06:14:09', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(76, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-172BE3 has been submitted and is pending admin review.', 'CAR-20260217-172BE3', 1, '2026-02-17 06:14:09', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(77, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 1, '2026-02-17 06:16:08', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(78, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0034', 'CAR-20260217-172BE3', 1, '2026-02-17 06:16:47', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(79, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-172BE3 has been approved!', 'CAR-20260217-172BE3', 1, '2026-02-17 06:16:53', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(80, 'admin', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Pending Review', 'CAR-20260217-DF2F1B', 1, '2026-02-17 06:18:54', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(81, 'staff', NULL, 'New Car Rental Booking', 'New booking from Madridano Gabriel for Ford Mustang or Similar - Review documents and approve', 'CAR-20260217-DF2F1B', 1, '2026-02-17 06:18:54', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(82, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-DF2F1B has been submitted and is pending admin review.', 'CAR-20260217-DF2F1B', 1, '2026-02-17 06:18:54', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(83, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Pending Review', 'CAR-20260217-B2118B', 1, '2026-02-17 06:26:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(84, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for BMW X7 or Similar - Review documents and approve', 'CAR-20260217-B2118B', 1, '2026-02-17 06:26:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(85, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-B2118B has been submitted and is pending admin review.', 'CAR-20260217-B2118B', 1, '2026-02-17 06:26:51', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(86, 'customer', 'Paolo@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-172BE3 has been extended by 3 days. Additional payment: ₱9,750.00', 'CAR-20260217-172BE3', 1, '2026-02-17 06:35:16', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(87, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 1, '2026-02-17 06:35:16', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(88, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-172BE3 extended by 3 days. Additional payment pending: ₱9,750.00', 'CAR-20260217-172BE3', 1, '2026-02-17 06:35:16', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(89, 'admin', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Pending Review', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:37:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(90, 'staff', NULL, 'New Car Rental Booking', 'New booking from Test for Tesla Model 3 or Similar - Review documents and approve', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:37:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(91, 'customer', 'g@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-EE36FB has been submitted and is pending admin review.', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:37:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(92, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:03', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(93, 'customer', 'g@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:38:11', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(94, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:38:46', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(95, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:38:46', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(96, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:38:56', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(97, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:38:56', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(98, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:39:05', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(99, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-EE36FB', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:39:05', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(100, 'customer', 'g@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱3,867.50 for booking CAR-20260217-EE36FB. Please settle the balance before pickup.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:33', 'payment', 'important', 'bell', NULL, NULL, NULL, NULL),
+(101, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:39:36', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(102, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-172BE3 has been rejected. Reason: wew', 'CAR-20260217-172BE3', 1, '2026-02-17 06:39:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(103, 'customer', 'Paolo@gmail.com', 'Booking Rejected', 'Your booking CAR-20260217-BA7F01 has been rejected. Reason: ewqe', 'CAR-20260217-BA7F01', 1, '2026-02-17 06:39:49', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(104, 'customer', 'g@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-EE36FB has been extended by 3 days. Additional payment: ₱13,650.00', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:43:26', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(105, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:43:26', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(106, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-EE36FB extended by 3 days. Additional payment pending: ₱13,650.00', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:43:26', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(107, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-EE36FB. Amount: ₱17,517.50', 'CAR-20260217-EE36FB', 1, '2026-02-17 06:45:39', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(108, 'customer', 'g@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0037', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:05', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(109, 'customer', 'g@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-EE36FB has been approved!', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(110, 'customer', 'g@gmail.com', 'Receipt Ready', 'Your receipt REC-20260217-0037 is ready for download.', 'CAR-20260217-EE36FB', 0, '2026-02-17 06:46:22', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(111, 'customer', 'kimberly.walker@email.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:00', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(112, 'customer', 'kimberly.walker@email.com', 'Booking Rejected', 'Your booking CAR-20260325-T2T2T2 has been rejected. Reason: q', 'CAR-20260325-T2T2T2', 0, '2026-02-17 07:07:20', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(113, 'customer', 'gregory.lewis@email.com', 'Booking Rejected', 'Your booking CAR-20260320-S1S1S1 has been rejected. Reason: qwe', 'CAR-20260320-S1S1S1', 0, '2026-02-17 07:07:24', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(114, 'customer', 'samantha.clark@email.com', 'Booking Rejected', 'Your booking CAR-20260315-R9R9R9 has been rejected. Reason: qwe', 'CAR-20260315-R9R9R9', 0, '2026-02-17 07:07:26', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(115, 'customer', 'timothy.robinson@email.com', 'Booking Rejected', 'Your booking CAR-20260310-Q8Q8Q8 has been rejected. Reason: eqwe', 'CAR-20260310-Q8Q8Q8', 0, '2026-02-17 07:07:29', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(116, 'customer', 'jennifer.martinez@email.com', 'Booking Rejected', 'Your booking CAR-20260305-P7P7P7 has been rejected. Reason: qeqw', 'CAR-20260305-P7P7P7', 0, '2026-02-17 07:07:31', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(117, 'customer', 'daniel.chen@email.com', 'Booking Rejected', 'Your booking CAR-20260129-Q7R8S9 has been rejected. Reason: qweqweqw', 'CAR-20260129-Q7R8S9', 0, '2026-02-17 07:07:34', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(118, 'customer', 'carmen.flores@email.com', 'Booking Rejected', 'Your booking CAR-20260126-H7I8J9 has been rejected. Reason: qweqwe', 'CAR-20260126-H7I8J9', 0, '2026-02-17 07:07:36', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(119, 'customer', 'david.wong@email.com', 'Booking Rejected', 'Your booking CAR-20260123-Y7Z8A9 has been rejected. Reason: qweqw', 'CAR-20260123-Y7Z8A9', 0, '2026-02-17 07:07:39', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(120, 'customer', 'lisa.tan@email.com', 'Booking Rejected', 'Your booking CAR-20260120-P7Q8R9 has been rejected. Reason: qweqw', 'CAR-20260120-P7Q8R9', 0, '2026-02-17 07:07:41', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(121, 'customer', 'pedro.cruz@email.com', 'Booking Rejected', 'Your booking CAR-20260117-G7H8I9 has been rejected. Reason: qwewq', 'CAR-20260117-G7H8I9', 0, '2026-02-17 07:07:43', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(122, 'admin', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Pending Review', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:09:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(123, 'staff', NULL, 'New Car Rental Booking', 'New booking from test2 for Honda Civic - Review documents and approve', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:09:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(124, 'customer', 'test@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-AC3C8C has been submitted and is pending admin review.', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:09:46', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(125, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱1,975.00', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:10:15', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(126, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:38', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(127, 'customer', 'test@gmail.com', 'Documents Required', 'Please submit the following documents: Driver\'s License (Front), Driver\'s License (Back), Valid ID, Proof of Address. Upload at: My Profile > Documents', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:10:43', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(128, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:20', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(129, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:20', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(130, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:27', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(131, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:27', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(132, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:35', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(133, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-AC3C8C', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:11:35', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(134, 'customer', 'test@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-AC3C8C has been approved!', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:11:54', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(135, 'customer', 'test@gmail.com', 'Rental Extended', 'Your rental for booking CAR-20260217-AC3C8C has been extended by 2 days. Additional payment: ₱7,900.00', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:17', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(136, 'staff', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:12:17', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(137, 'admin', NULL, 'Rental Extension', 'Booking CAR-20260217-AC3C8C extended by 2 days. Additional payment pending: ₱7,900.00', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:12:17', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(138, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-AC3C8C. Amount: ₱9,875.00', 'CAR-20260217-AC3C8C', 1, '2026-02-17 07:12:26', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(139, 'customer', 'test@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0138', 'CAR-20260217-AC3C8C', 0, '2026-02-17 07:12:37', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(140, 'admin', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Pending Review', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:11', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(141, 'staff', NULL, 'New Car Rental Booking', 'New booking from test3 for Honda Civic - Review documents and approve', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:11', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(142, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-FCA551 has been submitted and is pending admin review.', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:11', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(143, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-FCA551. Amount: ₱9,100.00', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:20', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(144, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:35', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(145, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:35', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(146, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:53', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(147, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:27:53', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(148, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:00', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(149, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-FCA551', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:00', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(150, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0139', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:15', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(151, 'customer', 'Paolo@gmail.com', 'Booking Approved', 'Your booking CAR-20260217-FCA551 has been approved!', 'CAR-20260217-FCA551', 1, '2026-02-17 07:28:18', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(152, 'admin', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Pending Review', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:24', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(153, 'staff', NULL, 'New Car Rental Booking', 'New booking from p for Honda Civic - Review documents and approve', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:24', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(154, 'customer', 'p@gmail.com', 'Booking Submitted', 'Your booking CAR-20260217-88F8D0 has been submitted and is pending admin review.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:52:24', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(155, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260217-88F8D0. Amount: ₱13,475.00', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:37', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(156, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:50', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(157, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:50', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(158, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:58', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(159, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:52:58', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(160, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:53:05', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(161, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260217-88F8D0', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:53:05', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(162, 'customer', 'p@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260217-0140', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:26', 'payment', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(163, 'customer', 'p@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱13,475.00 for booking CAR-20260217-88F8D0. Please settle the balance before pickup.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:32', 'payment', 'important', 'bell', NULL, NULL, NULL, NULL),
+(164, 'customer', 'p@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260217-88F8D0 has been approved! Please pick up your car at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:53:34', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(165, 'staff', 'admin', 'Car Picked Up', 'Customer has picked up car for booking CAR-20260217-88F8D0 at Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:53:51', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(166, 'staff', 'admin', 'Car Ready for Return Pickup', 'Customer returned car for booking CAR-20260217-88F8D0. Pick up at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260217-88F8D0', 1, '2026-02-17 07:53:58', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(167, 'customer', 'p@gmail.com', 'Document Verification', 'Your Proof_of_Address has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:30', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(168, 'customer', 'p@gmail.com', 'Document Verification', 'Your Valid_ID has been Approved.', 'CAR-20260217-88F8D0', 0, '2026-02-17 07:54:34', 'document', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(169, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Mazda 3 - Pending Review', 'CAR-20260218-36D683', 1, '2026-02-18 01:09:39', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(170, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Mazda 3 - Review documents and approve', 'CAR-20260218-36D683', 1, '2026-02-18 01:09:39', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(171, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260218-36D683 has been submitted and is pending admin review.', 'CAR-20260218-36D683', 1, '2026-02-18 01:09:39', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(172, 'admin', NULL, 'Message from Customer: Gabriel', 'esadasdasd - From: ', NULL, 1, '2026-02-18 01:18:57', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(173, 'admin', NULL, 'New Car Rental Booking', 'New booking from Last for Kia Rio or Similar - Pending Review', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:14', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(174, 'staff', NULL, 'New Car Rental Booking', 'New booking from Last for Kia Rio or Similar - Review documents and approve', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:14', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(175, 'customer', 'Last@gmail.com', 'Booking Submitted', 'Your booking CAR-20260218-6AE33B has been submitted and is pending admin review.', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:14', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(176, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:34', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(177, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:34', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(178, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(179, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(180, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:55', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(181, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-6AE33B', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:22:55', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(182, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260218-6AE33B. Amount: ₱22,250.00', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:23:14', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(183, 'customer', 'Last@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260218-0167', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:23:48', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(184, 'customer', 'Last@gmail.com', 'Receipt Ready', 'Your receipt REC-20260218-0167 is ready for download.', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:24:01', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(185, 'customer', 'Last@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260218-6AE33B has been approved! Please pick up your car at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:24:49', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(186, 'customer', 'Last@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱22,250.00 for booking CAR-20260218-6AE33B. Please settle the balance before pickup.', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:25:01', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(187, 'staff', 'admin', 'Car Picked Up', 'Customer has picked up car for booking CAR-20260218-6AE33B at Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:25:45', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(188, 'staff', 'admin', 'Car Ready for Return Pickup', 'Customer returned car for booking CAR-20260218-6AE33B. Pick up at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:28:25', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(189, 'admin', NULL, 'New Car Rental Booking', 'New booking from Paolo3 for Honda Civic or Similar - Pending Review', 'CAR-20260218-65474A', 0, '2026-02-18 01:29:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(190, 'staff', NULL, 'New Car Rental Booking', 'New booking from Paolo3 for Honda Civic or Similar - Review documents and approve', 'CAR-20260218-65474A', 0, '2026-02-18 01:29:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(191, 'customer', 'Paolo@gmail.com', 'Booking Submitted', 'Your booking CAR-20260218-65474A has been submitted and is pending admin review.', 'CAR-20260218-65474A', 1, '2026-02-18 01:29:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(192, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260218-65474A. Amount: ₱6,825.00', 'CAR-20260218-65474A', 0, '2026-02-18 01:29:54', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(193, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:05', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(194, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:05', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(195, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:15', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(196, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:15', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(197, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:31', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(198, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-65474A', 'CAR-20260218-65474A', 0, '2026-02-18 01:30:31', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(199, 'customer', 'Paolo@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260218-0168', 'CAR-20260218-65474A', 1, '2026-02-18 01:30:52', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(200, 'customer', 'Paolo@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱6,825.00 for booking CAR-20260218-65474A. Please settle the balance before pickup.', 'CAR-20260218-65474A', 1, '2026-02-18 01:31:04', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(201, 'customer', 'Paolo@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260218-65474A has been approved! Please pick up your car at: Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260218-65474A', 1, '2026-02-18 01:31:06', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(202, 'staff', NULL, 'Car Picked Up', 'Customer has picked up car for booking CAR-20260218-65474A at Any Hotel in Metro Manila (Hotel Delivery)', 'CAR-20260218-65474A', 0, '2026-02-18 01:31:58', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(203, 'staff', 'admin', 'Car Ready for Return Pickup', 'Customer returned car for booking CAR-20260218-65474A. Pick up at: Shangri-La Hotel', 'CAR-20260218-65474A', 0, '2026-02-18 01:32:00', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(204, 'admin', NULL, 'New Car Rental Booking', 'New booking from POPOP for Kia Rio or Similar - Pending Review', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:19', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(205, 'staff', NULL, 'New Car Rental Booking', 'New booking from POPOP for Kia Rio or Similar - Review documents and approve', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:19', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(206, 'customer', 'Last@gmail.com', 'Booking Submitted', 'Your booking CAR-20260218-B71464 has been submitted and is pending admin review.', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:19', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(207, 'staff', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Kia Rio or Similar', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:34:32', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(208, 'admin', 'all', 'New Review Submitted', 'Customer submitted a 5-star review for Kia Rio or Similar', 'CAR-20260218-6AE33B', 0, '2026-02-18 01:34:32', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(209, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:46', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(210, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Valid_ID for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:46', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(211, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:55', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(212, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Proof_of_Address for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:34:55', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(213, 'staff', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:35:08', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(214, 'admin', 'all', 'New Document Uploaded', 'Customer uploaded Driver\'s License for booking CAR-20260218-B71464', 'CAR-20260218-B71464', 0, '2026-02-18 01:35:08', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(215, 'staff', NULL, 'Payment Submitted', 'Customer submitted payment proof for booking CAR-20260218-B71464. Amount: ₱1,875.00', 'CAR-20260218-B71464', 0, '2026-02-18 01:35:19', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(216, 'customer', 'Last@gmail.com', 'Payment Reminder', 'Reminder: You have a remaining balance of ₱1,875.00 for booking CAR-20260218-B71464. Please settle the balance before pickup.', 'CAR-20260218-B71464', 0, '2026-02-18 01:35:34', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(217, 'customer', 'Last@gmail.com', 'Payment Approved', 'Your payment has been approved. Invoice: INV-20260218-0169', 'CAR-20260218-B71464', 0, '2026-02-18 01:35:42', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL);
+INSERT INTO `notifications` (`id`, `user_type`, `user_id`, `title`, `message`, `booking_id`, `is_read`, `created_at`, `category`, `priority`, `icon`, `action_url`, `action_label`, `expires_at`, `dismissed_at`) VALUES
+(218, 'customer', 'Last@gmail.com', 'Booking Approved - Ready for Pickup', 'Your booking CAR-20260218-B71464 has been approved! Please pick up your car at: MRT Taft Station', 'CAR-20260218-B71464', 0, '2026-02-18 01:37:07', 'general', 'normal', 'bell', NULL, NULL, NULL, NULL),
+(219, 'staff', NULL, 'Car Picked Up', 'Customer has picked up car for booking CAR-20260218-B71464 at MRT Taft Station', 'CAR-20260218-B71464', 0, '2026-02-18 01:37:23', 'booking', 'normal', 'bell', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -905,7 +983,12 @@ ALTER TABLE `favorite_cars`
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_category` (`category`),
+  ADD KEY `idx_priority` (`priority`),
+  ADD KEY `idx_is_read` (`is_read`),
+  ADD KEY `idx_created_at` (`created_at`),
+  ADD KEY `idx_user_type_id` (`user_type`,`user_id`);
 
 --
 -- Indexes for table `promo_codes`
@@ -951,7 +1034,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `cars`
 --
 ALTER TABLE `cars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `car_availability`
@@ -975,7 +1058,7 @@ ALTER TABLE `car_maintenance`
 -- AUTO_INCREMENT for table `car_rentals`
 --
 ALTER TABLE `car_rentals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- AUTO_INCREMENT for table `car_rental_bookings`
@@ -987,7 +1070,7 @@ ALTER TABLE `car_rental_bookings`
 -- AUTO_INCREMENT for table `car_reviews`
 --
 ALTER TABLE `car_reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `car_sales`
@@ -999,13 +1082,13 @@ ALTER TABLE `car_sales`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `customer_documents`
 --
 ALTER TABLE `customer_documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `favorite_cars`
@@ -1017,7 +1100,7 @@ ALTER TABLE `favorite_cars`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
 
 --
 -- AUTO_INCREMENT for table `promo_codes`

@@ -93,9 +93,21 @@ if ($sales_result) {
     }
 }
 
-// Get cars from database
+// Get cars from database with booking status
 $available_cars_by_type = [];
-$cars_result = $conn->query("SELECT * FROM cars WHERE status='Active' ORDER BY type, name");
+$cars_result = $conn->query("SELECT c.*, 
+    (SELECT COUNT(*) FROM car_rentals cr 
+     WHERE cr.car_model = c.name 
+     AND cr.status IN ('Confirmed', 'Pending', 'Active') 
+     AND cr.dropoff_date >= CURDATE()) as active_bookings,
+    (SELECT MIN(cr.dropoff_date) FROM car_rentals cr 
+     WHERE cr.car_model = c.name 
+     AND cr.status IN ('Confirmed', 'Pending', 'Active') 
+     AND cr.pickup_date <= CURDATE() 
+     AND cr.dropoff_date >= CURDATE()) as next_available
+    FROM cars c 
+    WHERE c.status='Active' 
+    ORDER BY c.type, c.name");
 if ($cars_result) {
     while($car = $cars_result->fetch_assoc()) {
         $type_key = strtolower($car['type']);
@@ -121,7 +133,9 @@ if ($cars_result) {
             'car_year' => isset($car['car_year']) ? $car['car_year'] : null,
             'license_plate' => isset($car['license_plate']) ? $car['license_plate'] : null,
             'color' => isset($car['color']) ? $car['color'] : null,
-            'seating_capacity' => isset($car['seating_capacity']) ? $car['seating_capacity'] : 5
+            'seating_capacity' => isset($car['seating_capacity']) ? $car['seating_capacity'] : 5,
+            'active_bookings' => $car['active_bookings'],
+            'next_available' => $car['next_available']
         ];
     }
 }
@@ -241,15 +255,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_car'])) {
             $message = "❌ You already have an active booking for this car during the selected dates.";
             $message_type = "error";
         } else {
-            // Check if car has reached 2 booking limit for the date range
-            $booking_count = $conn->query("SELECT COUNT(*) as count FROM car_rentals 
-                WHERE car_model='$car_model' 
-                AND status IN ('Pending', 'Confirmed', 'Active') 
-                AND ((pickup_date <= '$dropoff_date' AND dropoff_date >= '$pickup_date'))");
-            $count_result = $booking_count->fetch_assoc();
+            // CRITICAL FIX: Check if car is already booked (limit changed from 2 to 1)
+            $booking_count = $conn->query("SELECT cr.*, cr.customer_name, cr.pickup_date, cr.dropoff_date 
+                FROM car_rentals cr
+                WHERE cr.car_model='$car_model' 
+                AND cr.status IN ('Pending', 'Confirmed', 'Active') 
+                AND ((cr.pickup_date <= '$dropoff_date' AND cr.dropoff_date >= '$pickup_date'))");
             
-            if ($count_result['count'] >= 2) {
-                $message = "❌ This car is fully booked for the selected dates. Please choose different dates or another car.";
+            if ($booking_count && $booking_count->num_rows >= 1) {
+                $existing_booking = $booking_count->fetch_assoc();
+                $message = "<div class='alert alert-danger'><i class='bi bi-exclamation-triangle-fill'></i> <strong>Car Already Booked!</strong><br>";
+                $message .= "<strong>$car_model</strong> is already reserved for the selected dates.<br><br>";
+                $message .= "<strong>Booking Details:</strong><br>";
+                $message .= "📅 Pickup: <strong>" . date('M d, Y', strtotime($existing_booking['pickup_date'])) . "</strong><br>";
+                $message .= "📅 Return: <strong>" . date('M d, Y', strtotime($existing_booking['dropoff_date'])) . "</strong><br>";
+                $message .= "📌 Status: <span class='badge bg-warning'>" . $existing_booking['status'] . "</span><br><br>";
+                $message .= "<strong>💡 Suggestions:</strong><br>";
+                $message .= "• Choose different dates (available after " . date('M d, Y', strtotime($existing_booking['dropoff_date'])) . ")<br>";
+                $message .= "• Select another car from our fleet<br>";
+                $message .= "• <a href='index.php?page=car_availability_customer&car_name=" . urlencode($car_model) . "' class='alert-link'>View availability calendar</a>";
+                $message .= "</div>";
                 $message_type = "error";
             } else {
         
@@ -441,12 +466,20 @@ $agents_result = $conn->query("SELECT agent_id, agent_name, commission_rate FROM
                     <?php foreach($available_cars as $type => $car_data): ?>
                       <?php foreach($car_data['models'] as $car): ?>
                       <div class="col-md-6 mb-4 car-item" data-type="<?php echo $type; ?>">
-                        <div class="car-card">
+                        <div class="car-card <?php echo $car['active_bookings'] > 0 ? 'car-booked' : ''; ?>">
                           <div class="position-relative">
                             <img src="<?php echo $car['image']; ?>" class="car-card-img" alt="<?php echo $car['name']; ?>">
                             <span class="position-absolute top-0 start-0 badge badge-<?php echo strtolower($car['type']); ?> m-2"><?php echo $car['type']; ?></span>
                             <?php if ($car['car_year']): ?>
                             <span class="position-absolute top-0 end-0 badge bg-dark m-2"><?php echo $car['car_year']; ?></span>
+                            <?php endif; ?>
+                            <?php if ($car['active_bookings'] > 0): ?>
+                            <div class="position-absolute bottom-0 start-0 end-0 bg-danger bg-opacity-90 text-white p-2 text-center">
+                              <i class="bi bi-calendar-x"></i> <strong>Currently Booked</strong>
+                              <?php if ($car['next_available']): ?>
+                              <br><small>Available after <?php echo date('M d', strtotime($car['next_available'])); ?></small>
+                              <?php endif; ?>
+                            </div>
                             <?php endif; ?>
                           </div>
                           <div class="car-card-body">
@@ -941,6 +974,11 @@ function updatePrice() {
     const days = calculateRentalDays();
     const subtotal = selectedCar.rate * days;
     
+    // Check availability when dates change
+    if (days > 0) {
+        checkCarAvailability();
+    }
+    
     // Update hidden form fields
     document.getElementById('form_rental_days').value = days;
     document.getElementById('form_subtotal').value = subtotal;
@@ -1406,6 +1444,52 @@ function removeFavorite(carModel, btn) {
         }
     });
 }
+
+// Real-time car availability checker
+function checkCarAvailability() {
+    if (!selectedCar) return;
+    
+    const pickupDate = document.getElementById('pickup_date').value;
+    const dropoffDate = document.getElementById('dropoff_date').value;
+    
+    if (!pickupDate || !dropoffDate) return;
+    
+    // Show checking indicator
+    const selectedCarDetails = document.getElementById('selectedCarDetails');
+    let availabilityBadge = document.getElementById('availabilityBadge');
+    
+    if (!availabilityBadge) {
+        availabilityBadge = document.createElement('div');
+        availabilityBadge.id = 'availabilityBadge';
+        availabilityBadge.className = 'mt-2';
+        selectedCarDetails.appendChild(availabilityBadge);
+    }
+    
+    availabilityBadge.innerHTML = '<span class="badge bg-secondary"><i class="bi bi-hourglass-split"></i> Checking availability...</span>';
+    
+    fetch(`modules/check_car_availability.php?car_model=${encodeURIComponent(selectedCar.name)}&pickup_date=${pickupDate}&dropoff_date=${dropoffDate}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.available) {
+                availabilityBadge.innerHTML = '<div class="alert alert-success py-2 mb-0"><i class="bi bi-check-circle-fill"></i> <strong>Available!</strong> This car is free for your selected dates.</div>';
+                document.getElementById('bookNowBtn').disabled = false;
+            } else {
+                availabilityBadge.innerHTML = '<div class="alert alert-danger py-2 mb-0"><i class="bi bi-exclamation-triangle-fill"></i> <strong>Already Booked!</strong><br>';
+                availabilityBadge.innerHTML += 'This car is reserved from ' + formatDate(data.bookings[0].pickup_date) + ' to ' + formatDate(data.bookings[0].dropoff_date) + '.<br>';
+                availabilityBadge.innerHTML += '<small>Please choose different dates or another car.</small></div>';
+                document.getElementById('bookNowBtn').disabled = true;
+            }
+        })
+        .catch(error => {
+            console.error('Availability check failed:', error);
+            availabilityBadge.innerHTML = '<span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle"></i> Could not verify availability</span>';
+        });
+}
+
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
 </script>
 
 <style>
@@ -1415,6 +1499,26 @@ function removeFavorite(carModel, btn) {
 
 .car-item:hover {
     transform: translateY(-5px);
+}
+
+.car-card {
+    position: relative;
+}
+
+.car-card.car-booked {
+    opacity: 0.85;
+    border: 2px solid #dc3545;
+}
+
+.car-card.car-booked::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(220, 53, 69, 0.05);
+    pointer-events: none;
 }
 
 .select-car {

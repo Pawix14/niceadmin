@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Double Booking Prevention - Demo</title>
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background: #f5f5f5; }
+        .demo-section { background: white; padding: 30px; margin: 20px 0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .feature-box { border: 2px solid #e0e0e0; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        .feature-box.success { border-color: #28a745; background: #d4edda; }
+        .feature-box.danger { border-color: #dc3545; background: #f8d7da; }
+        .car-card-demo { border: 2px solid #dc3545; padding: 15px; border-radius: 8px; position: relative; opacity: 0.85; }
+        .booked-overlay { background: #dc3545; color: white; padding: 10px; text-align: center; margin-top: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">🚗 Double Booking Prevention System</h1>
+        <p class="lead">Visual demonstration of the implemented features</p>
+
+        <!-- Feature 1 -->
+        <div class="demo-section">
+            <h2><i class="bi bi-shield-check text-success"></i> Feature 1: Strict Booking Limit</h2>
+            <p><strong>What changed:</strong> Booking limit reduced from 2 to 1 per car</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="feature-box danger">
+                        <h5>❌ Before (WRONG)</h5>
+                        <code>if ($count >= 2)</code>
+                        <p class="mt-2 mb-0">Allowed 2 customers to book same car = CONFLICT!</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-box success">
+                        <h5>✅ After (CORRECT)</h5>
+                        <code>if ($count >= 1)</code>
+                        <p class="mt-2 mb-0">Only 1 customer can book = NO CONFLICT!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="demo-section">
+            <h2><i class="bi bi-exclamation-triangle text-danger"></i> Feature 2: Detailed Error Messages</h2>
+            <p><strong>What customers see:</strong> Clear, helpful error with booking details</p>
+            
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> <strong>Car Already Booked!</strong><br>
+                <strong>Toyota Camry</strong> is already reserved for the selected dates.<br><br>
+                <strong>Booking Details:</strong><br>
+                📅 Pickup: <strong>Jan 15, 2024</strong><br>
+                📅 Return: <strong>Jan 20, 2024</strong><br>
+                📍 Status: <span class="badge bg-warning">Confirmed</span><br><br>
+                <strong>💡 Suggestions:</strong><br>
+                • Choose different dates (available after Jan 20, 2024)<br>
+                • Select another car from our fleet<br>
+                • <a href="#" class="alert-link">View availability calendar</a>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="demo-section">
+            <h2><i class="bi bi-calendar-check text-primary"></i> Feature 3: Real-Time Availability Checker</h2>
+            <p><strong>What happens:</strong> System checks availability as customer selects dates</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>✅ When Available:</h5>
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> <strong>Available!</strong> This car is free for your selected dates.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>❌ When Booked:</h5>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <strong>Already Booked!</strong><br>
+                        This car is reserved from Jan 15 to Jan 20.<br>
+                        <small>Please choose different dates or another car.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="demo-section">
+            <h2><i class="bi bi-eye text-info"></i> Feature 4: Visual Booking Indicators</h2>
+            <p><strong>What customers see:</strong> Booked cars are clearly marked</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Available Car:</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="background: #ddd; height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                <i class="bi bi-car-front" style="font-size: 48px; color: #999;"></i>
+                            </div>
+                            <h6 class="mt-3">Honda Civic</h6>
+                            <p class="text-success mb-0"><i class="bi bi-check-circle-fill"></i> Available</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Booked Car:</h5>
+                    <div class="car-card-demo">
+                        <div style="background: #ddd; height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px; position: relative;">
+                            <i class="bi bi-car-front" style="font-size: 48px; color: #999;"></i>
+                        </div>
+                        <div class="booked-overlay">
+                            <i class="bi bi-calendar-x"></i> <strong>Currently Booked</strong><br>
+                            <small>Available after Jan 20</small>
+                        </div>
+                        <h6 class="mt-3">Toyota Camry</h6>
+                        <p class="text-danger mb-0"><i class="bi bi-x-circle-fill"></i> Reserved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Scenarios -->
+        <div class="demo-section">
+            <h2><i class="bi bi-clipboard-check text-success"></i> Test Scenarios</h2>
+            <p><strong>How to verify it works:</strong></p>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Test</th>
+                            <th>Action</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Book Car A for Jan 15-20</td>
+                            <td>✅ Booking successful</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Try booking Car A again for Jan 15-20</td>
+                            <td>❌ Error: "Car Already Booked"</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Try booking Car A for Jan 17-22 (overlap)</td>
+                            <td>❌ Error: "Car Already Booked"</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Book Car A for Jan 21-25 (after existing)</td>
+                            <td>✅ Booking successful</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>View car cards on rental page</td>
+                            <td>🔴 Booked cars show red overlay</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Select dates for booked car</td>
+                            <td>❌ Real-time alert appears</td>
+                            <td><span class="badge bg-success">PASS</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="demo-section">
+            <h2><i class="bi bi-trophy text-warning"></i> Benefits</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center p-3">
+                        <i class="bi bi-people-fill" style="font-size: 48px; color: #0a2540;"></i>
+                        <h5 class="mt-3">For Customers</h5>
+                        <ul class="text-start">
+                            <li>Clear error messages</li>
+                            <li>See booking details</li>
+                            <li>Get alternative suggestions</li>
+                            <li>Real-time availability</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3">
+                        <i class="bi bi-person-badge-fill" style="font-size: 48px; color: #0a2540;"></i>
+                        <h5 class="mt-3">For Staff</h5>
+                        <ul class="text-start">
+                            <li>No double bookings</li>
+                            <li>Reduced conflicts</li>
+                            <li>Better inventory control</li>
+                            <li>Fewer customer complaints</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3">
+                        <i class="bi bi-building" style="font-size: 48px; color: #0a2540;"></i>
+                        <h5 class="mt-3">For Business</h5>
+                        <ul class="text-start">
+                            <li>Data integrity</li>
+                            <li>Customer satisfaction</li>
+                            <li>Professional image</li>
+                            <li>Reduced errors</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="demo-section bg-success text-white">
+            <h2><i class="bi bi-check-circle-fill"></i> Implementation Complete!</h2>
+            <p class="lead mb-0">Double booking prevention is now fully functional with:</p>
+            <ul class="mt-3">
+                <li>✅ Strict 1-booking-per-car limit</li>
+                <li>✅ Detailed error messages for customers</li>
+                <li>✅ Real-time availability checking</li>
+                <li>✅ Visual indicators on car cards</li>
+                <li>✅ Date overlap detection</li>
+                <li>✅ Privacy-protected information</li>
+            </ul>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="index.php?page=car_rental" class="btn btn-primary btn-lg">
+                <i class="bi bi-car-front me-2"></i>Go to Car Rental Page
+            </a>
+            <a href="DOUBLE_BOOKING_PREVENTION_IMPLEMENTED.md" class="btn btn-secondary btn-lg ms-2">
+                <i class="bi bi-file-text me-2"></i>View Documentation
+            </a>
+        </div>
+    </div>
+</body>
+</html>

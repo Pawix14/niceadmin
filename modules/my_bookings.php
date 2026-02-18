@@ -32,6 +32,20 @@ if(isset($_GET['return'])) {
     $booking = $conn->query("SELECT * FROM car_rentals WHERE id=$booking_id")->fetch_assoc();
     
     if($booking) {
+        // CRITICAL: Check if fully paid before allowing return
+        $remaining_balance = $booking['remaining_balance'] ?? 0;
+        
+        if($remaining_balance > 0) {
+            $message = "<div class='alert alert-danger'><i class='bi bi-exclamation-triangle-fill'></i> <strong>Payment Required!</strong><br>";
+            $message .= "You must pay the remaining balance of <strong>₱" . number_format($remaining_balance, 2) . "</strong> before returning the car.<br><br>";
+            $message .= "<strong>Payment Details:</strong><br>";
+            $message .= "• Total Amount: ₱" . number_format($booking['total_amount'], 2) . "<br>";
+            $message .= "• Amount Paid: ₱" . number_format($booking['amount_paid'] ?? 0, 2) . "<br>";
+            $message .= "• <span class='text-danger'>Remaining Balance: ₱" . number_format($remaining_balance, 2) . "</span><br><br>";
+            $message .= "<a href='index.php?page=my_payments' class='btn btn-primary btn-sm'><i class='bi bi-cash'></i> Pay Now</a>";
+            $message .= "</div>";
+            $message_type = 'error';
+        } else {
         $pickup_date = new DateTime($booking['pickup_date']);
         $dropoff_date = new DateTime($booking['dropoff_date']);
         $actual_return = new DateTime();
@@ -76,6 +90,7 @@ if(isset($_GET['return'])) {
         
         $message .= "<br><small class='text-muted'>Staff has been notified to pick up the car at $return_location</small>";
         $message_type = 'success';
+        }
     }
 }
 

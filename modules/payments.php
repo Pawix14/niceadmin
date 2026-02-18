@@ -61,6 +61,7 @@ $conn->close();
             <th>Booking ID</th>
             <th>Customer</th>
             <th>Amount</th>
+            <th>Payment Type</th>
             <th>Payment Method</th>
             <th>Proof</th>
             <th>Status</th>
@@ -73,7 +74,28 @@ $conn->close();
           <tr>
             <td><?php echo $b['booking_id']; ?></td>
             <td><?php echo htmlspecialchars($b['customer_name']); ?><br><small><?php echo $b['customer_email']; ?></small></td>
-            <td><strong>₱<?php echo number_format($b['total_amount'], 2); ?></strong></td>
+            <td>
+              <strong>₱<?php echo number_format($b['total_amount'], 2); ?></strong>
+              <?php 
+              $amount_paid = $b['amount_paid'] ?? 0;
+              $remaining_balance = $b['remaining_balance'] ?? 0;
+              if($amount_paid > 0 && $remaining_balance > 0): 
+              ?>
+              <br><small class="text-success">Paid: ₱<?php echo number_format($amount_paid, 2); ?></small>
+              <br><small class="text-danger">Balance: ₱<?php echo number_format($remaining_balance, 2); ?></small>
+              <?php endif; ?>
+            </td>
+            <td>
+              <?php 
+              $payment_type = $b['payment_type'] ?? 'Full Payment';
+              $is_downpayment = ($payment_type == 'Downpayment');
+              ?>
+              <?php if($is_downpayment): ?>
+              <span class="badge bg-warning text-dark"><i class="bi bi-percent"></i> Downpayment (50%)</span>
+              <?php else: ?>
+              <span class="badge bg-success"><i class="bi bi-cash-stack"></i> Full Payment</span>
+              <?php endif; ?>
+            </td>
             <td><?php echo $b['payment_method']; ?></td>
             <td>
               <?php if($b['payment_proof']): ?>

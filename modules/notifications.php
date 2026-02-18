@@ -18,6 +18,19 @@ if (isset($_GET['mark_read'])) {
     exit();
 }
 
+// Mark all as read
+if (isset($_GET['mark_all_read'])) {
+    if ($is_admin) {
+        $conn->query("UPDATE notifications SET is_read=1 WHERE user_type='admin'");
+    } elseif ($is_staff) {
+        $conn->query("UPDATE notifications SET is_read=1 WHERE user_type='staff'");
+    } else {
+        $conn->query("UPDATE notifications SET is_read=1 WHERE user_type='customer' AND user_id='$user_email'");
+    }
+    header("Location: index.php?page=notifications");
+    exit();
+}
+
 // Handle customer message to admin
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
     $message_text = $conn->real_escape_string($_POST['message']);
@@ -146,6 +159,13 @@ $conn->close();
   <div class="card">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
       <h6 class="mb-0">📬 All Notifications (<?php echo $unread_count; ?> unread)</h6>
+      <div class="d-flex gap-2">
+        <?php if ($unread_count > 0): ?>
+        <a href="?page=notifications&mark_all_read=1" class="btn btn-sm btn-success">
+          <i class="bi bi-check-all"></i> Mark All Read
+        </a>
+        <?php endif; ?>
+      </div>
     </div>
     <div class="card-body">
       <?php if (empty($notifications)): ?>
@@ -155,35 +175,72 @@ $conn->close();
       </div>
       <?php else: ?>
       <div class="list-group">
-        <?php foreach($notifications as $notif): ?>
-        <div class="list-group-item <?php echo !$notif['is_read'] ? 'list-group-item-warning' : ''; ?>">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="flex-grow-1">
-              <h6 class="mb-1">
-                <?php if (!$notif['is_read']): ?>
-                <span class="badge bg-danger me-2">NEW</span>
-                <?php endif; ?>
-                <?php echo htmlspecialchars($notif['title']); ?>
-              </h6>
-              <p class="mb-1"><?php echo htmlspecialchars($notif['message']); ?></p>
-              <?php if ($notif['booking_id'] && $is_admin): ?>
-              <a href="index.php?page=booking_details&id=<?php echo $notif['booking_id']; ?>" class="btn btn-sm btn-primary mt-2">
-                <i class="bi bi-eye"></i> View Booking
-              </a>
-              <?php elseif ($notif['booking_id']): ?>
-              <a href="index.php?page=my_bookings" class="btn btn-sm btn-primary mt-2">
-                <i class="bi bi-eye"></i> View My Bookings
-              </a>
-              <?php endif; ?>
-              <small class="text-muted d-block mt-2">
-                <i class="bi bi-clock"></i> <?php echo date('M d, Y h:i A', strtotime($notif['created_at'])); ?>
-              </small>
+        <?php foreach($notifications as $notif): 
+          $category = $notif['category'] ?? 'general';
+          $priority = $notif['priority'] ?? 'normal';
+          $icon_map = ['booking'=>'car-front','payment'=>'cash-coin','document'=>'file-earmark-text','message'=>'chat-dots','alert'=>'exclamation-triangle'];
+          $icon = $icon_map[$category] ?? 'bell';
+          $priority_class = ['critical'=>'danger','important'=>'warning','normal'=>'info'][$priority] ?? 'secondary';
+        ?>
+        <div class="list-group-item <?php echo !$notif['is_read'] ? 'border-start border-4 border-warning' : ''; ?>">
+          <div class="d-flex gap-3">
+            <div class="flex-shrink-0">
+              <div class="rounded-circle bg-light p-2" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-<?php echo $icon; ?>" style="font-size:24px;color:#666;"></i>
+              </div>
             </div>
-            <?php if (!$notif['is_read']): ?>
-            <a href="?page=notifications&mark_read=<?php echo $notif['id']; ?>" class="btn btn-sm btn-outline-secondary">
-              <i class="bi bi-check"></i> Mark Read
-            </a>
-            <?php endif; ?>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">
+                  <?php if (!$notif['is_read']): ?>
+                  <span class="badge bg-danger me-2">NEW</span>
+                  <?php endif; ?>
+                  <?php if ($priority === 'critical'): ?>
+                  <span class="badge bg-danger me-2">URGENT</span>
+                  <?php elseif ($priority === 'important'): ?>
+                  <span class="badge bg-warning text-dark me-2">IMPORTANT</span>
+                  <?php endif; ?>
+                  <?php echo htmlspecialchars($notif['title']); ?>
+                </h6>
+                <?php if (!$notif['is_read']): ?>
+                <a href="?page=notifications&mark_read=<?php echo $notif['id']; ?>" class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-check"></i>
+                </a>
+                <?php endif; ?>
+              </div>
+              <p class="mb-2 text-muted"><?php echo htmlspecialchars($notif['message']); ?></p>
+              <div class="d-flex gap-2 align-items-center">
+                <?php if ($notif['booking_id']): ?>
+                  <?php if ($is_admin || $is_staff): ?>
+                  <a href="index.php?page=all_bookings" class="btn btn-sm btn-primary">
+                    <i class="bi bi-eye"></i> View All Bookings
+                  </a>
+                  <?php if ($is_staff): ?>
+                  <a href="index.php?page=staff_booking_review" class="btn btn-sm btn-success">
+                    <i class="bi bi-clipboard-check"></i> Review Booking
+                  </a>
+                  <?php endif; ?>
+                  <?php else: ?>
+                  <a href="index.php?page=my_bookings" class="btn btn-sm btn-primary">
+                    <i class="bi bi-eye"></i> View My Bookings
+                  </a>
+                  <?php endif; ?>
+                <?php endif; ?>
+                <?php if (strpos($notif['message'], 'Document') !== false && ($is_admin || $is_staff)): ?>
+                <a href="index.php?page=documents" class="btn btn-sm btn-info">
+                  <i class="bi bi-file-earmark"></i> View Documents
+                </a>
+                <?php endif; ?>
+                <?php if (strpos($notif['message'], 'Payment') !== false && ($is_admin || $is_staff)): ?>
+                <a href="index.php?page=payments" class="btn btn-sm btn-success">
+                  <i class="bi bi-cash"></i> View Payments
+                </a>
+                <?php endif; ?>
+                <small class="text-muted ms-auto">
+                  <i class="bi bi-clock"></i> <?php echo date('M d, Y h:i A', strtotime($notif['created_at'])); ?>
+                </small>
+              </div>
+            </div>
           </div>
         </div>
         <?php endforeach; ?>
